@@ -3,12 +3,9 @@
 import os
 import sys
 
-# Resolve the project from the deployed cPanel application directory while
-# retaining the file location as a portable fallback for local execution.
-DEPLOYED_ROOT = '/home/copetr70/copus'
-BASE_DIR = os.environ.get('APP_ROOT') or (
-    DEPLOYED_ROOT if os.path.isdir(DEPLOYED_ROOT) else os.path.dirname(os.path.abspath(__file__))
-)
+# Passenger loads this file from the application root. Using its actual
+# location keeps the WSGI entry point portable across local and cPanel runs.
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
