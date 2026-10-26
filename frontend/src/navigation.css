@@ -86,18 +86,15 @@
 .topnav {
   display: flex;
   align-items: stretch;
+  justify-content: center;
+  flex-wrap: wrap;
   min-width: 0;
   gap: 2px;
-  overflow-x: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #37666e var(--header-background);
+  overflow-x: hidden;
 }
 
-.topnav-link:first-child { margin-left: auto; }
-.topnav-link:last-child { margin-right: auto; }
-
 .topnav-link {
-  flex-shrink: 0;
+  flex: 0 1 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
