@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - /bin/mkdir -p /home/copetr70/cop/tmp
+    - /bin/touch /home/copetr70/cop/tmp/restart.txt
