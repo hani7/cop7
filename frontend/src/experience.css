@@ -1,0 +1,23 @@
+.experience-field { min-width: 0; }
+.experience-editor { border: 1px solid var(--line); border-radius: 8px; background: white; overflow: hidden; }
+.experience-editor:focus-within { border-color: var(--green); box-shadow: 0 0 0 2px #dcefeb; }
+.experience-toolbar { display: flex; flex-wrap: wrap; gap: 3px; padding: 7px; border-bottom: 1px solid var(--line); background: #f4f8f8; }
+.experience-toolbar .icon-button { color: var(--petrol); }
+.experience-toolbar .icon-button[aria-pressed=true] { background: #dcefeb; color: var(--green); }
+.experience-content { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; line-height: 1.65; font-weight: 400; }
+.experience-content p, .experience-content div { margin: 0 0 .5em; }
+.experience-content ul, .experience-content ol { margin: .5em 0; padding-left: 26px; }
+.experience-content li { margin: .2em 0; }
+.experience-content hr { border: 0; border-top: 1px solid var(--line); margin: 16px 0; }
+.experience-input { min-height: 240px; max-height: 520px; overflow-y: auto; resize: vertical; padding: 13px; outline: none; }
+.experience-input:empty:before { content: attr(data-placeholder); color: var(--muted); pointer-events: none; }
+.experience-editor[aria-disabled=true] { opacity: .6; }
+.experience-field .experience-error { color: #a63121; }
+.technician-profile-section.experience-card { padding: 22px; border: 1px solid #cfe5e0; border-left: 4px solid var(--green); border-radius: 12px; background: #f2f8f6; box-shadow: 0 3px 12px #01333c06; }
+.experience-card h3 { display: flex; align-items: center; gap: 10px; padding-bottom: 14px; margin-bottom: 16px; border-bottom: 1px solid #d7e8e3; color: var(--petrol); }
+.experience-card h3 svg { flex-shrink: 0; color: var(--green); }
+.experience-card .experience-content { color: var(--petrol); line-height: 1.8; }
+.experience-card .experience-content p, .experience-card .experience-content ul, .experience-card .experience-content ol { color: inherit; margin-bottom: .65em; }
+.experience-card .experience-content > :last-child { margin-bottom: 0; }
+@media(max-width:560px) { .experience-input { min-height: 200px; } }
+@media(max-width:560px) { .technician-profile-section.experience-card { padding: 16px; } }

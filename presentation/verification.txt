@@ -1,0 +1,4 @@
+PDF: 33 pages, 33 signets, texte selectionnable, logo sur chaque page, limites de page controlees.
+PowerPoint: 33 diapositives, 33 notes, XML et ZIP valides.
+Mise en page: titres et blocs de texte dans leurs limites; controle visuel des pages 1, 6, 11, 12, 13, 29, 32.
+Tests application: 35/35 metier; 23/26 CV/profils; 3 ecarts preexistants documentes dans le guide.

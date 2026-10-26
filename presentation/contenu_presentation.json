@@ -1,0 +1,987 @@
+[
+  {
+    "section": "PRÉSENTATION DU PROJET",
+    "title": "COPETROLITE",
+    "subtitle": "La gestion des interventions industrielles",
+    "cards": [],
+    "takeaway": "Les équipes. Le terrain. La validation. Le suivi financier.",
+    "notes": "Présenter Copetrolite comme une application de gestion des interventions industrielles. Elle relie les entreprises clientes, les équipes internes et les techniciens dans un circuit commun. Cette présentation décrit le code présent dans le projet au 18 octobre 2026 ; elle ne constitue pas une preuve de déploiement en production.",
+    "sources": "",
+    "kind": "cover"
+  },
+  {
+    "section": "01 / VISION",
+    "title": "Un suivi continu de chaque intervention",
+    "subtitle": "Centraliser les informations et clarifier les responsabilités.",
+    "cards": [
+      [
+        "ORGANISER",
+        "Réunir les clients, les projets, les techniciens et leurs documents dans une même application."
+      ],
+      [
+        "SUIVRE LE TERRAIN",
+        "Permettre au technicien de déclarer ses heures et de décrire les travaux réalisés."
+      ],
+      [
+        "FAIRE VALIDER",
+        "Confier au responsable client autorisé la validation ou le refus motivé des pointages."
+      ],
+      [
+        "PRÉPARER LA FACTURATION",
+        "Transformer les heures validées en factures, puis suivre les règlements et les soldes."
+      ]
+    ],
+    "takeaway": "Une même intervention reste identifiable du premier pointage au règlement.",
+    "notes": "Les bénéfices présentés sont les objectifs du fonctionnement de l’application. Aucun gain de productivité chiffré n’a été mesuré. Le socle existant couvre le suivi opérationnel, documentaire et financier.",
+    "sources": "Modèles, services métier et interface",
+    "kind": "cards"
+  },
+  {
+    "section": "01 / VISION",
+    "title": "Le parcours métier de bout en bout",
+    "subtitle": "Chaque étape possède un responsable et une action définie.",
+    "cards": [
+      [
+        "UNE VALIDATION CLIENT",
+        "L’administrateur et le superviseur suivent les heures ; la décision de validation appartient au responsable client autorisé."
+      ],
+      [
+        "UN HISTORIQUE CONSERVÉ",
+        "Les changements d’état sont datés et associés à leur auteur. Les corrections et les refus restent traçables."
+      ]
+    ],
+    "takeaway": "La responsabilité de chaque intervenant est visible dans le circuit.",
+    "notes": "Le pointage est d’abord un brouillon. Sa soumission déclenche le travail de validation client. Seul un pointage validé et encore non facturé peut entrer dans une facture. Le paiement constitue une étape distincte de la facturation.",
+    "sources": "eliteapp/access.py · services.py · serializers.py",
+    "kind": "flow",
+    "steps": [
+      [
+        "PRÉPARER",
+        "Admin / superviseur",
+        "Client, projet et affectations"
+      ],
+      [
+        "DÉCLARER",
+        "Technicien",
+        "Date, durée et travaux"
+      ],
+      [
+        "VALIDER",
+        "Responsable client",
+        "Accord ou refus motivé"
+      ],
+      [
+        "FACTURER",
+        "Administrateur",
+        "Pointages validés"
+      ],
+      [
+        "ENCAISSER",
+        "Administrateur",
+        "Paiement et solde"
+      ]
+    ]
+  },
+  {
+    "section": "01 / VISION",
+    "title": "Les modules disponibles",
+    "subtitle": "Une interface en français, adaptée au rôle connecté.",
+    "cards": [
+      [
+        "PILOTAGE",
+        "Vue d’ensemble, projets en cours, heures pointées, pointages à valider et recherche dans les listes."
+      ],
+      [
+        "ORGANISATION",
+        "Clients, projets, techniciens, comptes de l’équipe et affectations aux interventions."
+      ],
+      [
+        "DOSSIERS TECHNICIENS",
+        "Identité, spécialité, expérience, photo, CV et documents de certification."
+      ],
+      [
+        "SUIVI FINANCIER",
+        "Tarifs par projet, calendrier des jours fériés, factures et paiements clients ; gains personnels côté technicien."
+      ]
+    ],
+    "takeaway": "Les menus et les données visibles dépendent des autorisations.",
+    "notes": "Pour l’administrateur, Équipe et Calendrier se trouvent dans Paramètres. Les autres menus principaux sont Vue d’ensemble, Projets, Pointages, Techniciens, Clients, Facturation et Paiements. Le contenu de Paiements diffère entre administrateur et technicien.",
+    "sources": "frontend/src/App.jsx · forms.jsx",
+    "kind": "cards"
+  },
+  {
+    "section": "02 / LES ACCÈS",
+    "title": "Quatre rôles, des responsabilités distinctes",
+    "subtitle": "« Équipe » est un menu de gestion des personnes ; le rôle interne est « Superviseur interne ».",
+    "cards": [
+      [
+        "ADMINISTRATEUR",
+        "Gère les comptes, les dossiers, les accès client, les clients, les projets, les factures et les paiements."
+      ],
+      [
+        "SUPERVISEUR INTERNE",
+        "Organise les clients et les projets, affecte les techniciens et consulte les pointages et dossiers internes."
+      ],
+      [
+        "TECHNICIEN",
+        "Consulte ses projets, déclare ses propres heures, corrige les pointages autorisés et consulte ses gains."
+      ],
+      [
+        "CHEF DE PROJET CLIENT",
+        "Consulte son périmètre de projets et valide ou refuse les pointages soumis. Un compte dédié peut être limité à un projet."
+      ]
+    ],
+    "takeaway": "L’accès est contrôlé par le serveur, au-delà des menus affichés.",
+    "notes": "Le code définit exactement quatre rôles. Il n’existe pas de rôle comptable séparé. Un compte d’accès client par projet utilise le rôle de chef de projet client avec un périmètre plus restreint.",
+    "sources": "eliteapp/models.py · access.py · views.py",
+    "kind": "cards"
+  },
+  {
+    "section": "02 / LES ACCÈS",
+    "title": "Matrice des droits",
+    "subtitle": "Synthèse des opérations et des périmètres autorisés.",
+    "cards": [],
+    "takeaway": "¹ Selon périmètre.  ² Ses propres pointages.  ³ Les brouillons sont exclus.",
+    "notes": "Le client peut consulter des informations limitées sur les personnes de son périmètre, sans documents privés. Le superviseur consulte les comptes mais ne les crée ni ne les modifie. Le technicien retrouve ses gains dans un endpoint distinct, sans accès aux factures ou paiements clients. Les coûts de projet sont consultables en interne.",
+    "sources": "Contrôles serveur : access.py · views.py · serializers.py",
+    "kind": "matrix",
+    "headers": [
+      "Fonction",
+      "Admin",
+      "Superviseur",
+      "Technicien",
+      "Client"
+    ],
+    "rows": [
+      [
+        "Comptes de l’équipe",
+        "Gérer",
+        "Consulter¹",
+        "—",
+        "Consulter¹"
+      ],
+      [
+        "Accès client par projet",
+        "Gérer",
+        "—",
+        "—",
+        "—"
+      ],
+      [
+        "Clients / projets",
+        "Gérer",
+        "Gérer",
+        "Ses projets",
+        "Ses projets"
+      ],
+      [
+        "CV / photos / certificats",
+        "Gérer",
+        "Consulter",
+        "—",
+        "—"
+      ],
+      [
+        "Pointages",
+        "Consulter",
+        "Consulter",
+        "Saisir / soumettre²",
+        "Consulter³"
+      ],
+      [
+        "Validation / refus",
+        "—",
+        "—",
+        "—",
+        "Son périmètre"
+      ],
+      [
+        "Tarifs commerciaux",
+        "Gérer",
+        "Gérer",
+        "—",
+        "—"
+      ],
+      [
+        "Factures / encaissements",
+        "Gérer",
+        "—",
+        "—",
+        "—"
+      ],
+      [
+        "Gains technicien",
+        "Coûts projet",
+        "Coûts projet",
+        "Ses gains",
+        "—"
+      ],
+      [
+        "Calendrier férié",
+        "Gérer",
+        "—",
+        "—",
+        "—"
+      ]
+    ]
+  },
+  {
+    "section": "03 / ADMINISTRATION",
+    "title": "Le tableau de bord administrateur",
+    "subtitle": "Identifier rapidement l’activité et les actions en attente.",
+    "cards": [
+      [
+        "ACTIVITÉ",
+        "Heures pointées et projets en cours pour suivre le volume d’interventions enregistré."
+      ],
+      [
+        "VALIDATIONS",
+        "Nombre de pointages soumis en attente de décision du responsable client."
+      ],
+      [
+        "TRÉSORERIE CLIENT",
+        "Reste à encaisser calculé à partir du solde des factures émises."
+      ],
+      [
+        "ACCÈS AUX DÉTAILS",
+        "Projets actifs et derniers pointages ; ouverture des listes pour consulter les informations complètes."
+      ]
+    ],
+    "takeaway": "Les indicateurs des autres rôles sont limités à leurs données accessibles.",
+    "notes": "Le tableau de bord actuel présente quatre indicateurs principaux. Pour les profils non administrateurs, les heures validées remplacent le reste à encaisser. L’indicateur heures validées exclut les pointages déjà passés à l’état facturé ; il ne doit donc pas être présenté comme un cumul historique de toute l’activité approuvée.",
+    "sources": "DashboardView · frontend/src/App.jsx",
+    "kind": "cards"
+  },
+  {
+    "section": "03 / ADMINISTRATION",
+    "title": "Clients : un référentiel structuré",
+    "subtitle": "Administrateur et superviseur renseignent les entreprises clientes.",
+    "cards": [
+      [
+        "IDENTITÉ ET CONTACT",
+        "Société, personne à contacter, téléphone, email et logo de l’entreprise."
+      ],
+      [
+        "INFORMATIONS ADMINISTRATIVES",
+        "N° RC, NIF, NIS, n° article, adresse de facturation et date de début de travail."
+      ],
+      [
+        "LIEN AVEC LES PROJETS",
+        "Chaque projet est rattaché à un client. Les comptes responsables client sont rattachés à leur entreprise."
+      ],
+      [
+        "CONSERVATION DE L’HISTORIQUE",
+        "Désactivation possible. La suppression, réservée à l’administrateur, est bloquée si des projets ou comptes sont liés."
+      ]
+    ],
+    "takeaway": "Une fiche client sert de point de référence aux projets et à la facturation.",
+    "notes": "La fiche client regroupe les coordonnées nécessaires au suivi. Le formulaire actuel rend plusieurs champs administratifs obligatoires. Une facture conserve un instantané de certaines informations client à son émission.",
+    "sources": "ClientViewSet · ClientSerializer · forms.jsx",
+    "kind": "cards"
+  },
+  {
+    "section": "03 / ADMINISTRATION",
+    "title": "Équipe : créer et maîtriser les comptes",
+    "subtitle": "Parcours administrateur : Paramètres → Équipe.",
+    "cards": [
+      [
+        "CRÉER UN COLLABORATEUR",
+        "Renseigner l’identité, l’identifiant, le mot de passe, le rôle et le statut actif."
+      ],
+      [
+        "RATTACHER LE CLIENT",
+        "Un chef de projet client doit être lié à une entreprise cliente. Les autres rôles n’ont pas ce rattachement."
+      ],
+      [
+        "GÉRER LE CYCLE DE VIE",
+        "Modifier les informations, remplacer un mot de passe et désactiver un compte lorsque l’accès doit cesser."
+      ],
+      [
+        "PRÉSERVER LES DROITS",
+        "Le superviseur et le client consultent les personnes autorisées. La création et la modification des comptes restent administratives."
+      ]
+    ],
+    "takeaway": "Les techniciens disposent aussi d’un menu dédié pour leur dossier complet.",
+    "notes": "Le mot de passe est enregistré sous forme hachée. Les écrans ne permettent pas de relire le mot de passe stocké. Les restrictions de modification empêchent notamment certaines incohérences de rattachement lorsqu’un historique existe.",
+    "sources": "UserViewSet · UserSerializer · forms.jsx",
+    "kind": "cards"
+  },
+  {
+    "section": "03 / ADMINISTRATION",
+    "title": "Le dossier complet du technicien",
+    "subtitle": "Centraliser les compétences, les pièces et les affectations.",
+    "cards": [
+      [
+        "IDENTITÉ",
+        "Nom, prénom, date de naissance, adresse, téléphone, email, photo et date d’affectation."
+      ],
+      [
+        "COMPÉTENCES",
+        "Poste ou spécialité, expérience professionnelle avec mise en forme et informations de certification."
+      ],
+      [
+        "DOCUMENTS",
+        "CV et plusieurs certificats en pièces jointes, avec consultation et téléchargement autorisés."
+      ],
+      [
+        "GESTION",
+        "Matricule généré automatiquement, recherche, filtre actif / désactivé et consultation des projets affectés."
+      ]
+    ],
+    "takeaway": "L’administrateur modifie le dossier ; le superviseur peut consulter les documents.",
+    "notes": "Le matricule est généré selon un compteur annuel au format CP-année-numéro. La photo, l’adresse, le CV et les autres informations privées ne sont pas exposés aux clients ou aux techniciens par la réponse utilisateur limitée. Une suppression de technicien avec projets ou pointages est bloquée.",
+    "sources": "UserSerializer · UserViewSet · TechnicianPhoto.jsx · CertificateUploads.jsx",
+    "kind": "cards"
+  },
+  {
+    "section": "04 / CV & PHOTO",
+    "title": "Détecter l’expérience depuis un CV",
+    "subtitle": "Une aide à la saisie intégrée à la fiche technicien.",
+    "cards": [
+      [
+        "IMPORT DU DOCUMENT",
+        "Sélectionner un CV PDF, JPG ou PNG, de 10 Mo maximum. Un CV enregistré peut aussi être relu."
+      ],
+      [
+        "LECTURE DU TEXTE",
+        "Lecture directe des PDF contenant du texte ; recours à l’OCR local Windows pour les images et pages scannées."
+      ],
+      [
+        "REPÉRAGE DE L’EXPÉRIENCE",
+        "Recherche de rubriques en français ou en anglais et prise en compte de certaines mises en page à colonnes."
+      ],
+      [
+        "RELECTURE HUMAINE",
+        "L’expérience proposée est modifiable. Si la rubrique n’est pas reconnue, le texte extrait permet de choisir les passages utiles."
+      ]
+    ],
+    "takeaway": "Le texte est proposé pour vérification avant enregistrement.",
+    "notes": "L’extraction repose sur PyMuPDF et des règles de repérage des rubriques, avec OCR Windows si nécessaire. Les titres reconnus comprennent expérience professionnelle, parcours professionnel et work experience. Il ne s’agit pas d’une analyse universelle de toutes les mises en page. Le résultat retourné est limité à 20 000 caractères.",
+    "sources": "eliteapp/cv.py · CVImport.jsx",
+    "kind": "cards"
+  },
+  {
+    "section": "04 / CV & PHOTO",
+    "title": "De l’import à une expérience exploitable",
+    "subtitle": "Parcours administrateur : Techniciens → Ajouter ou Modifier.",
+    "cards": [
+      [
+        "SI LE CHAMP EST VIDE",
+        "Une expérience reconnue remplit le champ. L’administrateur relit le texte avant de sauvegarder."
+      ],
+      [
+        "SI UNE EXPÉRIENCE EXISTE",
+        "Un aperçu est proposé. Le remplacement du contenu se fait par une action explicite de l’administrateur."
+      ]
+    ],
+    "takeaway": "« Extraire » prépare le contenu ; « Enregistrer » sauvegarde le CV et la fiche.",
+    "notes": "La distinction entre extraction et sauvegarde est essentielle lors de la démonstration. Le bouton d’extraction ne suffit pas pour joindre le CV. L’éditeur propose gras, italique, soulignement, listes et annuler/rétablir. En cas d’absence de rubrique détectée, le texte proposé peut être corrigé puis adopté.",
+    "sources": "CVImport.jsx · ExperienceEditor.jsx · UserSerializer",
+    "kind": "flow",
+    "steps": [
+      [
+        "CHOISIR",
+        "CV local",
+        "PDF, JPG ou PNG"
+      ],
+      [
+        "EXTRAIRE",
+        "Bouton dédié",
+        "Lire l’expérience"
+      ],
+      [
+        "RELIRE",
+        "Administrateur",
+        "Vérifier et corriger"
+      ],
+      [
+        "METTRE EN FORME",
+        "Éditeur intégré",
+        "Paragraphes et listes"
+      ],
+      [
+        "ENREGISTRER",
+        "Fiche technicien",
+        "Sauvegarder le dossier"
+      ]
+    ]
+  },
+  {
+    "section": "04 / CV & PHOTO",
+    "title": "Extraire la photo du CV",
+    "subtitle": "Un aperçu visuel pour enrichir rapidement le profil.",
+    "cards": [
+      [
+        "ACTION UTILISATEUR",
+        "Cliquer sur « Utiliser la photo du CV » depuis un CV sélectionné ou déjà enregistré."
+      ],
+      [
+        "SÉLECTION DE L’IMAGE",
+        "Le système recherche une image candidate selon sa taille, ses proportions et sa place dans le document."
+      ],
+      [
+        "APERÇU ET SAUVEGARDE",
+        "L’image proposée apparaît dans la fiche. Vérifier qu’il s’agit bien du portrait, puis cliquer sur Enregistrer."
+      ],
+      [
+        "PHOTO MANUELLE PRIORITAIRE",
+        "Une photo peut être importée séparément : PNG, WebP, JPG/JPEG ou AVIF, de 5 Mo maximum."
+      ]
+    ],
+    "takeaway": "La sélection est heuristique : un logo ou une page scannée peut nécessiter un remplacement.",
+    "notes": "Le code sélectionne une image candidate ; il ne réalise pas de reconnaissance faciale et ne garantit pas un recadrage du visage sur un CV scanné. Lors de la sauvegarde d’une fiche sans photo, une image peut aussi être extraite automatiquement du CV. Une photo déjà présente est conservée ; une photo explicitement importée est prioritaire.",
+    "sources": "extract_cv_photo · save_photo_from_cv · CVImport.jsx · TechnicianPhoto.jsx",
+    "kind": "cards"
+  },
+  {
+    "section": "04 / CV & PHOTO",
+    "title": "CV : qualité, confidentialité et contrôle",
+    "subtitle": "Le dossier reste vérifiable par l’équipe autorisée.",
+    "cards": [
+      [
+        "QUALITÉ DU RÉSULTAT",
+        "La netteté du scan, les colonnes et les titres du CV influencent l’extraction. La saisie manuelle reste disponible."
+      ],
+      [
+        "TRAITEMENT LOCAL",
+        "Le texte et la photo sont traités localement. Le parcours d’extraction n’envoie pas les CV à un service externe."
+      ],
+      [
+        "ACCÈS AUX DOCUMENTS",
+        "Extraction réservée à l’administrateur. CV, photos et certificats consultables par administrateur et superviseur."
+      ],
+      [
+        "CONTRAINTES ACTUELLES",
+        "CV : 10 Mo ; pas de plafond fixe de pages dans le code actuel. L’OCR nécessite Windows et peut expirer sur un document long."
+      ]
+    ],
+    "takeaway": "Toujours vérifier le texte et l’image avant de finaliser le dossier.",
+    "notes": "Le README mentionne encore une ancienne limite de dix pages ; le code et le formulaire actuels n’imposent plus cette limite. Les PDF protégés doivent être déverrouillés. L’OCR dispose d’un budget de traitement d’environ 60 secondes. Les tests OCR utilisent une simulation, ils ne prouvent pas la disponibilité du moteur Windows de ce poste.",
+    "sources": "cv.py · CVImport.jsx · test_cv.py",
+    "kind": "cards"
+  },
+  {
+    "section": "05 / PROJETS & ÉQUIPE",
+    "title": "Préparer les projets et les affectations",
+    "subtitle": "Administrateur et superviseur disposent des fonctions d’organisation.",
+    "cards": [
+      [
+        "IDENTIFIER LE PROJET",
+        "Nom du projet, client, site industriel, description, bon de commande et nom du chef de projet client."
+      ],
+      [
+        "AFFECTER LES TECHNICIENS",
+        "Rechercher et sélectionner un ou plusieurs techniciens actifs pour constituer l’équipe du projet."
+      ],
+      [
+        "PARAMÉTRER LES TARIFS",
+        "Tarif client horaire, forfait client férié, coût technicien horaire et forfait technicien férié."
+      ],
+      [
+        "PRÉPARER LA VALIDATION",
+        "Le nom du responsable ne crée pas un compte. L’administrateur configure séparément l’accès client du projet."
+      ]
+    ],
+    "takeaway": "Un client actif et une affectation valide sont nécessaires pour les nouveaux pointages.",
+    "notes": "Le formulaire actuel utilise un nom libre pour le chef de projet client. Il faut donc distinguer cette information descriptive d’un véritable compte de connexion. Le backend prend également en charge les comptes chefs de projet historiques rattachés au projet. Les champs financiers sont masqués dans les réponses projet des techniciens et clients.",
+    "sources": "ProjectSerializer · ProjectViewSet · forms.jsx · ProjectAccess.jsx",
+    "kind": "cards"
+  },
+  {
+    "section": "05 / PROJETS & ÉQUIPE",
+    "title": "L’espace du superviseur interne",
+    "subtitle": "Coordonner le travail opérationnel et suivre les équipes.",
+    "cards": [
+      [
+        "ORGANISER",
+        "Créer ou modifier les clients et projets, renseigner les informations commerciales et gérer les affectations."
+      ],
+      [
+        "CONSULTER LES DOSSIERS",
+        "Accéder aux fiches techniciens, aux CV, aux photos, aux certificats et à la liste de l’équipe."
+      ],
+      [
+        "SUIVRE LES INTERVENTIONS",
+        "Consulter les pointages, les projets actifs et les indicateurs opérationnels."
+      ],
+      [
+        "CADRE DES AUTORISATIONS",
+        "La gestion des comptes, les accès client, la facturation, les encaissements et le calendrier restent réservés à l’administrateur."
+      ]
+    ],
+    "takeaway": "Le superviseur prépare et suit ; le responsable client décide de la validation.",
+    "notes": "Il peut voir les tarifs et les coûts calculés des projets. Il ne doit pas être présenté comme un simple lecteur de projets : le backend lui permet de créer et modifier les clients et projets. En revanche, il ne saisit pas les heures à la place du technicien.",
+    "sources": "views.py · access.py · App.jsx",
+    "kind": "cards"
+  },
+  {
+    "section": "06 / ESPACE TECHNICIEN",
+    "title": "Un accès centré sur le terrain",
+    "subtitle": "Connexion habituelle ou page dédiée /tech/login.",
+    "cards": [
+      [
+        "MES PROJETS",
+        "Consulter les projets affectés et retrouver les projets de son historique de pointages."
+      ],
+      [
+        "MES HEURES",
+        "Choisir un projet actif, une date d’intervention, un nombre d’heures et une description des travaux."
+      ],
+      [
+        "MON SUIVI",
+        "Consulter le détail de ses pointages, les motifs de refus et les actions disponibles pour corriger ou soumettre."
+      ],
+      [
+        "MES GAINS",
+        "Consulter les heures validées ou facturées et les montants calculés pour soi, projet par projet."
+      ]
+    ],
+    "takeaway": "Le technicien accède à ses propres pointages et à ses propres gains.",
+    "notes": "Le formulaire actuel simplifie la saisie à une date et une durée. Il ne demande pas directement une heure de début, une heure de fin et une pause, même si ces informations existent dans le modèle serveur. Le technicien ne gère pas les comptes ni les documents privés des autres personnes.",
+    "sources": "App.jsx · forms.jsx · entries_for · projects_for",
+    "kind": "cards"
+  },
+  {
+    "section": "06 / ESPACE TECHNICIEN",
+    "title": "Le cycle d’un pointage",
+    "subtitle": "Un état clair détermine les actions possibles.",
+    "cards": [
+      [
+        "EN CAS DE REFUS",
+        "Le client renseigne un motif. Le technicien corrige le pointage refusé puis le soumet à nouveau."
+      ],
+      [
+        "CONTRÔLES DE SAISIE",
+        "Projet actif et affectation vérifiés ; dates futures et chevauchements refusés ; durée contrôlée par le serveur."
+      ]
+    ],
+    "takeaway": "Un pointage soumis, validé ou facturé est verrouillé à la modification.",
+    "notes": "Les chevauchements sont recherchés sur tous les projets du technicien. Un refus crée un état distinct, modifiable par son auteur. Le client ne voit pas les brouillons. Les transitions et corrections sont historisées avec l’identité de l’acteur.",
+    "sources": "TimeEntrySerializer · transition_entry · TimeEntryEvent",
+    "kind": "flow",
+    "steps": [
+      [
+        "BROUILLON",
+        "Technicien",
+        "Saisir et corriger"
+      ],
+      [
+        "SOUMIS",
+        "Technicien",
+        "Transmettre au client"
+      ],
+      [
+        "VALIDÉ",
+        "Responsable client",
+        "Accepter les heures"
+      ],
+      [
+        "FACTURÉ",
+        "Administrateur",
+        "Intégrer à une facture"
+      ]
+    ]
+  },
+  {
+    "section": "06 / ESPACE TECHNICIEN",
+    "title": "Les gains du technicien",
+    "subtitle": "Le menu « Paiements » présente une estimation calculée à partir de l’activité validée.",
+    "cards": [
+      [
+        "PÉRIMÈTRE PERSONNEL",
+        "Seules les heures validées ou facturées du technicien connecté sont prises en compte."
+      ],
+      [
+        "CALCUL HORS JOURS FÉRIÉS",
+        "Les heures retenues sont multipliées par le tarif technicien configuré pour le projet."
+      ],
+      [
+        "CALCUL DES JOURS FÉRIÉS",
+        "Un forfait technicien est appliqué une fois par technicien, date fériée et projet dans le calcul des gains."
+      ],
+      [
+        "INFORMATION À INTERPRÉTER",
+        "Le montant affiché représente des gains calculés. Aucun statut de versement réel au technicien n’est enregistré par ce module."
+      ]
+    ],
+    "takeaway": "Ces montants ne donnent pas accès aux factures ni aux encaissements du client.",
+    "notes": "Les gains utilisent les tarifs et le calendrier actuels. Ils peuvent donc changer si ces paramètres sont modifiés. Ce module ne constitue pas un système de paie, un bulletin de salaire ou une preuve de virement. Les données de gains sont accessibles en lecture seule au technicien.",
+    "sources": "ProjectViewSet.earnings · ProjectSerializer.get_technician_labor_cost",
+    "kind": "cards"
+  },
+  {
+    "section": "07 / ESPACE CLIENT",
+    "title": "Deux modes d’accès au périmètre client",
+    "subtitle": "Le rôle reste « Chef de projet client » ; le périmètre dépend du compte.",
+    "cards": [
+      [
+        "COMPTE RESPONSABLE CLIENT",
+        "Connexion habituelle. Consultation des seuls projets attribués au compte, au sein de son entreprise cliente."
+      ],
+      [
+        "COMPTE DÉDIÉ AU PROJET",
+        "Connexion via /project/login avec un identifiant créé par l’administrateur. Accès limité au projet associé."
+      ],
+      [
+        "DONNÉES CONSULTABLES",
+        "Projets autorisés, pointages hors brouillons, informations limitées sur les techniciens du périmètre."
+      ],
+      [
+        "DONNÉES NON EXPOSÉES",
+        "CV, photos et informations privées des techniciens ; tarifs internes, tarifs client, factures et paiements clients."
+      ]
+    ],
+    "takeaway": "Un même client peut avoir plusieurs projets sans que tous ses comptes voient tout.",
+    "notes": "Les restrictions reposent sur le projet attribué et le client actif. L’appartenance à la même entreprise ne suffit pas pour valider les pointages d’un autre projet. Le compte dédié est redirigé vers les pointages à valider.",
+    "sources": "projects_for · entries_for · LoginView · App.jsx",
+    "kind": "cards"
+  },
+  {
+    "section": "07 / ESPACE CLIENT",
+    "title": "Valider ou refuser les heures",
+    "subtitle": "La décision client structure le passage vers la facturation.",
+    "cards": [
+      [
+        "CONSULTER",
+        "Ouvrir les pointages soumis du projet autorisé et examiner le technicien, la date, la durée et les travaux."
+      ],
+      [
+        "VALIDER",
+        "Accepter le pointage lorsqu’il correspond à l’intervention réalisée. Les heures deviennent éligibles à la facturation."
+      ],
+      [
+        "REFUSER AVEC UN MOTIF",
+        "Préciser ce qui doit être corrigé. Le pointage retourne au technicien dans l’état Refusé."
+      ],
+      [
+        "REPRENDRE LE SUIVI",
+        "Après correction et nouvelle soumission, le responsable client peut réexaminer le pointage."
+      ]
+    ],
+    "takeaway": "Seuls les pointages à l’état Soumis peuvent être validés ou refusés.",
+    "notes": "L’auteur de la décision, sa date et le motif éventuel sont enregistrés. Un administrateur ne dispose pas d’une action de validation de substitution dans le circuit actuel. La validation est une action métier tracée, pas une signature électronique certifiée.",
+    "sources": "transition_entry · entry-detail dans App.jsx",
+    "kind": "cards"
+  },
+  {
+    "section": "07 / ESPACE CLIENT",
+    "title": "Configurer un accès client par projet",
+    "subtitle": "Parcours administrateur : Projets → Accès client.",
+    "cards": [
+      [
+        "CRÉER L’ACCÈS",
+        "Choisir l’identifiant du projet, saisir ou générer un mot de passe et activer le compte."
+      ],
+      [
+        "TRANSMETTRE LES INFORMATIONS",
+        "Communiquer l’adresse de connexion /project/login et les identifiants au contact autorisé."
+      ],
+      [
+        "MAINTENIR L’ACCÈS",
+        "Modifier l’identifiant, remplacer le mot de passe ou désactiver le compte si nécessaire."
+      ],
+      [
+        "LIMITER LE PÉRIMÈTRE",
+        "Le compte est associé à un projet unique. Il ne donne pas automatiquement accès aux autres projets du client."
+      ]
+    ],
+    "takeaway": "Le mot de passe stocké ne peut pas être relu : le noter lors de sa création.",
+    "notes": "Le formulaire permet de générer un mot de passe. L’envoi d’un email ou d’une invitation automatique n’est pas implémenté dans ce parcours. Un client désactivé ne peut plus utiliser cet accès projet.",
+    "sources": "ProjectAccess.jsx · ProjectViewSet.client_access · LoginView",
+    "kind": "cards"
+  },
+  {
+    "section": "08 / SUIVI FINANCIER",
+    "title": "Facturer les interventions validées",
+    "subtitle": "Fonction réservée à l’administrateur.",
+    "cards": [
+      [
+        "SÉLECTIONNER",
+        "Choisir un projet et ses pointages validés, encore non facturés."
+      ],
+      [
+        "PARAMÉTRER",
+        "Vérifier l’échéance, les tarifs applicables et le taux de taxe saisi explicitement."
+      ],
+      [
+        "ÉMETTRE",
+        "Créer une facture numérotée avec ses lignes, montants et informations de référence figés à l’émission."
+      ],
+      [
+        "CONSULTER ET IMPRIMER",
+        "Ouvrir le détail de la facture, consulter ses paiements et imprimer depuis le navigateur."
+      ]
+    ],
+    "takeaway": "Un pointage facturé ne peut pas être sélectionné une seconde fois.",
+    "notes": "Le serveur bloque les pointages non validés, les doublons et le mélange de projets. La facture conserve notamment les noms client et projet, l’adresse, le bon de commande et les montants. Le document imprimable actuel est décrit comme un outil de suivi interne ; les informations de l’entreprise émettrice restent à compléter avant usage commercial définitif.",
+    "sources": "create_invoice · InvoiceCreateSerializer · InvoiceDetail · README",
+    "kind": "cards"
+  },
+  {
+    "section": "08 / SUIVI FINANCIER",
+    "title": "Suivre les règlements clients",
+    "subtitle": "Un enregistrement distinct pour chaque paiement.",
+    "cards": [
+      [
+        "ENREGISTRER",
+        "Sélectionner la facture, renseigner le montant, la date, le mode de paiement et la référence."
+      ],
+      [
+        "MODES DISPONIBLES",
+        "Virement, espèces ou chèque. Le paiement peut être partiel ou couvrir le solde restant."
+      ],
+      [
+        "SUIVRE LE SOLDE",
+        "La facture évolue entre Non payée, Partiellement payée et Payée selon les montants enregistrés."
+      ],
+      [
+        "CONTRÔLER LES MONTANTS",
+        "Montant positif, pas de dépassement du solde, pas de date future ni de date antérieure à la facture."
+      ]
+    ],
+    "takeaway": "Un paiement enregistré met à jour le solde utilisé dans le suivi administrateur.",
+    "notes": "Ces enregistrements concernent les paiements reçus des clients. Aucun raccordement bancaire automatique n’est présent dans le périmètre examiné. Les modifications et suppressions de paiements ne sont pas exposées par l’API actuelle.",
+    "sources": "record_payment · PaymentSerializer · Invoice.balance",
+    "kind": "cards"
+  },
+  {
+    "section": "08 / SUIVI FINANCIER",
+    "title": "Tarifs et jours fériés",
+    "subtitle": "Distinguer le montant facturé au client du coût calculé pour le technicien.",
+    "cards": [
+      [
+        "JOUR ORDINAIRE — CLIENT",
+        "Heures validées sélectionnées × tarif client horaire du projet."
+      ],
+      [
+        "JOUR ORDINAIRE — TECHNICIEN",
+        "Heures personnelles validées ou facturées × tarif technicien horaire du projet."
+      ],
+      [
+        "JOUR FÉRIÉ — CLIENT",
+        "Forfait client par technicien et date fériée, réparti entre les pointages sélectionnés dans la facture."
+      ],
+      [
+        "JOUR FÉRIÉ — TECHNICIEN",
+        "Forfait technicien par date fériée travaillée et projet ; calendrier géré par l’administrateur."
+      ]
+    ],
+    "takeaway": "Les forfaits client et technicien sont deux paramètres indépendants.",
+    "notes": "Le calcul du forfait client regroupe les pointages sélectionnés dans une seule émission de facture. Il ne faut pas promettre une déduplication du forfait entre plusieurs factures séparées portant sur la même date et le même technicien. Les dates fériées sont saisies par l’administrateur, sans présumer d’un calendrier légal automatique.",
+    "sources": "create_invoice · get_technician_labor_cost · PublicHolidayViewSet",
+    "kind": "cards"
+  },
+  {
+    "section": "09 / CONFIANCE & ACCÈS",
+    "title": "Séparer les données et conserver les traces",
+    "subtitle": "Des contrôles intégrés au fonctionnement métier.",
+    "cards": [
+      [
+        "AUTHENTIFICATION",
+        "Sessions Django, mots de passe hachés, protection CSRF et limitation des tentatives de connexion."
+      ],
+      [
+        "ISOLATION DES PÉRIMÈTRES",
+        "Filtrage des projets et pointages selon le rôle, l’affectation et le compte client associé."
+      ],
+      [
+        "DOCUMENTS PRIVÉS",
+        "Téléchargement authentifié des CV, photos et certificats ; accès limité aux rôles internes autorisés."
+      ],
+      [
+        "TRAÇABILITÉ",
+        "Historique daté des états de pointage, auteur des décisions, motif de refus et référence de facture."
+      ]
+    ],
+    "takeaway": "Ces mécanismes sont implémentés ; ils ne constituent pas une certification de sécurité.",
+    "notes": "La désactivation permet de conserver les liens historiques. Les contrôles du backend complètent l’affichage conditionnel des menus. Cette présentation ne remplace pas un audit de sécurité ou une recette complète d’exploitation.",
+    "sources": "access.py · views.py · services.py · serializers.py",
+    "kind": "cards"
+  },
+  {
+    "section": "09 / CONFIANCE & ACCÈS",
+    "title": "Un usage web et un accès Android",
+    "subtitle": "L’interface s’adapte aux écrans de bureau et de téléphone.",
+    "cards": [
+      [
+        "NAVIGATEUR",
+        "Accès à l’application web en français depuis un ordinateur ou un téléphone."
+      ],
+      [
+        "ESPACE TECHNICIEN",
+        "Présentation adaptée au mobile pour les projets, les pointages et les gains personnels."
+      ],
+      [
+        "ANDROID LOCAL",
+        "Une application de développement ouvre l’espace technicien dans une WebView avec identité Copetrolite."
+      ],
+      [
+        "CONDITIONS ACTUELLES",
+        "Le paquet Android documenté dépend du réseau local et des serveurs démarrés. Un accès public demande une configuration de déploiement."
+      ]
+    ],
+    "takeaway": "La version Android actuelle n’est pas présentée comme une application hors ligne.",
+    "notes": "Le README décrit un APK de développement lié à une adresse réseau locale. Une distribution plus large nécessite notamment une adresse accessible en HTTPS et une signature de production. Ces travaux ne sont pas réalisés dans le cadre de cette présentation.",
+    "sources": "README · frontend/src/App.jsx · styles.css",
+    "kind": "cards"
+  },
+  {
+    "section": "10 / SOCLE TECHNIQUE",
+    "title": "Une architecture organisée par responsabilité",
+    "subtitle": "Vue de la configuration réellement présente dans le projet.",
+    "cards": [
+      [
+        "EXTRACTION DOCUMENTAIRE",
+        "PyMuPDF lit les PDF et les images. L’OCR Windows fournit le texte des pages scannées."
+      ],
+      [
+        "COHÉRENCE MÉTIER",
+        "Les règles d’accès, les transitions de pointage et les calculs financiers sont exécutés côté serveur."
+      ]
+    ],
+    "takeaway": "Les tests rapides utilisent une base SQLite en mémoire, distincte de la base applicative.",
+    "notes": "Les consignes générales mentionnent PostgreSQL, mais coproject/settings.py configure actuellement django.db.backends.mysql et le README documente MySQL. La présentation reflète cette configuration observée, sans la modifier. La base de données et les documents locaux doivent être sauvegardés ensemble.",
+    "sources": "coproject/settings.py · test_settings.py · cv.py · README",
+    "kind": "flow",
+    "steps": [
+      [
+        "INTERFACE",
+        "React / Vite",
+        "Écrans et formulaires"
+      ],
+      [
+        "API MÉTIER",
+        "Django REST",
+        "Accès et validations"
+      ],
+      [
+        "DONNÉES",
+        "MySQL configuré",
+        "Données relationnelles"
+      ],
+      [
+        "DOCUMENTS",
+        "Stockage local",
+        "CV, photos, certificats"
+      ]
+    ]
+  },
+  {
+    "section": "11 / DÉMONSTRATION",
+    "title": "Un exemple simple, de l’heure au solde",
+    "subtitle": "Exemple fictif, hors jour férié, avec un taux de taxe de 0 % pour simplifier.",
+    "cards": [],
+    "takeaway": "Les gains calculés du technicien et le solde client sont deux informations distinctes.",
+    "notes": "Exemple purement pédagogique : huit heures sont déclarées puis validées. Avec un tarif client de 2 500 DZD par heure, la facture hors taxe atteint 20 000 DZD. Avec un tarif technicien de 1 000 DZD, ses gains calculés sont de 8 000 DZD. Après un règlement client de 12 000 DZD, le solde restant est de 8 000 DZD. Aucune donnée réelle du projet n’est utilisée.",
+    "sources": "Formules : services.py · ProjectSerializer",
+    "kind": "example"
+  },
+  {
+    "section": "11 / DÉMONSTRATION",
+    "title": "Le scénario à présenter en direct",
+    "subtitle": "Un parcours de 8 à 10 minutes avec des données de démonstration.",
+    "cards": [
+      [
+        "1 · ADMINISTRATEUR",
+        "Présenter un client et un dossier technicien ; extraire l’expérience et la photo d’un CV, relire et enregistrer."
+      ],
+      [
+        "2 · ORGANISATION",
+        "Créer un projet, affecter le technicien et configurer un accès client dédié."
+      ],
+      [
+        "3 · TECHNICIEN ET CLIENT",
+        "Saisir puis soumettre les heures ; se connecter côté client pour valider ou refuser avec un motif."
+      ],
+      [
+        "4 · ADMINISTRATEUR",
+        "Créer la facture à partir du pointage validé, enregistrer un paiement et montrer le solde restant."
+      ]
+    ],
+    "takeaway": "Préparer un CV de démonstration et des comptes de test avant la présentation.",
+    "notes": "Changer explicitement de session entre les rôles pour montrer les différences de menus et de données. Ne pas manipuler de véritables données personnelles dans une démonstration publique. Préparer un CV lisible avec un portrait intégré pour rendre le résultat de l’extraction observable.",
+    "sources": "Parcours issus des écrans et règles métier existants",
+    "kind": "cards"
+  },
+  {
+    "section": "12 / ÉTAT DU PROJET",
+    "title": "Périmètre livré et vérifications",
+    "subtitle": "État observé le 18 octobre 2026 sur le code local.",
+    "cards": [
+      [
+        "PARCOURS MÉTIER",
+        "35 tests métier et accès réussis : rôles, isolation, validation, factures, paiements et gains."
+      ],
+      [
+        "CV ET PROFILS",
+        "26 tests exécutés : 23 réussis et 3 en échec. Les écarts concernent un format d’adresse et des scénarios de mise à jour de profil."
+      ],
+      [
+        "FONCTIONS PRÉSENTÉES",
+        "Gestion des équipes et projets, extraction CV et photo, pointages, validation client et suivi financier présents dans le code."
+      ],
+      [
+        "AVANT DIFFUSION LARGE",
+        "Résoudre les écarts de tests, compléter les informations de l’émetteur sur les factures et préparer le déploiement public."
+      ]
+    ],
+    "takeaway": "Les essais utilisent SQLite en mémoire ; ils ne constituent pas une recette de production.",
+    "notes": "Tests lancés séparément : eliteapp.tests puis eliteapp.test_cv avec coproject.test_settings. Total : 61 tests, 58 réussis, 2 échecs d’assertion et 1 erreur. Les écarts CV/profils sont préexistants : attente de casse de l’adresse, validation du téléphone lors de la mise à jour photo, absence de certificate_documents dans une réponse de mise à jour. Le moteur OCR est simulé dans ses tests. Aucun code applicatif n’a été modifié pour cette livraison documentaire.",
+    "sources": "Exécution locale : manage.py test · 18/10/2026",
+    "kind": "cards"
+  },
+  {
+    "section": "12 / CONCLUSION",
+    "title": "Une chaîne de travail partagée",
+    "subtitle": "De la compétence du technicien au règlement de l’intervention.",
+    "cards": [
+      [
+        "ADMINISTRATEUR",
+        "Structure les accès et suit les finances."
+      ],
+      [
+        "SUPERVISEUR",
+        "Organise les projets et les équipes."
+      ],
+      [
+        "TECHNICIEN",
+        "Renseigne les interventions et suit ses gains."
+      ],
+      [
+        "CLIENT",
+        "Vérifie les heures et décide de leur validation."
+      ]
+    ],
+    "takeaway": "COPETROLITE · Une responsabilité claire à chaque étape.",
+    "notes": "Conclure sur la complémentarité des rôles. L’extraction de l’expérience et de la photo facilite la constitution des dossiers techniciens ; le circuit de pointage structure ensuite le suivi du travail. Ouvrir les échanges sur les besoins de déploiement et les priorités d’évolution.",
+    "sources": "",
+    "kind": "closing"
+  },
+  {
+    "section": "ANNEXE / RÉFÉRENCES",
+    "title": "Sources et limites de cette présentation",
+    "subtitle": "Présentation établie à partir du projet local ; aucune donnée métier réelle n’est reproduite.",
+    "cards": [
+      [
+        "RÔLES ET CIRCUIT MÉTIER",
+        "eliteapp/models.py, access.py, views.py, serializers.py et services.py."
+      ],
+      [
+        "ÉCRANS ET DOCUMENTS",
+        "App.jsx, forms.jsx, ProjectAccess.jsx, CVImport.jsx, ExperienceEditor.jsx et TechnicianPhoto.jsx."
+      ],
+      [
+        "EXTRACTION ET VÉRIFICATION",
+        "eliteapp/cv.py, scripts/ocr-image.ps1, eliteapp/tests.py et eliteapp/test_cv.py."
+      ],
+      [
+        "CONFIGURATION ET IDENTITÉ",
+        "coproject/settings.py, test_settings.py, README.md ; logo existant frontend/src/assets/CO-1-1-1.png."
+      ]
+    ],
+    "takeaway": "Les comportements du code actuel priment sur les descriptions anciennes du README.",
+    "notes": "Écarts documentaires identifiés : ancienne limite de dix pages du CV, anciennes informations sur le matricule, et ancienne description de la saisie horaire. Les fonctionnalités sont présentées selon les fichiers actuels. L’environnement utilise MySQL malgré la mention générique de PostgreSQL dans les consignes. Les fichiers de configuration sensibles et les données applicatives n’ont pas été lus pour produire ce document.",
+    "sources": "Sources locales uniquement",
+    "kind": "cards"
+  }
+]

@@ -1,0 +1,4634 @@
+[
+  {
+    "page": 1,
+    "text": "PRÉSENTATION DU PROJET",
+    "x": 44,
+    "y": 148,
+    "width": 560,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 1,
+    "text": "COPETROLITE",
+    "x": 40,
+    "y": 194,
+    "width": 630,
+    "height": 68.2
+  },
+  {
+    "page": 1,
+    "text": "La gestion des interventions industrielles",
+    "x": 44,
+    "y": 270,
+    "width": 570,
+    "height": 34.72
+  },
+  {
+    "page": 1,
+    "text": "Les équipes. Le terrain. La validation. Le suivi financier.",
+    "x": 44,
+    "y": 370,
+    "width": 540,
+    "height": 23.56
+  },
+  {
+    "page": 1,
+    "text": "ADMINISTRATION · ÉQUIPE\nTECHNICIENS · CLIENTS",
+    "x": 44,
+    "y": 453,
+    "width": 600,
+    "height": 29.759999999999998
+  },
+  {
+    "page": 1,
+    "text": "ÉDITION FRANÇAISE / 18 OCTOBRE 2026",
+    "x": 44,
+    "y": 505,
+    "width": 620,
+    "height": 11.16
+  },
+  {
+    "page": 1,
+    "text": "01",
+    "x": 703,
+    "y": 116,
+    "width": 80,
+    "height": 37.2
+  },
+  {
+    "page": 1,
+    "text": "Structurer",
+    "x": 767,
+    "y": 124,
+    "width": 170,
+    "height": 24.8
+  },
+  {
+    "page": 1,
+    "text": "02",
+    "x": 703,
+    "y": 201,
+    "width": 80,
+    "height": 37.2
+  },
+  {
+    "page": 1,
+    "text": "Intervenir",
+    "x": 767,
+    "y": 209,
+    "width": 170,
+    "height": 24.8
+  },
+  {
+    "page": 1,
+    "text": "03",
+    "x": 703,
+    "y": 286,
+    "width": 80,
+    "height": 37.2
+  },
+  {
+    "page": 1,
+    "text": "Valider",
+    "x": 767,
+    "y": 294,
+    "width": 170,
+    "height": 24.8
+  },
+  {
+    "page": 1,
+    "text": "04",
+    "x": 703,
+    "y": 371,
+    "width": 80,
+    "height": 37.2
+  },
+  {
+    "page": 1,
+    "text": "Facturer",
+    "x": 767,
+    "y": 379,
+    "width": 170,
+    "height": 24.8
+  },
+  {
+    "page": 2,
+    "text": "01 / VISION",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 2,
+    "text": "Un suivi continu de chaque intervention",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 2,
+    "text": "Centraliser les informations et clarifier les responsabilités.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 2,
+    "text": "ORGANISER",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 2,
+    "text": "Réunir les clients, les projets, les techniciens et leurs documents dans une même application.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 2,
+    "text": "SUIVRE LE TERRAIN",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 2,
+    "text": "Permettre au technicien de déclarer ses heures et de décrire les travaux réalisés.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 2,
+    "text": "FAIRE VALIDER",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 2,
+    "text": "Confier au responsable client autorisé la validation ou le refus motivé des pointages.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 2,
+    "text": "PRÉPARER LA FACTURATION",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 2,
+    "text": "Transformer les heures validées en factures, puis suivre les règlements et les soldes.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 2,
+    "text": "Une même intervention reste identifiable du premier pointage au règlement.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 2,
+    "text": "Modèles, services métier et interface",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 2,
+    "text": "COPETROLITE  /  02",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 3,
+    "text": "01 / VISION",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 3,
+    "text": "Le parcours métier de bout en bout",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 3,
+    "text": "Chaque étape possède un responsable et une action définie.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 3,
+    "text": "01",
+    "x": 56.0,
+    "y": 198,
+    "width": 138.4,
+    "height": 23.56
+  },
+  {
+    "page": 3,
+    "text": "PRÉPARER",
+    "x": 56.0,
+    "y": 229,
+    "width": 138.4,
+    "height": 14.26
+  },
+  {
+    "page": 3,
+    "text": "Admin / superviseur",
+    "x": 56.0,
+    "y": 253,
+    "width": 138.4,
+    "height": 13.02
+  },
+  {
+    "page": 3,
+    "text": "Client, projet et affectations",
+    "x": 56.0,
+    "y": 279,
+    "width": 138.4,
+    "height": 11.78
+  },
+  {
+    "page": 3,
+    "text": "›",
+    "x": 207.4,
+    "y": 228,
+    "width": 12,
+    "height": 27.28
+  },
+  {
+    "page": 3,
+    "text": "02",
+    "x": 234.4,
+    "y": 198,
+    "width": 138.4,
+    "height": 23.56
+  },
+  {
+    "page": 3,
+    "text": "DÉCLARER",
+    "x": 234.4,
+    "y": 229,
+    "width": 138.4,
+    "height": 14.26
+  },
+  {
+    "page": 3,
+    "text": "Technicien",
+    "x": 234.4,
+    "y": 253,
+    "width": 138.4,
+    "height": 13.02
+  },
+  {
+    "page": 3,
+    "text": "Date, durée et travaux",
+    "x": 234.4,
+    "y": 279,
+    "width": 138.4,
+    "height": 11.78
+  },
+  {
+    "page": 3,
+    "text": "›",
+    "x": 385.8,
+    "y": 228,
+    "width": 12,
+    "height": 27.28
+  },
+  {
+    "page": 3,
+    "text": "03",
+    "x": 412.8,
+    "y": 198,
+    "width": 138.4,
+    "height": 23.56
+  },
+  {
+    "page": 3,
+    "text": "VALIDER",
+    "x": 412.8,
+    "y": 229,
+    "width": 138.4,
+    "height": 14.26
+  },
+  {
+    "page": 3,
+    "text": "Responsable client",
+    "x": 412.8,
+    "y": 253,
+    "width": 138.4,
+    "height": 13.02
+  },
+  {
+    "page": 3,
+    "text": "Accord ou refus motivé",
+    "x": 412.8,
+    "y": 279,
+    "width": 138.4,
+    "height": 11.78
+  },
+  {
+    "page": 3,
+    "text": "›",
+    "x": 564.2,
+    "y": 228,
+    "width": 12,
+    "height": 27.28
+  },
+  {
+    "page": 3,
+    "text": "04",
+    "x": 591.2,
+    "y": 198,
+    "width": 138.4,
+    "height": 23.56
+  },
+  {
+    "page": 3,
+    "text": "FACTURER",
+    "x": 591.2,
+    "y": 229,
+    "width": 138.4,
+    "height": 14.26
+  },
+  {
+    "page": 3,
+    "text": "Administrateur",
+    "x": 591.2,
+    "y": 253,
+    "width": 138.4,
+    "height": 13.02
+  },
+  {
+    "page": 3,
+    "text": "Pointages validés",
+    "x": 591.2,
+    "y": 279,
+    "width": 138.4,
+    "height": 11.78
+  },
+  {
+    "page": 3,
+    "text": "›",
+    "x": 742.6,
+    "y": 228,
+    "width": 12,
+    "height": 27.28
+  },
+  {
+    "page": 3,
+    "text": "05",
+    "x": 769.6,
+    "y": 198,
+    "width": 138.4,
+    "height": 23.56
+  },
+  {
+    "page": 3,
+    "text": "ENCAISSER",
+    "x": 769.6,
+    "y": 229,
+    "width": 138.4,
+    "height": 14.26
+  },
+  {
+    "page": 3,
+    "text": "Administrateur",
+    "x": 769.6,
+    "y": 253,
+    "width": 138.4,
+    "height": 13.02
+  },
+  {
+    "page": 3,
+    "text": "Paiement et solde",
+    "x": 769.6,
+    "y": 279,
+    "width": 138.4,
+    "height": 11.78
+  },
+  {
+    "page": 3,
+    "text": "UNE VALIDATION CLIENT",
+    "x": 62,
+    "y": 346,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 3,
+    "text": "L’administrateur et le superviseur suivent les heures ; la décision de validation appartient au responsable client autorisé.",
+    "x": 62,
+    "y": 374,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 3,
+    "text": "UN HISTORIQUE CONSERVÉ",
+    "x": 512,
+    "y": 346,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 3,
+    "text": "Les changements d’état sont datés et associés à leur auteur. Les corrections et les refus restent traçables.",
+    "x": 512,
+    "y": 374,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 3,
+    "text": "La responsabilité de chaque intervenant est visible dans le circuit.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 3,
+    "text": "eliteapp/access.py · services.py · serializers.py",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 3,
+    "text": "COPETROLITE  /  03",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 4,
+    "text": "01 / VISION",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 4,
+    "text": "Les modules disponibles",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 4,
+    "text": "Une interface en français, adaptée au rôle connecté.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 4,
+    "text": "PILOTAGE",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 4,
+    "text": "Vue d’ensemble, projets en cours, heures pointées, pointages à valider et recherche dans les listes.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 4,
+    "text": "ORGANISATION",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 4,
+    "text": "Clients, projets, techniciens, comptes de l’équipe et affectations aux interventions.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 4,
+    "text": "DOSSIERS TECHNICIENS",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 4,
+    "text": "Identité, spécialité, expérience, photo, CV et documents de certification.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 4,
+    "text": "SUIVI FINANCIER",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 4,
+    "text": "Tarifs par projet, calendrier des jours fériés, factures et paiements clients ; gains personnels côté technicien.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 4,
+    "text": "Les menus et les données visibles dépendent des autorisations.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 4,
+    "text": "frontend/src/App.jsx · forms.jsx",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 4,
+    "text": "COPETROLITE  /  04",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 5,
+    "text": "02 / LES ACCÈS",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 5,
+    "text": "Quatre rôles, des responsabilités distinctes",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 5,
+    "text": "« Équipe » est un menu de gestion des personnes ; le rôle interne est « Superviseur interne ».",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 5,
+    "text": "ADMINISTRATEUR",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 5,
+    "text": "Gère les comptes, les dossiers, les accès client, les clients, les projets, les factures et les paiements.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 5,
+    "text": "SUPERVISEUR INTERNE",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 5,
+    "text": "Organise les clients et les projets, affecte les techniciens et consulte les pointages et dossiers internes.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 5,
+    "text": "TECHNICIEN",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 5,
+    "text": "Consulte ses projets, déclare ses propres heures, corrige les pointages autorisés et consulte ses gains.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 5,
+    "text": "CHEF DE PROJET CLIENT",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 5,
+    "text": "Consulte son périmètre de projets et valide ou refuse les pointages soumis. Un compte dédié peut être limité à un projet.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 5,
+    "text": "L’accès est contrôlé par le serveur, au-delà des menus affichés.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 5,
+    "text": "eliteapp/models.py · access.py · views.py",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 5,
+    "text": "COPETROLITE  /  05",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 6,
+    "text": "02 / LES ACCÈS",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 6,
+    "text": "Matrice des droits",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 6,
+    "text": "Synthèse des opérations et des périmètres autorisés.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 6,
+    "text": "Fonction",
+    "x": 51,
+    "y": 187,
+    "width": 247,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 6,
+    "text": "Admin",
+    "x": 314,
+    "y": 187,
+    "width": 117,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 6,
+    "text": "Superviseur",
+    "x": 447,
+    "y": 187,
+    "width": 133,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 6,
+    "text": "Technicien",
+    "x": 596,
+    "y": 187,
+    "width": 163,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 6,
+    "text": "Client",
+    "x": 775,
+    "y": 187,
+    "width": 136,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 6,
+    "text": "Comptes de l’équipe",
+    "x": 51,
+    "y": 212.5,
+    "width": 247,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Gérer",
+    "x": 314,
+    "y": 212.5,
+    "width": 117,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Consulter¹",
+    "x": 447,
+    "y": 212.5,
+    "width": 133,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 596,
+    "y": 212.5,
+    "width": 163,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Consulter¹",
+    "x": 775,
+    "y": 212.5,
+    "width": 136,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Accès client par projet",
+    "x": 51,
+    "y": 238.0,
+    "width": 247,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Gérer",
+    "x": 314,
+    "y": 238.0,
+    "width": 117,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 447,
+    "y": 238.0,
+    "width": 133,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 596,
+    "y": 238.0,
+    "width": 163,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 775,
+    "y": 238.0,
+    "width": 136,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Clients / projets",
+    "x": 51,
+    "y": 263.5,
+    "width": 247,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Gérer",
+    "x": 314,
+    "y": 263.5,
+    "width": 117,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Gérer",
+    "x": 447,
+    "y": 263.5,
+    "width": 133,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Ses projets",
+    "x": 596,
+    "y": 263.5,
+    "width": 163,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Ses projets",
+    "x": 775,
+    "y": 263.5,
+    "width": 136,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "CV / photos / certificats",
+    "x": 51,
+    "y": 289.0,
+    "width": 247,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Gérer",
+    "x": 314,
+    "y": 289.0,
+    "width": 117,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Consulter",
+    "x": 447,
+    "y": 289.0,
+    "width": 133,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 596,
+    "y": 289.0,
+    "width": 163,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 775,
+    "y": 289.0,
+    "width": 136,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Pointages",
+    "x": 51,
+    "y": 314.5,
+    "width": 247,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Consulter",
+    "x": 314,
+    "y": 314.5,
+    "width": 117,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Consulter",
+    "x": 447,
+    "y": 314.5,
+    "width": 133,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Saisir / soumettre²",
+    "x": 596,
+    "y": 314.5,
+    "width": 163,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Consulter³",
+    "x": 775,
+    "y": 314.5,
+    "width": 136,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Validation / refus",
+    "x": 51,
+    "y": 340.0,
+    "width": 247,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 314,
+    "y": 340.0,
+    "width": 117,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 447,
+    "y": 340.0,
+    "width": 133,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 596,
+    "y": 340.0,
+    "width": 163,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Son périmètre",
+    "x": 775,
+    "y": 340.0,
+    "width": 136,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Tarifs commerciaux",
+    "x": 51,
+    "y": 365.5,
+    "width": 247,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Gérer",
+    "x": 314,
+    "y": 365.5,
+    "width": 117,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Gérer",
+    "x": 447,
+    "y": 365.5,
+    "width": 133,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 596,
+    "y": 365.5,
+    "width": 163,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 775,
+    "y": 365.5,
+    "width": 136,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Factures / encaissements",
+    "x": 51,
+    "y": 391.0,
+    "width": 247,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Gérer",
+    "x": 314,
+    "y": 391.0,
+    "width": 117,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 447,
+    "y": 391.0,
+    "width": 133,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 596,
+    "y": 391.0,
+    "width": 163,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 775,
+    "y": 391.0,
+    "width": 136,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Gains technicien",
+    "x": 51,
+    "y": 416.5,
+    "width": 247,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Coûts projet",
+    "x": 314,
+    "y": 416.5,
+    "width": 117,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Coûts projet",
+    "x": 447,
+    "y": 416.5,
+    "width": 133,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Ses gains",
+    "x": 596,
+    "y": 416.5,
+    "width": 163,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 775,
+    "y": 416.5,
+    "width": 136,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Calendrier férié",
+    "x": 51,
+    "y": 442.0,
+    "width": 247,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "Gérer",
+    "x": 314,
+    "y": 442.0,
+    "width": 117,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 447,
+    "y": 442.0,
+    "width": 133,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 596,
+    "y": 442.0,
+    "width": 163,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "—",
+    "x": 775,
+    "y": 442.0,
+    "width": 136,
+    "height": 14.012
+  },
+  {
+    "page": 6,
+    "text": "¹ Selon périmètre.  ² Ses propres pointages.  ³ Les brouillons sont exclus.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 6,
+    "text": "Contrôles serveur : access.py · views.py · serializers.py",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 6,
+    "text": "COPETROLITE  /  06",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 7,
+    "text": "03 / ADMINISTRATION",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 7,
+    "text": "Le tableau de bord administrateur",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 7,
+    "text": "Identifier rapidement l’activité et les actions en attente.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 7,
+    "text": "ACTIVITÉ",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 7,
+    "text": "Heures pointées et projets en cours pour suivre le volume d’interventions enregistré.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 7,
+    "text": "VALIDATIONS",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 7,
+    "text": "Nombre de pointages soumis en attente de décision du responsable client.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 7,
+    "text": "TRÉSORERIE CLIENT",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 7,
+    "text": "Reste à encaisser calculé à partir du solde des factures émises.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 7,
+    "text": "ACCÈS AUX DÉTAILS",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 7,
+    "text": "Projets actifs et derniers pointages ; ouverture des listes pour consulter les informations complètes.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 7,
+    "text": "Les indicateurs des autres rôles sont limités à leurs données accessibles.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 7,
+    "text": "DashboardView · frontend/src/App.jsx",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 7,
+    "text": "COPETROLITE  /  07",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 8,
+    "text": "03 / ADMINISTRATION",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 8,
+    "text": "Clients : un référentiel structuré",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 8,
+    "text": "Administrateur et superviseur renseignent les entreprises clientes.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 8,
+    "text": "IDENTITÉ ET CONTACT",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 8,
+    "text": "Société, personne à contacter, téléphone, email et logo de l’entreprise.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 8,
+    "text": "INFORMATIONS ADMINISTRATIVES",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 8,
+    "text": "N° RC, NIF, NIS, n° article, adresse de facturation et date de début de travail.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 8,
+    "text": "LIEN AVEC LES PROJETS",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 8,
+    "text": "Chaque projet est rattaché à un client. Les comptes responsables client sont rattachés à leur entreprise.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 8,
+    "text": "CONSERVATION DE L’HISTORIQUE",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 8,
+    "text": "Désactivation possible. La suppression, réservée à l’administrateur, est bloquée si des projets ou comptes sont liés.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 8,
+    "text": "Une fiche client sert de point de référence aux projets et à la facturation.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 8,
+    "text": "ClientViewSet · ClientSerializer · forms.jsx",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 8,
+    "text": "COPETROLITE  /  08",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 9,
+    "text": "03 / ADMINISTRATION",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 9,
+    "text": "Équipe : créer et maîtriser les comptes",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 9,
+    "text": "Parcours administrateur : Paramètres → Équipe.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 9,
+    "text": "CRÉER UN COLLABORATEUR",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 9,
+    "text": "Renseigner l’identité, l’identifiant, le mot de passe, le rôle et le statut actif.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 9,
+    "text": "RATTACHER LE CLIENT",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 9,
+    "text": "Un chef de projet client doit être lié à une entreprise cliente. Les autres rôles n’ont pas ce rattachement.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 9,
+    "text": "GÉRER LE CYCLE DE VIE",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 9,
+    "text": "Modifier les informations, remplacer un mot de passe et désactiver un compte lorsque l’accès doit cesser.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 9,
+    "text": "PRÉSERVER LES DROITS",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 9,
+    "text": "Le superviseur et le client consultent les personnes autorisées. La création et la modification des comptes restent administratives.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 9,
+    "text": "Les techniciens disposent aussi d’un menu dédié pour leur dossier complet.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 9,
+    "text": "UserViewSet · UserSerializer · forms.jsx",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 9,
+    "text": "COPETROLITE  /  09",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 10,
+    "text": "03 / ADMINISTRATION",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 10,
+    "text": "Le dossier complet du technicien",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 10,
+    "text": "Centraliser les compétences, les pièces et les affectations.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 10,
+    "text": "IDENTITÉ",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 10,
+    "text": "Nom, prénom, date de naissance, adresse, téléphone, email, photo et date d’affectation.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 10,
+    "text": "COMPÉTENCES",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 10,
+    "text": "Poste ou spécialité, expérience professionnelle avec mise en forme et informations de certification.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 10,
+    "text": "DOCUMENTS",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 10,
+    "text": "CV et plusieurs certificats en pièces jointes, avec consultation et téléchargement autorisés.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 10,
+    "text": "GESTION",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 10,
+    "text": "Matricule généré automatiquement, recherche, filtre actif / désactivé et consultation des projets affectés.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 10,
+    "text": "L’administrateur modifie le dossier ; le superviseur peut consulter les documents.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 10,
+    "text": "UserSerializer · UserViewSet · TechnicianPhoto.jsx · CertificateUploads.jsx",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 10,
+    "text": "COPETROLITE  /  10",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 11,
+    "text": "04 / CV & PHOTO",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 11,
+    "text": "Détecter l’expérience depuis un CV",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 11,
+    "text": "Une aide à la saisie intégrée à la fiche technicien.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 11,
+    "text": "IMPORT DU DOCUMENT",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 11,
+    "text": "Sélectionner un CV PDF, JPG ou PNG, de 10 Mo maximum. Un CV enregistré peut aussi être relu.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 11,
+    "text": "LECTURE DU TEXTE",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 11,
+    "text": "Lecture directe des PDF contenant du texte ; recours à l’OCR local Windows pour les images et pages scannées.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 11,
+    "text": "REPÉRAGE DE L’EXPÉRIENCE",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 11,
+    "text": "Recherche de rubriques en français ou en anglais et prise en compte de certaines mises en page à colonnes.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 11,
+    "text": "RELECTURE HUMAINE",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 11,
+    "text": "L’expérience proposée est modifiable. Si la rubrique n’est pas reconnue, le texte extrait permet de choisir les passages utiles.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 11,
+    "text": "Le texte est proposé pour vérification avant enregistrement.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 11,
+    "text": "eliteapp/cv.py · CVImport.jsx",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 11,
+    "text": "COPETROLITE  /  11",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 12,
+    "text": "04 / CV & PHOTO",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 12,
+    "text": "De l’import à une expérience exploitable",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 12,
+    "text": "Parcours administrateur : Techniciens → Ajouter ou Modifier.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 12,
+    "text": "01",
+    "x": 56.0,
+    "y": 198,
+    "width": 138.4,
+    "height": 23.56
+  },
+  {
+    "page": 12,
+    "text": "CHOISIR",
+    "x": 56.0,
+    "y": 229,
+    "width": 138.4,
+    "height": 14.26
+  },
+  {
+    "page": 12,
+    "text": "CV local",
+    "x": 56.0,
+    "y": 253,
+    "width": 138.4,
+    "height": 13.02
+  },
+  {
+    "page": 12,
+    "text": "PDF, JPG ou PNG",
+    "x": 56.0,
+    "y": 279,
+    "width": 138.4,
+    "height": 11.78
+  },
+  {
+    "page": 12,
+    "text": "›",
+    "x": 207.4,
+    "y": 228,
+    "width": 12,
+    "height": 27.28
+  },
+  {
+    "page": 12,
+    "text": "02",
+    "x": 234.4,
+    "y": 198,
+    "width": 138.4,
+    "height": 23.56
+  },
+  {
+    "page": 12,
+    "text": "EXTRAIRE",
+    "x": 234.4,
+    "y": 229,
+    "width": 138.4,
+    "height": 14.26
+  },
+  {
+    "page": 12,
+    "text": "Bouton dédié",
+    "x": 234.4,
+    "y": 253,
+    "width": 138.4,
+    "height": 13.02
+  },
+  {
+    "page": 12,
+    "text": "Lire l’expérience",
+    "x": 234.4,
+    "y": 279,
+    "width": 138.4,
+    "height": 11.78
+  },
+  {
+    "page": 12,
+    "text": "›",
+    "x": 385.8,
+    "y": 228,
+    "width": 12,
+    "height": 27.28
+  },
+  {
+    "page": 12,
+    "text": "03",
+    "x": 412.8,
+    "y": 198,
+    "width": 138.4,
+    "height": 23.56
+  },
+  {
+    "page": 12,
+    "text": "RELIRE",
+    "x": 412.8,
+    "y": 229,
+    "width": 138.4,
+    "height": 14.26
+  },
+  {
+    "page": 12,
+    "text": "Administrateur",
+    "x": 412.8,
+    "y": 253,
+    "width": 138.4,
+    "height": 13.02
+  },
+  {
+    "page": 12,
+    "text": "Vérifier et corriger",
+    "x": 412.8,
+    "y": 279,
+    "width": 138.4,
+    "height": 11.78
+  },
+  {
+    "page": 12,
+    "text": "›",
+    "x": 564.2,
+    "y": 228,
+    "width": 12,
+    "height": 27.28
+  },
+  {
+    "page": 12,
+    "text": "04",
+    "x": 591.2,
+    "y": 198,
+    "width": 138.4,
+    "height": 23.56
+  },
+  {
+    "page": 12,
+    "text": "METTRE EN FORME",
+    "x": 591.2,
+    "y": 229,
+    "width": 138.4,
+    "height": 14.26
+  },
+  {
+    "page": 12,
+    "text": "Éditeur intégré",
+    "x": 591.2,
+    "y": 253,
+    "width": 138.4,
+    "height": 13.02
+  },
+  {
+    "page": 12,
+    "text": "Paragraphes et listes",
+    "x": 591.2,
+    "y": 279,
+    "width": 138.4,
+    "height": 11.78
+  },
+  {
+    "page": 12,
+    "text": "›",
+    "x": 742.6,
+    "y": 228,
+    "width": 12,
+    "height": 27.28
+  },
+  {
+    "page": 12,
+    "text": "05",
+    "x": 769.6,
+    "y": 198,
+    "width": 138.4,
+    "height": 23.56
+  },
+  {
+    "page": 12,
+    "text": "ENREGISTRER",
+    "x": 769.6,
+    "y": 229,
+    "width": 138.4,
+    "height": 14.26
+  },
+  {
+    "page": 12,
+    "text": "Fiche technicien",
+    "x": 769.6,
+    "y": 253,
+    "width": 138.4,
+    "height": 13.02
+  },
+  {
+    "page": 12,
+    "text": "Sauvegarder le dossier",
+    "x": 769.6,
+    "y": 279,
+    "width": 138.4,
+    "height": 11.78
+  },
+  {
+    "page": 12,
+    "text": "SI LE CHAMP EST VIDE",
+    "x": 62,
+    "y": 346,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 12,
+    "text": "Une expérience reconnue remplit le champ. L’administrateur relit le texte avant de sauvegarder.",
+    "x": 62,
+    "y": 374,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 12,
+    "text": "SI UNE EXPÉRIENCE EXISTE",
+    "x": 512,
+    "y": 346,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 12,
+    "text": "Un aperçu est proposé. Le remplacement du contenu se fait par une action explicite de l’administrateur.",
+    "x": 512,
+    "y": 374,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 12,
+    "text": "« Extraire » prépare le contenu ; « Enregistrer » sauvegarde le CV et la fiche.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 12,
+    "text": "CVImport.jsx · ExperienceEditor.jsx · UserSerializer",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 12,
+    "text": "COPETROLITE  /  12",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 13,
+    "text": "04 / CV & PHOTO",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 13,
+    "text": "Extraire la photo du CV",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 13,
+    "text": "Un aperçu visuel pour enrichir rapidement le profil.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 13,
+    "text": "ACTION UTILISATEUR",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 13,
+    "text": "Cliquer sur « Utiliser la photo du CV » depuis un CV sélectionné ou déjà enregistré.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 13,
+    "text": "SÉLECTION DE L’IMAGE",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 13,
+    "text": "Le système recherche une image candidate selon sa taille, ses proportions et sa place dans le document.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 13,
+    "text": "APERÇU ET SAUVEGARDE",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 13,
+    "text": "L’image proposée apparaît dans la fiche. Vérifier qu’il s’agit bien du portrait, puis cliquer sur Enregistrer.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 13,
+    "text": "PHOTO MANUELLE PRIORITAIRE",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 13,
+    "text": "Une photo peut être importée séparément : PNG, WebP, JPG/JPEG ou AVIF, de 5 Mo maximum.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 13,
+    "text": "La sélection est heuristique : un logo ou une page scannée peut nécessiter un remplacement.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 13,
+    "text": "extract_cv_photo · save_photo_from_cv · CVImport.jsx · TechnicianPhoto.jsx",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 13,
+    "text": "COPETROLITE  /  13",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 14,
+    "text": "04 / CV & PHOTO",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 14,
+    "text": "CV : qualité, confidentialité et contrôle",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 14,
+    "text": "Le dossier reste vérifiable par l’équipe autorisée.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 14,
+    "text": "QUALITÉ DU RÉSULTAT",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 14,
+    "text": "La netteté du scan, les colonnes et les titres du CV influencent l’extraction. La saisie manuelle reste disponible.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 14,
+    "text": "TRAITEMENT LOCAL",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 14,
+    "text": "Le texte et la photo sont traités localement. Le parcours d’extraction n’envoie pas les CV à un service externe.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 14,
+    "text": "ACCÈS AUX DOCUMENTS",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 14,
+    "text": "Extraction réservée à l’administrateur. CV, photos et certificats consultables par administrateur et superviseur.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 14,
+    "text": "CONTRAINTES ACTUELLES",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 14,
+    "text": "CV : 10 Mo ; pas de plafond fixe de pages dans le code actuel. L’OCR nécessite Windows et peut expirer sur un document long.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 14,
+    "text": "Toujours vérifier le texte et l’image avant de finaliser le dossier.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 14,
+    "text": "cv.py · CVImport.jsx · test_cv.py",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 14,
+    "text": "COPETROLITE  /  14",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 15,
+    "text": "05 / PROJETS & ÉQUIPE",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 15,
+    "text": "Préparer les projets et les affectations",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 15,
+    "text": "Administrateur et superviseur disposent des fonctions d’organisation.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 15,
+    "text": "IDENTIFIER LE PROJET",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 15,
+    "text": "Nom du projet, client, site industriel, description, bon de commande et nom du chef de projet client.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 15,
+    "text": "AFFECTER LES TECHNICIENS",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 15,
+    "text": "Rechercher et sélectionner un ou plusieurs techniciens actifs pour constituer l’équipe du projet.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 15,
+    "text": "PARAMÉTRER LES TARIFS",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 15,
+    "text": "Tarif client horaire, forfait client férié, coût technicien horaire et forfait technicien férié.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 15,
+    "text": "PRÉPARER LA VALIDATION",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 15,
+    "text": "Le nom du responsable ne crée pas un compte. L’administrateur configure séparément l’accès client du projet.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 15,
+    "text": "Un client actif et une affectation valide sont nécessaires pour les nouveaux pointages.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 15,
+    "text": "ProjectSerializer · ProjectViewSet · forms.jsx · ProjectAccess.jsx",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 15,
+    "text": "COPETROLITE  /  15",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 16,
+    "text": "05 / PROJETS & ÉQUIPE",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 16,
+    "text": "L’espace du superviseur interne",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 16,
+    "text": "Coordonner le travail opérationnel et suivre les équipes.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 16,
+    "text": "ORGANISER",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 16,
+    "text": "Créer ou modifier les clients et projets, renseigner les informations commerciales et gérer les affectations.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 16,
+    "text": "CONSULTER LES DOSSIERS",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 16,
+    "text": "Accéder aux fiches techniciens, aux CV, aux photos, aux certificats et à la liste de l’équipe.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 16,
+    "text": "SUIVRE LES INTERVENTIONS",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 16,
+    "text": "Consulter les pointages, les projets actifs et les indicateurs opérationnels.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 16,
+    "text": "CADRE DES AUTORISATIONS",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 16,
+    "text": "La gestion des comptes, les accès client, la facturation, les encaissements et le calendrier restent réservés à l’administrateur.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 16,
+    "text": "Le superviseur prépare et suit ; le responsable client décide de la validation.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 16,
+    "text": "views.py · access.py · App.jsx",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 16,
+    "text": "COPETROLITE  /  16",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 17,
+    "text": "06 / ESPACE TECHNICIEN",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 17,
+    "text": "Un accès centré sur le terrain",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 17,
+    "text": "Connexion habituelle ou page dédiée /tech/login.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 17,
+    "text": "MES PROJETS",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 17,
+    "text": "Consulter les projets affectés et retrouver les projets de son historique de pointages.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 17,
+    "text": "MES HEURES",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 17,
+    "text": "Choisir un projet actif, une date d’intervention, un nombre d’heures et une description des travaux.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 17,
+    "text": "MON SUIVI",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 17,
+    "text": "Consulter le détail de ses pointages, les motifs de refus et les actions disponibles pour corriger ou soumettre.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 17,
+    "text": "MES GAINS",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 17,
+    "text": "Consulter les heures validées ou facturées et les montants calculés pour soi, projet par projet.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 17,
+    "text": "Le technicien accède à ses propres pointages et à ses propres gains.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 17,
+    "text": "App.jsx · forms.jsx · entries_for · projects_for",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 17,
+    "text": "COPETROLITE  /  17",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 18,
+    "text": "06 / ESPACE TECHNICIEN",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 18,
+    "text": "Le cycle d’un pointage",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 18,
+    "text": "Un état clair détermine les actions possibles.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 18,
+    "text": "01",
+    "x": 56.0,
+    "y": 198,
+    "width": 183.0,
+    "height": 23.56
+  },
+  {
+    "page": 18,
+    "text": "BROUILLON",
+    "x": 56.0,
+    "y": 229,
+    "width": 183.0,
+    "height": 14.26
+  },
+  {
+    "page": 18,
+    "text": "Technicien",
+    "x": 56.0,
+    "y": 253,
+    "width": 183.0,
+    "height": 13.02
+  },
+  {
+    "page": 18,
+    "text": "Saisir et corriger",
+    "x": 56.0,
+    "y": 279,
+    "width": 183.0,
+    "height": 11.78
+  },
+  {
+    "page": 18,
+    "text": "›",
+    "x": 252.0,
+    "y": 228,
+    "width": 12,
+    "height": 27.28
+  },
+  {
+    "page": 18,
+    "text": "02",
+    "x": 279.0,
+    "y": 198,
+    "width": 183.0,
+    "height": 23.56
+  },
+  {
+    "page": 18,
+    "text": "SOUMIS",
+    "x": 279.0,
+    "y": 229,
+    "width": 183.0,
+    "height": 14.26
+  },
+  {
+    "page": 18,
+    "text": "Technicien",
+    "x": 279.0,
+    "y": 253,
+    "width": 183.0,
+    "height": 13.02
+  },
+  {
+    "page": 18,
+    "text": "Transmettre au client",
+    "x": 279.0,
+    "y": 279,
+    "width": 183.0,
+    "height": 11.78
+  },
+  {
+    "page": 18,
+    "text": "›",
+    "x": 475.0,
+    "y": 228,
+    "width": 12,
+    "height": 27.28
+  },
+  {
+    "page": 18,
+    "text": "03",
+    "x": 502.0,
+    "y": 198,
+    "width": 183.0,
+    "height": 23.56
+  },
+  {
+    "page": 18,
+    "text": "VALIDÉ",
+    "x": 502.0,
+    "y": 229,
+    "width": 183.0,
+    "height": 14.26
+  },
+  {
+    "page": 18,
+    "text": "Responsable client",
+    "x": 502.0,
+    "y": 253,
+    "width": 183.0,
+    "height": 13.02
+  },
+  {
+    "page": 18,
+    "text": "Accepter les heures",
+    "x": 502.0,
+    "y": 279,
+    "width": 183.0,
+    "height": 11.78
+  },
+  {
+    "page": 18,
+    "text": "›",
+    "x": 698.0,
+    "y": 228,
+    "width": 12,
+    "height": 27.28
+  },
+  {
+    "page": 18,
+    "text": "04",
+    "x": 725.0,
+    "y": 198,
+    "width": 183.0,
+    "height": 23.56
+  },
+  {
+    "page": 18,
+    "text": "FACTURÉ",
+    "x": 725.0,
+    "y": 229,
+    "width": 183.0,
+    "height": 14.26
+  },
+  {
+    "page": 18,
+    "text": "Administrateur",
+    "x": 725.0,
+    "y": 253,
+    "width": 183.0,
+    "height": 13.02
+  },
+  {
+    "page": 18,
+    "text": "Intégrer à une facture",
+    "x": 725.0,
+    "y": 279,
+    "width": 183.0,
+    "height": 11.78
+  },
+  {
+    "page": 18,
+    "text": "EN CAS DE REFUS",
+    "x": 62,
+    "y": 346,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 18,
+    "text": "Le client renseigne un motif. Le technicien corrige le pointage refusé puis le soumet à nouveau.",
+    "x": 62,
+    "y": 374,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 18,
+    "text": "CONTRÔLES DE SAISIE",
+    "x": 512,
+    "y": 346,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 18,
+    "text": "Projet actif et affectation vérifiés ; dates futures et chevauchements refusés ; durée contrôlée par le serveur.",
+    "x": 512,
+    "y": 374,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 18,
+    "text": "Un pointage soumis, validé ou facturé est verrouillé à la modification.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 18,
+    "text": "TimeEntrySerializer · transition_entry · TimeEntryEvent",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 18,
+    "text": "COPETROLITE  /  18",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 19,
+    "text": "06 / ESPACE TECHNICIEN",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 19,
+    "text": "Les gains du technicien",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 19,
+    "text": "Le menu « Paiements » présente une estimation calculée à partir de l’activité validée.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 19,
+    "text": "PÉRIMÈTRE PERSONNEL",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 19,
+    "text": "Seules les heures validées ou facturées du technicien connecté sont prises en compte.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 19,
+    "text": "CALCUL HORS JOURS FÉRIÉS",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 19,
+    "text": "Les heures retenues sont multipliées par le tarif technicien configuré pour le projet.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 19,
+    "text": "CALCUL DES JOURS FÉRIÉS",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 19,
+    "text": "Un forfait technicien est appliqué une fois par technicien, date fériée et projet dans le calcul des gains.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 19,
+    "text": "INFORMATION À INTERPRÉTER",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 19,
+    "text": "Le montant affiché représente des gains calculés. Aucun statut de versement réel au technicien n’est enregistré par ce module.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 19,
+    "text": "Ces montants ne donnent pas accès aux factures ni aux encaissements du client.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 19,
+    "text": "ProjectViewSet.earnings · ProjectSerializer.get_technician_labor_cost",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 19,
+    "text": "COPETROLITE  /  19",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 20,
+    "text": "07 / ESPACE CLIENT",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 20,
+    "text": "Deux modes d’accès au périmètre client",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 20,
+    "text": "Le rôle reste « Chef de projet client » ; le périmètre dépend du compte.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 20,
+    "text": "COMPTE RESPONSABLE CLIENT",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 20,
+    "text": "Connexion habituelle. Consultation des seuls projets attribués au compte, au sein de son entreprise cliente.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 20,
+    "text": "COMPTE DÉDIÉ AU PROJET",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 20,
+    "text": "Connexion via /project/login avec un identifiant créé par l’administrateur. Accès limité au projet associé.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 20,
+    "text": "DONNÉES CONSULTABLES",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 20,
+    "text": "Projets autorisés, pointages hors brouillons, informations limitées sur les techniciens du périmètre.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 20,
+    "text": "DONNÉES NON EXPOSÉES",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 20,
+    "text": "CV, photos et informations privées des techniciens ; tarifs internes, tarifs client, factures et paiements clients.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 20,
+    "text": "Un même client peut avoir plusieurs projets sans que tous ses comptes voient tout.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 20,
+    "text": "projects_for · entries_for · LoginView · App.jsx",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 20,
+    "text": "COPETROLITE  /  20",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 21,
+    "text": "07 / ESPACE CLIENT",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 21,
+    "text": "Valider ou refuser les heures",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 21,
+    "text": "La décision client structure le passage vers la facturation.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 21,
+    "text": "CONSULTER",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 21,
+    "text": "Ouvrir les pointages soumis du projet autorisé et examiner le technicien, la date, la durée et les travaux.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 21,
+    "text": "VALIDER",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 21,
+    "text": "Accepter le pointage lorsqu’il correspond à l’intervention réalisée. Les heures deviennent éligibles à la facturation.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 21,
+    "text": "REFUSER AVEC UN MOTIF",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 21,
+    "text": "Préciser ce qui doit être corrigé. Le pointage retourne au technicien dans l’état Refusé.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 21,
+    "text": "REPRENDRE LE SUIVI",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 21,
+    "text": "Après correction et nouvelle soumission, le responsable client peut réexaminer le pointage.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 21,
+    "text": "Seuls les pointages à l’état Soumis peuvent être validés ou refusés.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 21,
+    "text": "transition_entry · entry-detail dans App.jsx",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 21,
+    "text": "COPETROLITE  /  21",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 22,
+    "text": "07 / ESPACE CLIENT",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 22,
+    "text": "Configurer un accès client par projet",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 22,
+    "text": "Parcours administrateur : Projets → Accès client.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 22,
+    "text": "CRÉER L’ACCÈS",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 22,
+    "text": "Choisir l’identifiant du projet, saisir ou générer un mot de passe et activer le compte.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 22,
+    "text": "TRANSMETTRE LES INFORMATIONS",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 22,
+    "text": "Communiquer l’adresse de connexion /project/login et les identifiants au contact autorisé.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 22,
+    "text": "MAINTENIR L’ACCÈS",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 22,
+    "text": "Modifier l’identifiant, remplacer le mot de passe ou désactiver le compte si nécessaire.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 22,
+    "text": "LIMITER LE PÉRIMÈTRE",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 22,
+    "text": "Le compte est associé à un projet unique. Il ne donne pas automatiquement accès aux autres projets du client.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 22,
+    "text": "Le mot de passe stocké ne peut pas être relu : le noter lors de sa création.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 22,
+    "text": "ProjectAccess.jsx · ProjectViewSet.client_access · LoginView",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 22,
+    "text": "COPETROLITE  /  22",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 23,
+    "text": "08 / SUIVI FINANCIER",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 23,
+    "text": "Facturer les interventions validées",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 23,
+    "text": "Fonction réservée à l’administrateur.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 23,
+    "text": "SÉLECTIONNER",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 23,
+    "text": "Choisir un projet et ses pointages validés, encore non facturés.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 23,
+    "text": "PARAMÉTRER",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 23,
+    "text": "Vérifier l’échéance, les tarifs applicables et le taux de taxe saisi explicitement.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 23,
+    "text": "ÉMETTRE",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 23,
+    "text": "Créer une facture numérotée avec ses lignes, montants et informations de référence figés à l’émission.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 23,
+    "text": "CONSULTER ET IMPRIMER",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 23,
+    "text": "Ouvrir le détail de la facture, consulter ses paiements et imprimer depuis le navigateur.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 23,
+    "text": "Un pointage facturé ne peut pas être sélectionné une seconde fois.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 23,
+    "text": "create_invoice · InvoiceCreateSerializer · InvoiceDetail · README",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 23,
+    "text": "COPETROLITE  /  23",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 24,
+    "text": "08 / SUIVI FINANCIER",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 24,
+    "text": "Suivre les règlements clients",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 24,
+    "text": "Un enregistrement distinct pour chaque paiement.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 24,
+    "text": "ENREGISTRER",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 24,
+    "text": "Sélectionner la facture, renseigner le montant, la date, le mode de paiement et la référence.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 24,
+    "text": "MODES DISPONIBLES",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 24,
+    "text": "Virement, espèces ou chèque. Le paiement peut être partiel ou couvrir le solde restant.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 24,
+    "text": "SUIVRE LE SOLDE",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 24,
+    "text": "La facture évolue entre Non payée, Partiellement payée et Payée selon les montants enregistrés.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 24,
+    "text": "CONTRÔLER LES MONTANTS",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 24,
+    "text": "Montant positif, pas de dépassement du solde, pas de date future ni de date antérieure à la facture.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 24,
+    "text": "Un paiement enregistré met à jour le solde utilisé dans le suivi administrateur.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 24,
+    "text": "record_payment · PaymentSerializer · Invoice.balance",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 24,
+    "text": "COPETROLITE  /  24",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 25,
+    "text": "08 / SUIVI FINANCIER",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 25,
+    "text": "Tarifs et jours fériés",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 25,
+    "text": "Distinguer le montant facturé au client du coût calculé pour le technicien.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 25,
+    "text": "JOUR ORDINAIRE — CLIENT",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 25,
+    "text": "Heures validées sélectionnées × tarif client horaire du projet.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 25,
+    "text": "JOUR ORDINAIRE — TECHNICIEN",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 25,
+    "text": "Heures personnelles validées ou facturées × tarif technicien horaire du projet.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 25,
+    "text": "JOUR FÉRIÉ — CLIENT",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 25,
+    "text": "Forfait client par technicien et date fériée, réparti entre les pointages sélectionnés dans la facture.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 25,
+    "text": "JOUR FÉRIÉ — TECHNICIEN",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 25,
+    "text": "Forfait technicien par date fériée travaillée et projet ; calendrier géré par l’administrateur.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 25,
+    "text": "Les forfaits client et technicien sont deux paramètres indépendants.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 25,
+    "text": "create_invoice · get_technician_labor_cost · PublicHolidayViewSet",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 25,
+    "text": "COPETROLITE  /  25",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 26,
+    "text": "09 / CONFIANCE & ACCÈS",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 26,
+    "text": "Séparer les données et conserver les traces",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 26,
+    "text": "Des contrôles intégrés au fonctionnement métier.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 26,
+    "text": "AUTHENTIFICATION",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 26,
+    "text": "Sessions Django, mots de passe hachés, protection CSRF et limitation des tentatives de connexion.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 26,
+    "text": "ISOLATION DES PÉRIMÈTRES",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 26,
+    "text": "Filtrage des projets et pointages selon le rôle, l’affectation et le compte client associé.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 26,
+    "text": "DOCUMENTS PRIVÉS",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 26,
+    "text": "Téléchargement authentifié des CV, photos et certificats ; accès limité aux rôles internes autorisés.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 26,
+    "text": "TRAÇABILITÉ",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 26,
+    "text": "Historique daté des états de pointage, auteur des décisions, motif de refus et référence de facture.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 26,
+    "text": "Ces mécanismes sont implémentés ; ils ne constituent pas une certification de sécurité.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 26,
+    "text": "access.py · views.py · services.py · serializers.py",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 26,
+    "text": "COPETROLITE  /  26",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 27,
+    "text": "09 / CONFIANCE & ACCÈS",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 27,
+    "text": "Un usage web et un accès Android",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 27,
+    "text": "L’interface s’adapte aux écrans de bureau et de téléphone.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 27,
+    "text": "NAVIGATEUR",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 27,
+    "text": "Accès à l’application web en français depuis un ordinateur ou un téléphone.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 27,
+    "text": "ESPACE TECHNICIEN",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 27,
+    "text": "Présentation adaptée au mobile pour les projets, les pointages et les gains personnels.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 27,
+    "text": "ANDROID LOCAL",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 27,
+    "text": "Une application de développement ouvre l’espace technicien dans une WebView avec identité Copetrolite.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 27,
+    "text": "CONDITIONS ACTUELLES",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 27,
+    "text": "Le paquet Android documenté dépend du réseau local et des serveurs démarrés. Un accès public demande une configuration de déploiement.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 27,
+    "text": "La version Android actuelle n’est pas présentée comme une application hors ligne.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 27,
+    "text": "README · frontend/src/App.jsx · styles.css",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 27,
+    "text": "COPETROLITE  /  27",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 28,
+    "text": "10 / SOCLE TECHNIQUE",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 28,
+    "text": "Une architecture organisée par responsabilité",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 28,
+    "text": "Vue de la configuration réellement présente dans le projet.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 28,
+    "text": "01",
+    "x": 56.0,
+    "y": 198,
+    "width": 183.0,
+    "height": 23.56
+  },
+  {
+    "page": 28,
+    "text": "INTERFACE",
+    "x": 56.0,
+    "y": 229,
+    "width": 183.0,
+    "height": 14.26
+  },
+  {
+    "page": 28,
+    "text": "React / Vite",
+    "x": 56.0,
+    "y": 253,
+    "width": 183.0,
+    "height": 13.02
+  },
+  {
+    "page": 28,
+    "text": "Écrans et formulaires",
+    "x": 56.0,
+    "y": 279,
+    "width": 183.0,
+    "height": 11.78
+  },
+  {
+    "page": 28,
+    "text": "›",
+    "x": 252.0,
+    "y": 228,
+    "width": 12,
+    "height": 27.28
+  },
+  {
+    "page": 28,
+    "text": "02",
+    "x": 279.0,
+    "y": 198,
+    "width": 183.0,
+    "height": 23.56
+  },
+  {
+    "page": 28,
+    "text": "API MÉTIER",
+    "x": 279.0,
+    "y": 229,
+    "width": 183.0,
+    "height": 14.26
+  },
+  {
+    "page": 28,
+    "text": "Django REST",
+    "x": 279.0,
+    "y": 253,
+    "width": 183.0,
+    "height": 13.02
+  },
+  {
+    "page": 28,
+    "text": "Accès et validations",
+    "x": 279.0,
+    "y": 279,
+    "width": 183.0,
+    "height": 11.78
+  },
+  {
+    "page": 28,
+    "text": "›",
+    "x": 475.0,
+    "y": 228,
+    "width": 12,
+    "height": 27.28
+  },
+  {
+    "page": 28,
+    "text": "03",
+    "x": 502.0,
+    "y": 198,
+    "width": 183.0,
+    "height": 23.56
+  },
+  {
+    "page": 28,
+    "text": "DONNÉES",
+    "x": 502.0,
+    "y": 229,
+    "width": 183.0,
+    "height": 14.26
+  },
+  {
+    "page": 28,
+    "text": "MySQL configuré",
+    "x": 502.0,
+    "y": 253,
+    "width": 183.0,
+    "height": 13.02
+  },
+  {
+    "page": 28,
+    "text": "Données relationnelles",
+    "x": 502.0,
+    "y": 279,
+    "width": 183.0,
+    "height": 11.78
+  },
+  {
+    "page": 28,
+    "text": "›",
+    "x": 698.0,
+    "y": 228,
+    "width": 12,
+    "height": 27.28
+  },
+  {
+    "page": 28,
+    "text": "04",
+    "x": 725.0,
+    "y": 198,
+    "width": 183.0,
+    "height": 23.56
+  },
+  {
+    "page": 28,
+    "text": "DOCUMENTS",
+    "x": 725.0,
+    "y": 229,
+    "width": 183.0,
+    "height": 14.26
+  },
+  {
+    "page": 28,
+    "text": "Stockage local",
+    "x": 725.0,
+    "y": 253,
+    "width": 183.0,
+    "height": 13.02
+  },
+  {
+    "page": 28,
+    "text": "CV, photos, certificats",
+    "x": 725.0,
+    "y": 279,
+    "width": 183.0,
+    "height": 11.78
+  },
+  {
+    "page": 28,
+    "text": "EXTRACTION DOCUMENTAIRE",
+    "x": 62,
+    "y": 346,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 28,
+    "text": "PyMuPDF lit les PDF et les images. L’OCR Windows fournit le texte des pages scannées.",
+    "x": 62,
+    "y": 374,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 28,
+    "text": "COHÉRENCE MÉTIER",
+    "x": 512,
+    "y": 346,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 28,
+    "text": "Les règles d’accès, les transitions de pointage et les calculs financiers sont exécutés côté serveur.",
+    "x": 512,
+    "y": 374,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 28,
+    "text": "Les tests rapides utilisent une base SQLite en mémoire, distincte de la base applicative.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 28,
+    "text": "coproject/settings.py · test_settings.py · cv.py · README",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 28,
+    "text": "COPETROLITE  /  28",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 29,
+    "text": "11 / DÉMONSTRATION",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 29,
+    "text": "Un exemple simple, de l’heure au solde",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 29,
+    "text": "Exemple fictif, hors jour férié, avec un taux de taxe de 0 % pour simplifier.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 29,
+    "text": "8 h",
+    "x": 60,
+    "y": 207,
+    "width": 242,
+    "height": 37.2
+  },
+  {
+    "page": 29,
+    "text": "Pointage validé",
+    "x": 60,
+    "y": 258,
+    "width": 242,
+    "height": 18.6
+  },
+  {
+    "page": 29,
+    "text": "20 000 DZD",
+    "x": 360,
+    "y": 207,
+    "width": 242,
+    "height": 37.2
+  },
+  {
+    "page": 29,
+    "text": "Facture client",
+    "x": 360,
+    "y": 258,
+    "width": 242,
+    "height": 18.6
+  },
+  {
+    "page": 29,
+    "text": "8 000 DZD",
+    "x": 660,
+    "y": 207,
+    "width": 242,
+    "height": 37.2
+  },
+  {
+    "page": 29,
+    "text": "Gains calculés",
+    "x": 660,
+    "y": 258,
+    "width": 242,
+    "height": 18.6
+  },
+  {
+    "page": 29,
+    "text": "PARAMÈTRES FICTIFS",
+    "x": 62,
+    "y": 336,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 29,
+    "text": "Tarif client : 2 500 DZD / h\nTarif technicien : 1 000 DZD / h\nTaxe de démonstration : 0 %",
+    "x": 62,
+    "y": 364,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 29,
+    "text": "RÈGLEMENT CLIENT PARTIEL",
+    "x": 512,
+    "y": 336,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 29,
+    "text": "Facture : 20 000 DZD\nPaiement reçu : 12 000 DZD\nReste à encaisser : 8 000 DZD",
+    "x": 512,
+    "y": 364,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 29,
+    "text": "Les gains calculés du technicien et le solde client sont deux informations distinctes.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 29,
+    "text": "Formules : services.py · ProjectSerializer",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 29,
+    "text": "COPETROLITE  /  29",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 30,
+    "text": "11 / DÉMONSTRATION",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 30,
+    "text": "Le scénario à présenter en direct",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 30,
+    "text": "Un parcours de 8 à 10 minutes avec des données de démonstration.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 30,
+    "text": "1 · ADMINISTRATEUR",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 30,
+    "text": "Présenter un client et un dossier technicien ; extraire l’expérience et la photo d’un CV, relire et enregistrer.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 30,
+    "text": "2 · ORGANISATION",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 30,
+    "text": "Créer un projet, affecter le technicien et configurer un accès client dédié.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 30,
+    "text": "3 · TECHNICIEN ET CLIENT",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 30,
+    "text": "Saisir puis soumettre les heures ; se connecter côté client pour valider ou refuser avec un motif.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 30,
+    "text": "4 · ADMINISTRATEUR",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 30,
+    "text": "Créer la facture à partir du pointage validé, enregistrer un paiement et montrer le solde restant.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 30,
+    "text": "Préparer un CV de démonstration et des comptes de test avant la présentation.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 30,
+    "text": "Parcours issus des écrans et règles métier existants",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 30,
+    "text": "COPETROLITE  /  30",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 31,
+    "text": "12 / ÉTAT DU PROJET",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 31,
+    "text": "Périmètre livré et vérifications",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 31,
+    "text": "État observé le 18 octobre 2026 sur le code local.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 31,
+    "text": "PARCOURS MÉTIER",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 31,
+    "text": "35 tests métier et accès réussis : rôles, isolation, validation, factures, paiements et gains.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 31,
+    "text": "CV ET PROFILS",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 31,
+    "text": "26 tests exécutés : 23 réussis et 3 en échec. Les écarts concernent un format d’adresse et des scénarios de mise à jour de profil.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 31,
+    "text": "FONCTIONS PRÉSENTÉES",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 31,
+    "text": "Gestion des équipes et projets, extraction CV et photo, pointages, validation client et suivi financier présents dans le code.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 31,
+    "text": "AVANT DIFFUSION LARGE",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 31,
+    "text": "Résoudre les écarts de tests, compléter les informations de l’émetteur sur les factures et préparer le déploiement public.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 59.519999999999996
+  },
+  {
+    "page": 31,
+    "text": "Les essais utilisent SQLite en mémoire ; ils ne constituent pas une recette de production.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 31,
+    "text": "Exécution locale : manage.py test · 18/10/2026",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 31,
+    "text": "COPETROLITE  /  31",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 32,
+    "text": "Une chaîne de travail partagée",
+    "x": 42,
+    "y": 105,
+    "width": 880,
+    "height": 45.88
+  },
+  {
+    "page": 32,
+    "text": "De la compétence du technicien au règlement de l’intervention.",
+    "x": 44,
+    "y": 158,
+    "width": 870,
+    "height": 22.32
+  },
+  {
+    "page": 32,
+    "text": "ADMINISTRATEUR",
+    "x": 62,
+    "y": 233,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 32,
+    "text": "Structure les accès et suit les finances.",
+    "x": 62,
+    "y": 261,
+    "width": 386,
+    "height": 19.84
+  },
+  {
+    "page": 32,
+    "text": "SUPERVISEUR",
+    "x": 512,
+    "y": 233,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 32,
+    "text": "Organise les projets et les équipes.",
+    "x": 512,
+    "y": 261,
+    "width": 386,
+    "height": 19.84
+  },
+  {
+    "page": 32,
+    "text": "TECHNICIEN",
+    "x": 62,
+    "y": 344,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 32,
+    "text": "Renseigne les interventions et suit ses gains.",
+    "x": 62,
+    "y": 372,
+    "width": 386,
+    "height": 19.84
+  },
+  {
+    "page": 32,
+    "text": "CLIENT",
+    "x": 512,
+    "y": 344,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 32,
+    "text": "Vérifie les heures et décide de leur validation.",
+    "x": 512,
+    "y": 372,
+    "width": 386,
+    "height": 19.84
+  },
+  {
+    "page": 32,
+    "text": "COPETROLITE · Une responsabilité claire à chaque étape.",
+    "x": 44,
+    "y": 465,
+    "width": 870,
+    "height": 24.8
+  },
+  {
+    "page": 32,
+    "text": "COPETROLITE  /  32",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  },
+  {
+    "page": 33,
+    "text": "ANNEXE / RÉFÉRENCES",
+    "x": 140,
+    "y": 25,
+    "width": 710,
+    "height": 13.64
+  },
+  {
+    "page": 33,
+    "text": "Sources et limites de cette présentation",
+    "x": 42,
+    "y": 84,
+    "width": 880,
+    "height": 37.2
+  },
+  {
+    "page": 33,
+    "text": "Présentation établie à partir du projet local ; aucune donnée métier réelle n’est reproduite.",
+    "x": 44,
+    "y": 132,
+    "width": 876,
+    "height": 16.74
+  },
+  {
+    "page": 33,
+    "text": "RÔLES ET CIRCUIT MÉTIER",
+    "x": 62,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 33,
+    "text": "eliteapp/models.py, access.py, views.py, serializers.py et services.py.",
+    "x": 62,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 33,
+    "text": "ÉCRANS ET DOCUMENTS",
+    "x": 512,
+    "y": 198,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 33,
+    "text": "App.jsx, forms.jsx, ProjectAccess.jsx, CVImport.jsx, ExperienceEditor.jsx et TechnicianPhoto.jsx.",
+    "x": 512,
+    "y": 226,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 33,
+    "text": "EXTRACTION ET VÉRIFICATION",
+    "x": 62,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 33,
+    "text": "eliteapp/cv.py, scripts/ocr-image.ps1, eliteapp/tests.py et eliteapp/test_cv.py.",
+    "x": 62,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 33,
+    "text": "CONFIGURATION ET IDENTITÉ",
+    "x": 512,
+    "y": 339,
+    "width": 388,
+    "height": 17.36
+  },
+  {
+    "page": 33,
+    "text": "coproject/settings.py, test_settings.py, README.md ; logo existant frontend/src/assets/CO-1-1-1.png.",
+    "x": 512,
+    "y": 367,
+    "width": 386,
+    "height": 39.68
+  },
+  {
+    "page": 33,
+    "text": "Les comportements du code actuel priment sur les descriptions anciennes du README.",
+    "x": 55,
+    "y": 478,
+    "width": 850,
+    "height": 14.879999999999999
+  },
+  {
+    "page": 33,
+    "text": "Sources locales uniquement",
+    "x": 42,
+    "y": 512,
+    "width": 780,
+    "height": 9.92
+  },
+  {
+    "page": 33,
+    "text": "COPETROLITE  /  33",
+    "x": 823,
+    "y": 512,
+    "width": 110,
+    "height": 9.92
+  }
+]
