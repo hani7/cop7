@@ -16,6 +16,11 @@ from .models import (Client, Invoice, InvoiceLine, Payment, Project, PublicHolid
 from .cv import extract_cv_photo, validate_certificate, validate_cv, validate_profile_photo
 
 
+def api_url(serializer, path):
+    request = serializer.context.get('request')
+    return request.build_absolute_uri(path) if request else path
+
+
 class ClientSerializer(serializers.ModelSerializer):
     logo = serializers.FileField(write_only=True, required=False, validators=[validate_profile_photo])
     logo_url = serializers.SerializerMethodField()
@@ -33,7 +38,7 @@ class ClientSerializer(serializers.ModelSerializer):
         return super().to_internal_value(data)
 
     def get_logo_url(self, obj):
-        return f'/api/clients/{obj.pk}/logo/' if obj.logo else ''
+        return api_url(self, f'/api/clients/{obj.pk}/logo/') if obj.logo else ''
 
     def update(self, instance, validated_data):
         previous_logo = instance.logo
@@ -54,7 +59,7 @@ class TechnicianCertificateSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'url']
 
     def get_url(self, obj):
-        return f'/api/users/{obj.user_id}/certificates/{obj.pk}/'
+        return api_url(self, f'/api/users/{obj.user_id}/certificates/{obj.pk}/')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -103,10 +108,10 @@ class UserSerializer(serializers.ModelSerializer):
         return obj.cv.name.rsplit('/', 1)[-1] if obj.cv else ''
 
     def get_cv_url(self, obj):
-        return f'/api/users/{obj.pk}/cv/' if obj.cv else ''
+        return api_url(self, f'/api/users/{obj.pk}/cv/') if obj.cv else ''
 
     def get_photo_url(self, obj):
-        return f'/api/users/{obj.pk}/photo/' if obj.photo else ''
+        return api_url(self, f'/api/users/{obj.pk}/photo/') if obj.photo else ''
 
     def validate_birth_date(self, value):
         if value:
