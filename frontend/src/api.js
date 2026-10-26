@@ -1,4 +1,11 @@
 let csrfToken = '';
+const API_ORIGIN = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '' : 'https://api.time.copetroelite.com');
+
+function endpoint(path) {
+  if (/^https?:\/\//i.test(path)) return path;
+  const relativePath = path.startsWith('/api/') ? path : `/api/${path}`;
+  return `${API_ORIGIN}${relativePath}`;
+}
 
 function errorText(value) {
   if (typeof value === 'string') return value;
@@ -11,8 +18,8 @@ export async function api(path, options = {}) {
   let response;
   const multipart = options.body instanceof FormData;
   try {
-    response = await fetch(path.startsWith('/api/') ? path : `/api/${path}`, {
-      credentials: 'same-origin', ...options,
+    response = await fetch(endpoint(path), {
+      credentials: 'include', ...options,
       headers: { ...(!multipart && { 'Content-Type': 'application/json' }), 'X-CSRFToken': csrfToken, ...options.headers },
       body: multipart ? options.body : options.body === undefined ? undefined : JSON.stringify(options.body),
     });
@@ -31,8 +38,8 @@ export async function listAll(resource) {
   while (path) {
     const page = await api(path);
     items.push(...page.results);
-    const next = page.next ? new URL(page.next, window.location.origin) : null;
-    path = next ? next.pathname + next.search : null;
+    const next = page.next ? new URL(page.next, API_ORIGIN || window.location.origin) : null;
+    path = next ? next.href : null;
   }
   return items;
 }
