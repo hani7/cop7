@@ -81,8 +81,8 @@ export default function App() {
     const storedPage = sessionStorage.getItem(PAGE_STORAGE_KEY);
     return NAV.some(item => item.id === storedPage) || FINANCE_NAV.some(item => item.id === storedPage) ? storedPage : 'dashboard';
   }), [data, setData] = useState(emptyData), [loading, setLoading] = useState(false);
-  const [error, setError] = useState(''), [notice, setNotice] = useState(''), [query, setQuery] = useState(''), [filter, setFilter] = useState('ALL'), [settingsOpen, setSettingsOpen] = useState(false), [financeOpen, setFinanceOpen] = useState(false);
-  const [modal, setModal] = useState(null), [report, setReport] = useState(null), [working, setWorking] = useState(false), [deleteClientError, setDeleteClientError] = useState('');
+  const [error, setError] = useState(''), [notice, setNotice] = useState(''), [query, setQuery] = useState(''), [filter, setFilter] = useState('ALL'), [projectFilter, setProjectFilter] = useState('ALL'), [settingsOpen, setSettingsOpen] = useState(false), [financeOpen, setFinanceOpen] = useState(false);
+  const [modal, setModal] = useState(null), [report, setReport] = useState(null), [globalReport, setGlobalReport] = useState(null), [working, setWorking] = useState(false), [deleteClientError, setDeleteClientError] = useState('');
   const bootstrap = useCallback(async () => {
     setBooting(true); setSessionError('');
     try {
@@ -128,7 +128,7 @@ export default function App() {
   }, [user]);
   useEffect(() => { refresh(); }, [refresh]);
   useEffect(() => { if (!notice) return; const timer = setTimeout(() => setNotice(''), 5000); return () => clearTimeout(timer); }, [notice]);
-  function navigate(id) { setPage(id); setQuery(''); setFilter('ALL'); setSettingsOpen(false); setFinanceOpen(false); }
+  function navigate(id) { setPage(id); setQuery(''); setFilter('ALL'); setProjectFilter('ALL'); setSettingsOpen(false); setFinanceOpen(false); }
   async function save(path, method, body) {
     const result = await api(path, { method, body });
     if (path.startsWith('users/') && body instanceof FormData
@@ -169,6 +169,7 @@ export default function App() {
   const search = rows => rows.filter(row => Object.values(row).some(value => typeof value === 'string' && value.toLocaleLowerCase().includes(query.toLocaleLowerCase())));
   const technicians = data.users.filter(person => person.role === 'TECHNICIAN');
   const visibleRows = search(page === 'technicians' ? technicians : page === 'technician-payments' ? data.technicianPayments : data[page] instanceof Array ? data[page] : []).filter(row => {
+    if (page === 'entries' && projectFilter !== 'ALL' && String(row.project) !== String(projectFilter)) return false;
     if (filter === 'ALL') return true;
     if (page === 'technicians') return row.is_active === (filter === 'ACTIVE');
     return page !== 'entries' || row.status === filter;
@@ -190,7 +191,7 @@ export default function App() {
   ];
   if (booting) return <div className="boot"><Spinner /><span>Ouverture de votre espace…</span></div>;
   if (!user) return <Login onLogin={account => { setUser(account); if (account.project_access) { setPage('entries'); setFilter('SUBMITTED'); } }} initialError={sessionError} retry={bootstrap} technicianOnly={technicianLogin} projectOnly={projectLogin} />;
-  const primaryAction = page === 'technicians' && isAdmin ? add('technician', 'Ajouter un technicien') : page === 'projects' && internal ? add('project', 'Nouveau projet') : page === 'clients' && internal ? add('client', 'Nouveau client') : page === 'holidays' && isAdmin ? add('holiday', 'Ajouter un jour férié') : page === 'users' && isAdmin ? add('user', 'Ajouter un collaborateur') : page === 'entries' && user.role === 'TECHNICIAN' ? add('time', 'Saisir mes heures', true) : page === 'invoices' && isAdmin ? add('invoice', 'Créer une facture') : page === 'payments' && isAdmin ? add('payment', 'Enregistrer un paiement') : page === 'technician-payments' && isAdmin ? add('technician-payment', 'Enregistrer une charge') : page === 'dashboard' && user.role === 'TECHNICIAN' ? add('time', 'Saisir mes heures', true) : null;
+  const primaryAction = page === 'technicians' && isAdmin ? add('technician', 'Ajouter un technicien') : page === 'projects' && internal ? add('project', 'Nouveau projet') : page === 'clients' && internal ? add('client', 'Nouveau client') : page === 'holidays' && isAdmin ? add('holiday', 'Ajouter un jour férié') : page === 'users' && isAdmin ? add('user', 'Ajouter un collaborateur') : page === 'entries' && isAdmin ? <button className="button" onClick={() => setGlobalReport({ rows: visibleRows })}><Download size={17} />Fiche globale PDF</button> : page === 'entries' && user.role === 'TECHNICIAN' ? add('time', 'Saisir mes heures', true) : page === 'invoices' && isAdmin ? add('invoice', 'Créer une facture') : page === 'payments' && isAdmin ? add('payment', 'Enregistrer un paiement') : page === 'technician-payments' && isAdmin ? add('technician-payment', 'Enregistrer une charge') : page === 'dashboard' && user.role === 'TECHNICIAN' ? add('time', 'Saisir mes heures', true) : null;
   return <div className={`app-shell${isTechnician ? ' technician-shell' : ''}${isTechnician && modal ? ' technician-modal-open' : ''}`}>
     <header className="app-header">
       <div className="header-content">
@@ -231,6 +232,7 @@ export default function App() {
       </div>
     </header>
     {report && <TechnicianReport technician={report.technician} rows={report.rows} projects={data.projects} close={() => setReport(null)} />}
+    {globalReport && <GlobalReport rows={globalReport.rows} projects={data.projects} close={() => setGlobalReport(null)} />}
     <div className="workspace">
       <main className="main"><div className={`page-heading${isTechnician && page === 'dashboard' ? ' technician-dashboard-heading' : isTechnician && page === 'entries' ? ' technician-entries-heading' : ''}`}><div>{!isTechnician && <span className="eyebrow green">{'COPETROLITE / ' + (page === 'dashboard' ? 'TABLEAU DE BORD' : 'GESTION')}</span>}<h1>{isTechnician && page === 'dashboard' ? `Bonjour, ${user.full_name.split(' ')[0]}` : NAV.find(n => n.id === page)?.label}</h1>{!(isTechnician && page === 'entries') && <p>{isTechnician && page === 'dashboard' ? 'Prêt pour votre prochaine intervention ?' : isTechnician && page === 'payments' ? 'Retrouvez vos gains par projet.' : descriptions[page]}</p>}</div>{primaryAction}</div>
         {notice && <div className="alert success" role="status"><CheckCheck size={18} />{notice}</div>}
@@ -241,6 +243,7 @@ export default function App() {
           <div className="dashboard-grid"><section className="panel"><div className="panel-heading"><div><h2>{isTechnician ? 'Mes projets en cours' : 'Les projets en cours'}</h2><p>Vos interventions actives</p></div><button className="text-button" onClick={() => navigate('projects')}>Tous les projets <ArrowUpRight size={16} /></button></div>{data.projects.filter(p => p.status === 'ACTIVE').length ? <div className="project-list">{data.projects.filter(p => p.status === 'ACTIVE').slice(0, 4).map(p => <button key={p.id} className="project-row" onClick={() => navigate('projects')}><span className="project-symbol"><BriefcaseBusiness size={20} /></span><span><strong>{p.name}</strong><small>{p.client_name} · {p.site}</small></span><Badge status={p.status} /><ChevronRight size={16} /></button>)}</div> : <Empty title={isTechnician ? 'Aucun projet actif' : 'Votre premier projet commence ici'} text={isTechnician ? 'Vos affectations actives apparaîtront ici.' : 'Créez un client, son chef de projet, puis affectez vos techniciens.'} action={internal && add('project', 'Créer un projet')} />}</section>{!isTechnician && <section className="workflow-card"><span className="eyebrow">UN SUIVI SANS RUPTURE</span><h2>Du terrain<br />à la facturation.</h2><p>Chaque intervention suit un parcours clair et partagé.</p><ol><li><span>01</span>Le technicien saisit ses heures</li><li><span>02</span>Le chef de projet client valide</li><li><span>03</span>L’administrateur facture</li></ol><button onClick={() => navigate('entries')}>Consulter les pointages <ArrowRight size={18} /></button></section>}</div>
           <section className="panel"><div className="panel-heading"><div><h2>{isTechnician ? 'Mes derniers pointages' : 'Derniers pointages'}</h2><p>Les interventions les plus récentes</p></div><button className="text-button" onClick={() => navigate('entries')}>Tout consulter <ArrowUpRight size={16} /></button></div>{isTechnician && <div className="tech-entry-cards dashboard-entry-cards">{data.entries.slice(0, 4).map(entry => <TechnicianEntryCard key={entry.id} entry={entry} hideStatus={isTechnician} onDetail={() => setModal({ type: 'entry-detail', row: entry })} />)}{!data.entries.length && <Empty title="Aucun pointage" text="Vos interventions récentes apparaîtront ici." />}</div>}<div className={isTechnician ? 'technician-desktop-table' : ''}><Table columns={entryColumns} rows={data.entries.slice(0, 5)} empty={<Empty title="Aucun pointage pour le moment" text="Les heures saisies par les techniciens apparaîtront ici." />} /></div></section>
         </> : <section className="panel"><div className="list-toolbar"><label className="search"><Search size={18} /><input aria-label="Rechercher dans la liste" placeholder="Rechercher…" value={query} onChange={e => setQuery(e.target.value)} /></label>{page === 'entries' && !isTechnician && <select aria-label="Filtrer les pointages" value={filter} onChange={e => setFilter(e.target.value)}><option value="ALL">Tous les statuts</option>{['DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED', 'INVOICED'].map(s => <option value={s} key={s}>{statusLabels[s]}</option>)}</select>}{page === 'technicians' && <select aria-label="Filtrer les techniciens" value={filter} onChange={e => setFilter(e.target.value)}><option value="ALL">Tous les techniciens</option><option value="ACTIVE">Actifs</option><option value="INACTIVE">Désactivés</option></select>}<span className="muted small">{visibleRows.length} résultat(s)</span></div>
+          {page === 'entries' && <div className="project-filter-bar"><label htmlFor="entries-project-filter">Filtrer par projet</label><select id="entries-project-filter" value={projectFilter} onChange={e => setProjectFilter(e.target.value)}><option value="ALL">Tous les projets</option>{data.projects.map(project => <option value={project.id} key={project.id}>{project.name}</option>)}</select></div>}
           {page === 'entries' && <>
             {isTechnician && <div className="tech-entry-cards">{visibleRows.map(entry => <TechnicianEntryCard key={entry.id} entry={entry} hideStatus={isTechnician} onDetail={() => setModal({ type: 'entry-detail', row: entry })} onEdit={['DRAFT', 'REJECTED'].includes(entry.status) ? () => setModal({ type: 'time', row: entry }) : undefined} onSubmit={['DRAFT', 'REJECTED'].includes(entry.status) ? () => act(entry, 'submit') : undefined} working={working} />)}{!visibleRows.length && <Empty title="Aucun pointage" text="Saisissez vos heures pour commencer à suivre vos interventions." action={add('time', 'Saisir mes heures')} />}</div>}
             <div className={isTechnician ? 'technician-desktop-table' : ''}><Table columns={entryColumns} rows={visibleRows} /></div>
@@ -464,6 +467,25 @@ function TechnicianReport({ technician, rows, projects, close }) {
       <table className="technician-report-table"><thead><tr><th>N°</th><th>Réf.</th><th>Désignation</th><th>P.U.</th><th>Quantité</th><th>Jour</th><th>Unité</th><th>TVA</th><th>Montant</th></tr></thead><tbody>
         {reportRows.map(({ entry, project, index, rate, amount }) => <tr key={entry.id}><td>{index}</td><td>{project?.name || entry.project_name}</td><td>{entry.description || 'Heures standard'}</td><td>{rate ? money(rate, 'DZD') : '—'}</td><td>{number(entry.hours)}</td><td>{date(entry.start)}</td><td>HEURES</td><td>19 %</td><td>{rate ? money(amount, 'DZD') : '—'}</td></tr>)}
       </tbody><tfoot><tr><td colSpan="8">Total HT</td><td>{money(subtotal, 'DZD')}</td></tr><tr><td colSpan="8">Total TVA</td><td>{money(tax, 'DZD')}</td></tr><tr><td colSpan="8">Total TTC</td><td>{money(total, 'DZD')}</td></tr></tfoot></table>
+    </div>
+    <footer className="form-footer technician-report-actions"><button className="button secondary" onClick={close}>Fermer</button><button className="button" onClick={() => window.print()}><Download size={16} />Télécharger en PDF</button></footer>
+  </Modal>;
+}
+
+function GlobalReport({ rows, projects, close }) {
+  const projectById = new Map(projects.map(project => [project.id, project]));
+  const reportRows = rows.map((entry, index) => {
+    const project = projectById.get(entry.project);
+    const rate = Number(project?.technician_hourly_rate || 0);
+    const amount = Number(entry.hours || 0) * rate;
+    return { entry, project, index: index + 1, rate, amount };
+  });
+  const hours = reportRows.reduce((total, row) => total + Number(row.entry.hours || 0), 0);
+  const total = reportRows.reduce((sum, row) => sum + row.amount, 0);
+  return <Modal title="Fiche globale des relevés de pointage" onClose={close} wide>
+    <div className="technician-report">
+      <header className="technician-report-header"><img src={reportLogo} alt="Copetro Elite" /><div><span className="eyebrow green">RELEVÉ GLOBAL</span><h2>Tous les techniciens</h2><p>{date(new Date())} · {number(hours)} h au total</p></div></header>
+      <table className="technician-report-table"><thead><tr><th>N°</th><th>Technicien</th><th>Projet</th><th>Désignation</th><th>P.U.</th><th>Quantité</th><th>Jour</th><th>Unité</th><th>Montant</th></tr></thead><tbody>{reportRows.map(({ entry, project, index, rate, amount }) => <tr key={entry.id}><td>{index}</td><td>{entry.technician_name}</td><td>{project?.name || entry.project_name}</td><td>{entry.description || 'Heures standard'}</td><td>{rate ? money(rate, 'DZD') : '—'}</td><td>{number(entry.hours)}</td><td>{date(entry.start)}</td><td>HEURES</td><td>{rate ? money(amount, 'DZD') : '—'}</td></tr>)}</tbody><tfoot><tr><td colSpan="8">Total TTC</td><td>{money(total, 'DZD')}</td></tr></tfoot></table>
     </div>
     <footer className="form-footer technician-report-actions"><button className="button secondary" onClick={close}>Fermer</button><button className="button" onClick={() => window.print()}><Download size={16} />Télécharger en PDF</button></footer>
   </Modal>;
