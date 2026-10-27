@@ -12,7 +12,7 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from .models import (Client, Invoice, InvoiceLine, Payment, Project, PublicHoliday, TechnicianCertificate,
-                     TechnicianSequence, TimeEntry, TimeEntryEvent, User)
+                     TechnicianPayment, TechnicianSequence, TimeEntry, TimeEntryEvent, User)
 from .cv import extract_cv_photo, validate_certificate, validate_cv, validate_profile_photo
 
 
@@ -399,6 +399,34 @@ class PaymentSerializer(serializers.ModelSerializer):
     def validate_amount(self, value):
         if value <= 0:
             raise serializers.ValidationError('Le paiement doit être supérieur à zéro.')
+        return value
+
+    def validate_date(self, value):
+        if value > timezone.localdate():
+            raise serializers.ValidationError('La date du paiement ne peut pas être future.')
+        return value
+
+
+class TechnicianPaymentSerializer(serializers.ModelSerializer):
+    technician_name = serializers.SerializerMethodField()
+    method_label = serializers.CharField(source='get_method_display', read_only=True)
+
+    class Meta:
+        model = TechnicianPayment
+        fields = ['id', 'technician', 'technician_name', 'amount', 'date', 'method', 'method_label', 'reference', 'note', 'created_at']
+        read_only_fields = ['created_at']
+
+    def get_technician_name(self, obj):
+        return obj.technician.get_full_name() or obj.technician.username
+
+    def validate_technician(self, value):
+        if value.role != User.Role.TECHNICIAN or not value.is_active:
+            raise serializers.ValidationError('Sélectionnez un technicien actif.')
+        return value
+
+    def validate_amount(self, value):
+        if value <= 0:
+            raise serializers.ValidationError('Le montant doit être supérieur à zéro.')
         return value
 
     def validate_date(self, value):

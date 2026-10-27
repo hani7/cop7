@@ -19,9 +19,10 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 
 from .access import entries_for, projects_for, require_role
-from .models import Client, Invoice, Payment, Project, PublicHoliday, TechnicianCertificate, TimeEntry, User
+from .models import Client, Invoice, Payment, Project, PublicHoliday, TechnicianCertificate, TechnicianPayment, TimeEntry, User
 from .serializers import (ClientSerializer, InvoiceCreateSerializer, InvoiceSerializer,
                           PaymentSerializer, ProjectSerializer, PublicHolidaySerializer,
+                          TechnicianPaymentSerializer,
                           TimeEntrySerializer, UserSerializer)
 from .services import create_invoice, record_payment, transition_entry
 from .cv import extract_cv, extract_cv_photo
@@ -436,6 +437,21 @@ class PaymentViewSet(mixins.CreateModelMixin, viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         payment = record_payment(request.user, **serializer.validated_data)
+        return Response(self.get_serializer(payment).data, status=status.HTTP_201_CREATED)
+
+
+class TechnicianPaymentViewSet(mixins.CreateModelMixin, viewsets.ReadOnlyModelViewSet):
+    serializer_class = TechnicianPaymentSerializer
+
+    def get_queryset(self):
+        require_role(self.request.user, User.Role.ADMIN)
+        return TechnicianPayment.objects.select_related('technician')
+
+    def create(self, request, *args, **kwargs):
+        require_role(request.user, User.Role.ADMIN)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        payment = serializer.save(created_by=request.user)
         return Response(self.get_serializer(payment).data, status=status.HTTP_201_CREATED)
 
 

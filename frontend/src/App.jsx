@@ -20,13 +20,16 @@ const NAV = [
   { id: 'holidays', label: 'Calendrier', icon: CalendarDays, roles: ['ADMIN'] },
   { id: 'invoices', label: 'Facturation', icon: FileText, roles: ['ADMIN'] },
   { id: 'payments', label: 'Paiements', icon: CreditCard, roles: ['ADMIN', 'TECHNICIAN'] },
+  { id: 'technician-payments', label: 'Charges techniciens', icon: CreditCard, roles: ['ADMIN'] },
 ];
 const FINANCE_NAV = [
   { id: 'invoices', label: 'Facturation', icon: FileText, roles: ['ADMIN'] },
   { id: 'payments', label: 'Paiements', icon: CreditCard, roles: ['ADMIN', 'TECHNICIAN'] },
+  { id: 'technician-payments', label: 'Charges techniciens', icon: CreditCard, roles: ['ADMIN'] },
 ];
 const descriptions = { dashboard: 'Le suivi de vos équipes et de vos interventions, en un seul endroit.', projects: 'Organisez les interventions et affectez les bonnes équipes.', entries: 'Des heures saisies sur le terrain aux heures validées par le client.', technicians: 'Retrouvez les fiches, spécialités et affectations de vos techniciens.', users: 'Les personnes qui font avancer vos projets.', clients: 'Retrouvez vos entreprises clientes et leurs coordonnées.', holidays: 'Gérez les jours fériés utilisés pour calculer les coûts de main-d’œuvre.', invoices: 'Transformez les heures validées en factures.', payments: 'Gardez une vision claire des règlements reçus.' };
-const emptyData = { projects: [], entries: [], users: [], clients: [], holidays: [], invoices: [], payments: [], dashboard: {} };
+descriptions['technician-payments'] = 'Suivez les paiements et charges versés aux techniciens.';
+const emptyData = { projects: [], entries: [], users: [], clients: [], holidays: [], invoices: [], payments: [], technicianPayments: [], dashboard: {} };
 const PAGE_STORAGE_KEY = 'copetrolite-current-page';
 const technicianLogin = window.location.pathname.replace(/\/+$/, '') === '/tech/login';
 const projectLogin = window.location.pathname.replace(/\/+$/, '') === '/project/login';
@@ -98,7 +101,7 @@ export default function App() {
   useEffect(() => {
     if (!user) return;
     const currentPage = NAV.find(item => item.id === page);
-    if ((page === 'invoices' && user.role !== 'ADMIN') || (page === 'payments' && !['ADMIN', 'TECHNICIAN'].includes(user.role))) {
+    if ((['invoices', 'technician-payments'].includes(page) && user.role !== 'ADMIN') || (page === 'payments' && !['ADMIN', 'TECHNICIAN'].includes(user.role))) {
       setPage('dashboard');
       return;
     }
@@ -112,13 +115,13 @@ export default function App() {
     if (!user) return;
     setLoading(true); setError('');
     try {
-      const [dashboard, projects, entries, users, clients, holidays, invoices, payments] = await Promise.all([
+      const [dashboard, projects, entries, users, clients, holidays, invoices, payments, technicianPayments] = await Promise.all([
         api('dashboard/'), listAll('projects/'), listAll('time-entries/'), listAll('users/'),
         ['ADMIN', 'SUPERVISOR'].includes(user.role) ? listAll('clients/') : Promise.resolve([]),
         user.role === 'ADMIN' ? listAll('holidays/') : Promise.resolve([]),
-        user.role === 'ADMIN' ? listAll('invoices/') : Promise.resolve([]), user.role === 'ADMIN' ? listAll('payments/') : user.role === 'TECHNICIAN' ? listAll('projects/earnings/') : Promise.resolve([]),
+        user.role === 'ADMIN' ? listAll('invoices/') : Promise.resolve([]), user.role === 'ADMIN' ? listAll('payments/') : user.role === 'TECHNICIAN' ? listAll('projects/earnings/') : Promise.resolve([]), user.role === 'ADMIN' ? listAll('technician-payments/') : Promise.resolve([]),
       ]);
-      setData({ dashboard, projects, entries, users, clients, holidays, invoices, payments });
+      setData({ dashboard, projects, entries, users, clients, holidays, invoices, payments, technicianPayments });
     } catch (err) { setError(err.message); } finally { setLoading(false); }
   }, [user]);
   useEffect(() => { refresh(); }, [refresh]);
@@ -158,12 +161,12 @@ export default function App() {
   const isAdmin = user?.role === 'ADMIN';
   const isTechnician = user?.role === 'TECHNICIAN';
   const nav = NAV.filter(item => (!item.roles || item.roles.includes(user?.role))
-    && !['invoices', 'payments'].includes(item.id)
+    && !['invoices', 'payments', 'technician-payments'].includes(item.id)
     && !(user?.role === 'ADMIN' && ['users', 'holidays'].includes(item.id)));
   const financeItems = FINANCE_NAV.filter(item => item.roles.includes(user?.role));
   const search = rows => rows.filter(row => Object.values(row).some(value => typeof value === 'string' && value.toLocaleLowerCase().includes(query.toLocaleLowerCase())));
   const technicians = data.users.filter(person => person.role === 'TECHNICIAN');
-  const visibleRows = search(page === 'technicians' ? technicians : data[page] instanceof Array ? data[page] : []).filter(row => {
+  const visibleRows = search(page === 'technicians' ? technicians : page === 'technician-payments' ? data.technicianPayments : data[page] instanceof Array ? data[page] : []).filter(row => {
     if (filter === 'ALL') return true;
     if (page === 'technicians') return row.is_active === (filter === 'ACTIVE');
     return page !== 'entries' || row.status === filter;
@@ -185,7 +188,7 @@ export default function App() {
   ];
   if (booting) return <div className="boot"><Spinner /><span>Ouverture de votre espace…</span></div>;
   if (!user) return <Login onLogin={account => { setUser(account); if (account.project_access) { setPage('entries'); setFilter('SUBMITTED'); } }} initialError={sessionError} retry={bootstrap} technicianOnly={technicianLogin} projectOnly={projectLogin} />;
-  const primaryAction = page === 'technicians' && isAdmin ? add('technician', 'Ajouter un technicien') : page === 'projects' && internal ? add('project', 'Nouveau projet') : page === 'clients' && internal ? add('client', 'Nouveau client') : page === 'holidays' && isAdmin ? add('holiday', 'Ajouter un jour férié') : page === 'users' && isAdmin ? add('user', 'Ajouter un collaborateur') : page === 'entries' && user.role === 'TECHNICIAN' ? add('time', 'Saisir mes heures', true) : page === 'invoices' && isAdmin ? add('invoice', 'Créer une facture') : page === 'payments' && isAdmin ? add('payment', 'Enregistrer un paiement') : page === 'dashboard' && user.role === 'TECHNICIAN' ? add('time', 'Saisir mes heures', true) : null;
+  const primaryAction = page === 'technicians' && isAdmin ? add('technician', 'Ajouter un technicien') : page === 'projects' && internal ? add('project', 'Nouveau projet') : page === 'clients' && internal ? add('client', 'Nouveau client') : page === 'holidays' && isAdmin ? add('holiday', 'Ajouter un jour férié') : page === 'users' && isAdmin ? add('user', 'Ajouter un collaborateur') : page === 'entries' && user.role === 'TECHNICIAN' ? add('time', 'Saisir mes heures', true) : page === 'invoices' && isAdmin ? add('invoice', 'Créer une facture') : page === 'payments' && isAdmin ? add('payment', 'Enregistrer un paiement') : page === 'technician-payments' && isAdmin ? add('technician-payment', 'Enregistrer une charge') : page === 'dashboard' && user.role === 'TECHNICIAN' ? add('time', 'Saisir mes heures', true) : null;
   return <div className={`app-shell${isTechnician ? ' technician-shell' : ''}${isTechnician && modal ? ' technician-modal-open' : ''}`}>
     <header className="app-header">
       <div className="header-content">
@@ -294,6 +297,9 @@ export default function App() {
           </div>}
           {page === 'payments' && isAdmin && <Table rows={search(data.payments)} columns={[
             { label: 'Date', render: p => date(p.date) }, { label: 'Facture', render: p => data.invoices.find(i => i.id === p.invoice)?.number || '—' }, { label: 'Montant reçu', render: p => <strong className="green">{money(p.amount, user.currency)}</strong> }, { label: 'Mode', render: p => ({ TRANSFER: 'Virement', CASH: 'Espèces', CHECK: 'Chèque' })[p.method] }, { label: 'Référence', render: p => p.reference || '—' },
+          ]} />}
+          {page === 'technician-payments' && isAdmin && <Table rows={search(data.technicianPayments)} columns={[
+            { label: 'Date', render: p => date(p.date) }, { label: 'Technicien', render: p => p.technician_name }, { label: 'Montant versé', render: p => <strong className="green">{money(p.amount, user.currency)}</strong> }, { label: 'Mode', render: p => p.method_label || ({ TRANSFER: 'Virement', CASH: 'Espèces', CHECK: 'Chèque' })[p.method] }, { label: 'Référence', render: p => p.reference || '—' }, { label: 'Note', render: p => p.note || '—' },
           ]} />}
         </section>}
         <footer className="main-footer"><span>Copetrolite · Gestion des interventions industrielles</span><span>Votre espace, votre équipe.</span></footer>

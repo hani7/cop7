@@ -251,3 +251,23 @@ class Payment(models.Model):
     class Meta:
         ordering = ['-date', '-id']
         constraints = [models.CheckConstraint(condition=Q(amount__gt=0), name='positive_payment')]
+
+
+class TechnicianPayment(models.Model):
+    class Method(models.TextChoices):
+        TRANSFER = 'TRANSFER', 'Virement'
+        CASH = 'CASH', 'Espèces'
+        CHECK = 'CHECK', 'Chèque'
+
+    technician = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='technician_payments')
+    amount = models.DecimalField(max_digits=14, decimal_places=2)
+    date = models.DateField()
+    method = models.CharField(max_length=12, choices=Method, default=Method.TRANSFER)
+    reference = models.CharField(max_length=160, blank=True)
+    note = models.CharField(max_length=255, blank=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='created_technician_payments')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-date', '-id']
+        constraints = [models.CheckConstraint(condition=Q(amount__gt=0), name='positive_technician_payment')]
