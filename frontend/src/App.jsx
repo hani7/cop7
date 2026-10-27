@@ -7,6 +7,7 @@ import { ExperienceText } from './ExperienceEditor';
 import DeleteTechnician from './DeleteTechnician';
 import ProjectAccess from './ProjectAccess';
 import headerLogo from './assets/CO-1-1-1.png';
+import reportLogo from './assets/copetroelite-report-logo.png';
 import welcomeVideo from './assets/video-welcome.mp4';
 import welcomePoster from './assets/inspection-refinery.jpg';
 import { age, date, money, number, roleLabels, statusLabels, time } from './utils';
@@ -455,7 +456,7 @@ function TechnicianReport({ technician, rows, projects, close }) {
   return <Modal title={`Relevé des pointages · ${technician.name}`} onClose={close} wide>
     <div className="technician-report">
       <header className="technician-report-header">
-        <img src={headerLogo} alt="Copetro Elite" />
+        <img src={reportLogo} alt="Copetro Elite" />
         <div><span className="eyebrow green">RELEVÉ DES POINTAGES</span><h2>{technician.name}</h2><p>Édité le {date(new Date())}</p></div>
       </header>
       <section className="technician-report-client"><h3>Informations client</h3>{clients.length ? clients.map(client => <div className="report-client-grid" key={client.name}>
