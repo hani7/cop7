@@ -12,6 +12,7 @@
 
 /* Login story imagery */
 .login-story{background:linear-gradient(115deg,rgb(1 51 60 / 94%),rgb(0 91 82 / 78%)),url('./assets/login-refinery.jpg') center/cover no-repeat}
+.login-brand-logo{display:block;width:170px;height:auto;max-height:72px;object-fit:contain;object-position:left center}
 /* Technician profile and CV review */
 .form-grid > .field-wide { grid-column: 1 / -1; }
 .technician-assignment-date input,

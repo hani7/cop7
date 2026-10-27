@@ -25,7 +25,7 @@ const emptyData = { projects: [], entries: [], users: [], clients: [], holidays:
 const PAGE_STORAGE_KEY = 'copetrolite-current-page';
 const technicianLogin = window.location.pathname.replace(/\/+$/, '') === '/tech/login';
 const projectLogin = window.location.pathname.replace(/\/+$/, '') === '/project/login';
-function Brand() { return <div className="brand"><span><HardHat size={25} /></span><div>copetrolite<small>GESTION DES INTERVENTIONS</small></div></div>; }
+function Brand() { return <div className="brand"><img className="login-brand-logo" src={headerLogo} alt="Copetrolite" /></div>; }
 
 function Login({ onLogin, initialError, retry, technicianOnly = false, projectOnly = false }) {
   const [username, setUsername] = useState(''); const [password, setPassword] = useState('');
