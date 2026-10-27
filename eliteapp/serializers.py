@@ -233,13 +233,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(serializers.ModelSerializer):
     client_name = serializers.CharField(source='client.name', read_only=True)
+    client_details = serializers.SerializerMethodField()
     manager_name = serializers.CharField(required=False, allow_blank=True, max_length=200)
     technician_names = serializers.SerializerMethodField()
     technician_labor_cost = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
-        fields = ['id', 'name', 'client', 'client_name', 'site', 'description', 'project_manager',
+        fields = ['id', 'name', 'client', 'client_name', 'client_details', 'site', 'description', 'project_manager',
                   'manager_name', 'technicians', 'technician_names', 'hourly_rate',
                   'holiday_billing_day_rate', 'technician_hourly_rate', 'holiday_day_rate',
                   'technician_labor_cost', 'budget',
@@ -256,6 +257,17 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_technician_names(self, obj):
         return [u.get_full_name() or u.username for u in obj.technicians.all()]
+
+    def get_client_details(self, obj):
+        client = obj.client
+        return {
+            'name': client.name,
+            'rc': client.rc,
+            'nif': client.nif,
+            'article_number': client.article_number,
+            'nis': client.nis,
+            'billing_address': client.billing_address,
+        }
 
     def get_technician_labor_cost(self, obj):
         entries = getattr(obj, 'cost_entries', None)

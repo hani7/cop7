@@ -18,6 +18,22 @@
 .login-story:before{content:'';position:absolute;inset:0;background:linear-gradient(115deg,rgb(1 51 60 / 78%),rgb(0 91 82 / 64%));z-index:1;pointer-events:none}
 .login-submit{color:#fff}
 .login-brand-logo{display:block;width:170px;height:auto;max-height:72px;object-fit:contain;object-position:left center}
+.technician-report{padding:28px;background:#fff;color:var(--petrol)}
+.technician-report-header{display:flex;align-items:flex-start;gap:22px;padding-bottom:22px;border-bottom:2px solid var(--petrol)}
+.technician-report-header img{width:145px;height:90px;object-fit:contain;object-position:left center}
+.technician-report-header h2{margin:5px 0;font-size:21px}
+.technician-report-header p{margin:0;color:var(--muted);font-size:11px}
+.technician-report-client{margin:22px 0;padding:17px;border:1px solid var(--line);border-radius:8px}
+.technician-report-client h3{margin:0 0 12px;font-size:14px}
+.report-client-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px 18px;font-size:11px}
+.report-client-grid strong{grid-column:1/-1;font-size:14px}
+.report-client-address{grid-column:1/-1}
+.technician-report-table{width:100%;border-collapse:collapse;font-size:10px;text-align:left}
+.technician-report-table th{padding:10px 7px;background:var(--petrol);color:#fff;border:1px solid var(--petrol);white-space:nowrap}
+.technician-report-table td{padding:10px 7px;border:1px solid #b8cacc;vertical-align:top}
+.technician-report-table tfoot td{font-weight:700;text-align:right;background:#f2f7f7}
+.technician-report-table tfoot td:last-child{text-align:right}
+@media print{.technician-report{padding:0}.technician-report-actions{display:none!important}.technician-report-table{font-size:9px}.technician-report-table th{print-color-adjust:exact}}
 /* Technician profile and CV review */
 .form-grid > .field-wide { grid-column: 1 / -1; }
 .technician-assignment-date input,

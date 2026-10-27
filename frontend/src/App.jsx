@@ -77,7 +77,7 @@ export default function App() {
     return NAV.some(item => item.id === storedPage) || FINANCE_NAV.some(item => item.id === storedPage) ? storedPage : 'dashboard';
   }), [data, setData] = useState(emptyData), [loading, setLoading] = useState(false);
   const [error, setError] = useState(''), [notice, setNotice] = useState(''), [query, setQuery] = useState(''), [filter, setFilter] = useState('ALL'), [settingsOpen, setSettingsOpen] = useState(false), [financeOpen, setFinanceOpen] = useState(false);
-  const [modal, setModal] = useState(null), [working, setWorking] = useState(false), [deleteClientError, setDeleteClientError] = useState('');
+  const [modal, setModal] = useState(null), [report, setReport] = useState(null), [working, setWorking] = useState(false), [deleteClientError, setDeleteClientError] = useState('');
   const bootstrap = useCallback(async () => {
     setBooting(true); setSessionError('');
     try {
@@ -171,11 +171,16 @@ export default function App() {
   const numberedTechnicians = visibleRows.map((technician, index) => ({ ...technician, listNumber: index + 1 }));
   const edit = (type, row) => <button className="icon-button" title="Modifier" aria-label={`Modifier ${row.name || row.full_name || 'le pointage'}`} onClick={() => setModal({ type, row })}><Pencil size={16} /></button>;
   const add = (type, label, iconOnly = false) => <button className="button" aria-label={iconOnly ? label : undefined} title={iconOnly ? label : undefined} onClick={() => setModal({ type })}>{iconOnly && type === 'time' ? <Clock3 size={17} aria-hidden="true" /> : <Plus size={17} aria-hidden="true" />}{!iconOnly && label}</button>;
+  const openTechnicianReport = entry => setReport({
+    technician: { id: entry.technician, name: entry.technician_name },
+    rows: data.entries.filter(row => row.technician === entry.technician),
+  });
   const entryColumns = [
     { label: 'Technicien / Projet', render: e => <div className="cell-stack"><strong>{e.technician_name}</strong><span>{e.project_name}</span></div> },
     { label: 'Intervention', render: e => <div className="cell-stack"><strong>{date(e.start)}</strong>{!isTechnician && <span>{time(e.start)} – {time(e.end)} · {e.break_minutes} min de pause</span>}</div> },
     { label: 'Heures', render: e => <b className="tabular">{number(e.hours)} h</b> },
     ...(!isTechnician ? [{ label: 'Statut', render: e => <Badge status={e.status} /> }] : []),
+    { label: 'PDF', render: e => <button className="icon-button" title="RelevÃ© PDF du technicien" aria-label="RelevÃ© PDF du technicien" onClick={() => openTechnicianReport(e)}><Download size={16} /></button> },
     { label: 'Actions', render: e => <div className="row-actions"><button className="text-button" onClick={() => setModal({ type: 'entry-detail', row: e })}>Détail</button>{user?.role === 'TECHNICIAN' && ['DRAFT', 'REJECTED'].includes(e.status) && <>{edit('time', e)}<button className="button compact" disabled={working} onClick={() => act(e, 'submit')}><Send size={14} />Soumettre</button></>}{user?.role === 'PROJECT_MANAGER' && e.status === 'SUBMITTED' && <><button className="button compact" disabled={working} onClick={() => act(e, 'approve')}><Check size={14} />Valider</button><button className="icon-button danger" aria-label="Refuser le pointage" disabled={working} onClick={() => setModal({ type: 'reject', row: e })}><X size={17} /></button></>}</div> },
   ];
   if (booting) return <div className="boot"><Spinner /><span>Ouverture de votre espace…</span></div>;
@@ -220,6 +225,7 @@ export default function App() {
         </nav>}
       </div>
     </header>
+    {report && <TechnicianReport technician={report.technician} rows={report.rows} projects={data.projects} close={() => setReport(null)} />}
     <div className="workspace">
       <main className="main"><div className={`page-heading${isTechnician && page === 'dashboard' ? ' technician-dashboard-heading' : isTechnician && page === 'entries' ? ' technician-entries-heading' : ''}`}><div>{!isTechnician && <span className="eyebrow green">{'COPETROLITE / ' + (page === 'dashboard' ? 'TABLEAU DE BORD' : 'GESTION')}</span>}<h1>{isTechnician && page === 'dashboard' ? `Bonjour, ${user.full_name.split(' ')[0]}` : NAV.find(n => n.id === page)?.label}</h1>{!(isTechnician && page === 'entries') && <p>{isTechnician && page === 'dashboard' ? 'Prêt pour votre prochaine intervention ?' : isTechnician && page === 'payments' ? 'Retrouvez vos gains par projet.' : descriptions[page]}</p>}</div>{primaryAction}</div>
         {notice && <div className="alert success" role="status"><CheckCheck size={18} />{notice}</div>}
@@ -424,5 +430,34 @@ function InvoiceDetail({ invoice, close }) {
       {invoice.payments.length > 0 && <><h3>Règlements</h3>{invoice.payments.map(p => <p key={p.id}>{date(p.date)} · {money(p.amount, invoice.currency)} · {p.reference || 'Sans référence'}</p>)}</>}
     </div>
     <footer className="form-footer"><button className="button secondary" onClick={close}>Fermer</button><button className="button" onClick={() => window.print()}><FileText size={16} />Imprimer / PDF</button></footer>
+  </Modal>;
+}
+
+function TechnicianReport({ technician, rows, projects, close }) {
+  const projectById = new Map(projects.map(project => [project.id, project]));
+  const reportRows = rows.map((entry, index) => {
+    const project = projectById.get(entry.project);
+    const rate = Number(project?.technician_hourly_rate || 0);
+    const hours = Number(entry.hours || 0);
+    return { entry, project, index: index + 1, rate, amount: rate * hours };
+  });
+  const clients = [...new Map(reportRows.map(row => [row.project?.client_details?.name, row.project?.client_details]).filter(([name, details]) => name && details)).values()];
+  const subtotal = reportRows.reduce((total, row) => total + row.amount, 0);
+  const tax = subtotal * 0.19;
+  const total = subtotal + tax;
+  return <Modal title={`Relevé des pointages · ${technician.name}`} onClose={close} wide>
+    <div className="technician-report">
+      <header className="technician-report-header">
+        <img src={headerLogo} alt="Copetro Elite" />
+        <div><span className="eyebrow green">RELEVÉ DES POINTAGES</span><h2>{technician.name}</h2><p>Édité le {date(new Date())}</p></div>
+      </header>
+      <section className="technician-report-client"><h3>Informations client</h3>{clients.length ? clients.map(client => <div className="report-client-grid" key={client.name}>
+        <strong>{client.name}</strong><span>RC : {client.rc || '—'}</span><span>NIF : {client.nif || '—'}</span><span>N° article : {client.article_number || '—'}</span><span>NIS : {client.nis || '—'}</span><span className="report-client-address">Adresse : {client.billing_address || '—'}</span>
+      </div>) : <p className="muted">Informations client indisponibles.</p>}</section>
+      <table className="technician-report-table"><thead><tr><th>N°</th><th>Réf.</th><th>Désignation</th><th>P.U.</th><th>Quantité</th><th>Jour</th><th>Unité</th><th>TVA</th><th>Montant</th></tr></thead><tbody>
+        {reportRows.map(({ entry, project, index, rate, amount }) => <tr key={entry.id}><td>{index}</td><td>{project?.name || entry.project_name}</td><td>{entry.description || 'Heures standard'}</td><td>{rate ? money(rate, 'DZD') : '—'}</td><td>{number(entry.hours)}</td><td>{date(entry.start)}</td><td>HEURES</td><td>19 %</td><td>{rate ? money(amount, 'DZD') : '—'}</td></tr>)}
+      </tbody><tfoot><tr><td colSpan="8">Total HT</td><td>{money(subtotal, 'DZD')}</td></tr><tr><td colSpan="8">Total TVA</td><td>{money(tax, 'DZD')}</td></tr><tr><td colSpan="8">Total TTC</td><td>{money(total, 'DZD')}</td></tr></tfoot></table>
+    </div>
+    <footer className="form-footer technician-report-actions"><button className="button secondary" onClick={close}>Fermer</button><button className="button" onClick={() => window.print()}><Download size={16} />Télécharger en PDF</button></footer>
   </Modal>;
 }
