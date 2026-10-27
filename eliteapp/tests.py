@@ -95,6 +95,12 @@ class ProjectAccessTests(APITestCase):
             self.assertEqual(self.client.get(path).status_code, 403)
         self.assertEqual(self.client.patch(f'/api/projects/{self.project.pk}/', {'name': 'Changed'}).status_code, 403)
 
+    def test_project_account_sees_only_assigned_technicians(self):
+        self.client.force_authenticate(self.account)
+        response = self.client.get('/api/users/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual([user['id'] for user in response.data['results']], [self.tech.pk])
+
     def test_project_account_can_reject_with_reason_but_cannot_see_drafts(self):
         self.client.force_authenticate(self.account)
         path = f'/api/time-entries/{self.entry.pk}/reject/'

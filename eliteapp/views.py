@@ -261,8 +261,8 @@ class UserViewSet(EditableViewSet):
             return User.objects.select_related('client').prefetch_related('certificate_documents').all()
         if user.effective_role == User.Role.PROJECT_MANAGER:
             projects = projects_for(user)
-            return User.objects.filter(Q(pk=user.pk) | Q(assigned_projects__in=projects)
-                                       | Q(time_entries__project__in=projects)).distinct()
+            return User.objects.filter(role=User.Role.TECHNICIAN,
+                                       assigned_projects__in=projects).distinct()
         return User.objects.filter(pk=user.pk)
 
     def create(self, request, *args, **kwargs):

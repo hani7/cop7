@@ -15,7 +15,7 @@ const NAV = [
   { id: 'projects', label: 'Projets', icon: BriefcaseBusiness },
   { id: 'entries', label: 'Pointages', icon: Clock3 },
   { id: 'technicians', label: 'Techniciens', icon: HardHat, roles: ['ADMIN', 'SUPERVISOR', 'PROJECT_MANAGER'] },
-  { id: 'users', label: 'Équipe', icon: Users, roles: ['ADMIN', 'SUPERVISOR', 'PROJECT_MANAGER'] },
+  { id: 'users', label: 'Équipe', icon: Users, roles: ['ADMIN', 'SUPERVISOR'] },
   { id: 'clients', label: 'Clients', icon: Building2, roles: ['ADMIN', 'SUPERVISOR'] },
   { id: 'holidays', label: 'Calendrier', icon: CalendarDays, roles: ['ADMIN'] },
   { id: 'invoices', label: 'Facturation', icon: FileText, roles: ['ADMIN'] },
