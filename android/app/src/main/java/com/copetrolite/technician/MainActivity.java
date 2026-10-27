@@ -22,8 +22,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public final class MainActivity extends Activity {
-    private static final String LOCAL_HOST = "192.168.1.64";
-    private static final int LOCAL_PORT = 5173;
+    private static final String PRODUCTION_HOST = "tracking.copetroelite.com";
+    private static final String PRODUCTION_URL = "https://tracking.copetroelite.com/tech/login";
     private WebView webView;
     private FrameLayout root;
     private LinearLayout loadingPanel;
@@ -45,6 +45,7 @@ public final class MainActivity extends Activity {
         webView.getSettings().setSupportZoom(false);
         webView.getSettings().setAllowFileAccess(false);
         webView.getSettings().setAllowContentAccess(false);
+        webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
         webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
         webView.setVisibility(View.INVISIBLE);
         webView.setWebViewClient(new WebViewClient() {
@@ -82,7 +83,7 @@ public final class MainActivity extends Activity {
         root.addView(loadingPanel, centeredPanelParams());
         root.addView(errorPanel, centeredPanelParams());
         setContentView(root);
-        webView.loadUrl("http://" + LOCAL_HOST + ":" + LOCAL_PORT + "/tech/login");
+        webView.loadUrl(PRODUCTION_URL);
     }
 
     private FrameLayout.LayoutParams centeredPanelParams() {
@@ -172,9 +173,7 @@ public final class MainActivity extends Activity {
 
     private boolean handleNavigation(Uri uri) {
         String scheme = uri.getScheme();
-        if ("http".equals(scheme)
-                && LOCAL_HOST.equals(uri.getHost())
-                && uri.getPort() == LOCAL_PORT) {
+        if ("https".equals(scheme) && PRODUCTION_HOST.equals(uri.getHost())) {
             return false;
         }
         if ("http".equals(scheme) || "https".equals(scheme)) {
