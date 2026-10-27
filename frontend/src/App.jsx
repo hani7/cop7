@@ -55,7 +55,7 @@ function Login({ onLogin, initialError, retry, technicianOnly = false, projectOn
   return <main className={`login${technicianOnly || projectOnly ? ' login-technician' : ''}`}>
     <section className="login-story"><video className="login-story-video" autoPlay loop muted playsInline poster={welcomePoster} aria-hidden="true"><source src={welcomeVideo} type="video/mp4" /></video><Brand /><div className="story-content"><span className="eyebrow">LE TERRAIN. LES ÉQUIPES. LE SUIVI.</span><h1>Chaque heure<br />compte.</h1><p>Connectez vos équipes et vos clients.<br />Du premier pointage au dernier règlement.</p><div className="story-line"><Clock3 size={20} /><span>Pointer</span><i /><ShieldCheck size={20} /><span>Valider</span><i /><FileText size={20} /><span>Facturer</span></div></div><footer>Votre activité industrielle, en toute clarté.</footer></section>
     <section className="login-panel">
-      {(technicianOnly || projectOnly) && <div className="tech-login-brand"><span><HardHat size={25} /></span><div>copetrolite<small>{projectOnly ? 'ESPACE CLIENT · PROJET' : 'ESPACE TECHNICIEN'}</small></div></div>}
+      {(technicianOnly || projectOnly) && <div className="tech-login-brand"><img className="tech-login-logo" src={headerLogo} alt="Copetro Elite" /><small>{projectOnly ? 'ESPACE CLIENT · PROJET' : 'ESPACE TECHNICIEN'}</small></div>}
       <div className="login-box">
         <span className="eyebrow green">{technicianOnly ? 'ACCÈS SÉCURISÉ' : 'VOTRE ESPACE DE TRAVAIL'}</span>
         <h2>{projectOnly ? 'Validation des pointages' : technicianOnly ? 'Bonjour.' : 'Bon retour.'}</h2>

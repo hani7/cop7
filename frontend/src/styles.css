@@ -36,6 +36,22 @@
 .technician-payment-summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;padding:15px;border:1px solid #b7e9df;border-radius:9px;background:#e0f7f2}
 .technician-payment-summary div{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:11px}
 .technician-payment-summary strong{color:var(--petrol);font-size:18px}
+@media(max-width:760px){
+  .login.login-technician{display:block;min-height:100svh;background:linear-gradient(145deg,rgb(1 51 60 / 82%),rgb(0 109 101 / 66%)),url('./assets/inspection-refinery.jpg') center/cover no-repeat;overflow:auto}
+  .login-technician .login-story{display:none}
+  .login-technician .login-panel{position:relative;display:flex;min-height:100svh;flex-direction:column;justify-content:center;padding:34px 22px;background:transparent}
+  .login-technician .tech-login-brand{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:12px;margin:0 auto 22px;color:#fff;font-family:'Manrope',sans-serif;font-size:24px;font-weight:750;letter-spacing:-.8px}
+  .login-technician .tech-login-brand>span{display:grid;place-items:center;width:52px;height:52px;border:1px solid #ffffff55;border-radius:15px;background:#01333ccc;color:#fff}
+  .login-technician .tech-login-brand small{display:block;margin-top:5px;color:#d6efec;font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:1.6px;font-weight:600}
+  .login-technician .login-box{position:relative;z-index:1;max-width:420px;margin:0 auto;padding:27px 23px 22px;border:1px solid #ffffff80;border-radius:24px;background:rgb(255 255 255 / 76%);box-shadow:0 20px 60px #01333c45;backdrop-filter:blur(18px)}
+  .login-technician .login-box h2{color:var(--petrol);font-size:34px}
+  .login-technician .login-box>p{color:#426269}
+  .login-technician .login-box input{background:rgb(255 255 255 / 72%);border-color:#ffffffb8;border-radius:13px;padding:15px}
+  .login-technician .login-submit{width:100%;justify-content:center;margin-top:4px;border:0;border-radius:13px;background:var(--petrol);color:#fff;box-shadow:0 8px 18px #01333c30}
+  .login-technician .login-help{color:#426269}
+}
+
+@media(max-width:760px){.login-technician .login-panel{justify-content:center!important;gap:18px!important}.login-technician .tech-login-brand{flex-direction:column!important;gap:8px!important}.login-technician .login-box{background:rgb(255 255 255 / 76%)!important;backdrop-filter:blur(18px)}}
 @media print{.technician-report{padding:0}.technician-report-actions{display:none!important}.technician-report-table{font-size:9px}.technician-report-table th{print-color-adjust:exact}}
 /* Technician profile and CV review */
 .form-grid > .field-wide { grid-column: 1 / -1; }
@@ -305,6 +321,18 @@ dialog::-webkit-scrollbar-button {
 .earnings-details dt { color: var(--muted); }
 .earnings-details dd { margin: 0; text-align: right; font-weight: 600; }
 .technician-earnings .tech-entry-card-bottom { flex-wrap: wrap; font-size: 13px; }
+.tech-login-logo{display:block;width:190px;height:auto;object-fit:contain}
+
+@media(max-width:760px){
+  .login.login-technician{display:block;min-height:100svh;background:linear-gradient(145deg,rgb(1 51 60 / 82%),rgb(0 109 101 / 66%)),url('./assets/inspection-refinery.jpg') center/cover no-repeat;overflow:auto}
+  .login-technician .login-panel{justify-content:center;gap:18px;padding:34px 22px;background:transparent}
+  .login-technician .tech-login-brand{flex-direction:column;gap:8px;margin:0 auto 4px;color:#fff}
+  .login-technician .tech-login-brand small{color:#d6efec}
+  .login-technician .tech-login-logo{width:205px;max-height:78px}
+  .login-technician .login-box{padding:27px 23px 22px;border:1px solid #ffffff80;border-radius:24px;background:rgb(255 255 255 / 76%);box-shadow:0 20px 60px #01333c45;backdrop-filter:blur(18px)}
+  .login-technician .login-box input{background:rgb(255 255 255 / 72%);border-color:#ffffffb8;border-radius:13px;padding:15px}
+  .login-technician .login-submit{border:0;border-radius:13px;background:var(--petrol);color:#fff;box-shadow:0 8px 18px #01333c30}
+}
 
 @media(max-width:760px) {
   .technician-shell .metrics { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin-bottom: 18px; }
