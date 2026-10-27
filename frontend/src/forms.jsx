@@ -211,6 +211,13 @@ export default function Editor({ modal, data, user, save, close }) {
     title = 'Enregistrer une charge technicien'; resource = 'technician-payments';
     fields = [select('technician', 'Technicien', data.users.filter(person => person.role === 'TECHNICIAN' && person.is_active).map(person => ({ value: person.id, label: person.full_name || person.username }))), amount('amount', 'Montant versé', true), text('date', 'Date du paiement', true, { type: 'date', max: localDate() }), select('method', 'Mode de paiement', [{ value: 'TRANSFER', label: 'Virement' }, { value: 'CHECK', label: 'Chèque' }, { value: 'CASH', label: 'Espèces' }]), text('reference', 'Référence'), text('note', 'Note')];
     initial = { technician: '', amount: '', date: localDate(), method: 'TRANSFER', reference: '', note: '' };
+    extra = values => {
+      const entries = data.entries.filter(entry => String(entry.technician) === String(values.technician) && ['APPROVED', 'INVOICED'].includes(entry.status));
+      const projects = new Map(data.projects.map(project => [project.id, project]));
+      const hours = entries.reduce((total, entry) => total + Number(entry.hours || 0), 0);
+      const amount = entries.reduce((total, entry) => total + Number(entry.hours || 0) * Number(projects.get(entry.project)?.technician_hourly_rate || 0), 0);
+      return values.technician ? <div className="technician-payment-summary"><div><span>Total heures validées</span><strong>{number(hours)} h</strong></div><div><span>Montant total calculé</span><strong>{money(amount, user.currency)}</strong></div></div> : null;
+    };
   }
   return <Modal title={title} titleIcon={modal.type === 'technician' ? <HardHat size={20} aria-hidden="true" /> : modal.type === 'client' ? <Building2 size={20} aria-hidden="true" /> : null} onClose={close}><RecordForm fields={fields} initial={initial} onClose={close} submitLabel={submitLabel} fullWidthActions={modal.type === 'technician' || modal.type === 'user'} fieldLabelsUppercase={modal.type === 'client'} onSave={values => modal.type === 'reject' ? save(`time-entries/${row.id}/reject/`, 'POST', values) : save(`${resource}/${editing ? row.id + '/' : ''}`, editing ? 'PATCH' : 'POST', transform(values))}>{extra}</RecordForm></Modal>;
 }
