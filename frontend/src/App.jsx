@@ -21,6 +21,10 @@ const NAV = [
   { id: 'invoices', label: 'Facturation', icon: FileText, roles: ['ADMIN'] },
   { id: 'payments', label: 'Paiements', icon: CreditCard, roles: ['ADMIN', 'TECHNICIAN'] },
 ];
+const FINANCE_NAV = [
+  { id: 'invoices', label: 'Facturation', icon: FileText, roles: ['ADMIN'] },
+  { id: 'payments', label: 'Paiements', icon: CreditCard, roles: ['ADMIN', 'TECHNICIAN'] },
+];
 const descriptions = { dashboard: 'Le suivi de vos équipes et de vos interventions, en un seul endroit.', projects: 'Organisez les interventions et affectez les bonnes équipes.', entries: 'Des heures saisies sur le terrain aux heures validées par le client.', technicians: 'Retrouvez les fiches, spécialités et affectations de vos techniciens.', users: 'Les personnes qui font avancer vos projets.', clients: 'Retrouvez vos entreprises clientes et leurs coordonnées.', holidays: 'Gérez les jours fériés utilisés pour calculer les coûts de main-d’œuvre.', invoices: 'Transformez les heures validées en factures.', payments: 'Gardez une vision claire des règlements reçus.' };
 const emptyData = { projects: [], entries: [], users: [], clients: [], holidays: [], invoices: [], payments: [], dashboard: {} };
 const PAGE_STORAGE_KEY = 'copetrolite-current-page';
@@ -70,9 +74,9 @@ export default function App() {
   const [page, setPage] = useState(() => {
     if (projectLogin) return 'entries';
     const storedPage = sessionStorage.getItem(PAGE_STORAGE_KEY);
-    return NAV.some(item => item.id === storedPage) ? storedPage : 'dashboard';
+    return NAV.some(item => item.id === storedPage) || FINANCE_NAV.some(item => item.id === storedPage) ? storedPage : 'dashboard';
   }), [data, setData] = useState(emptyData), [loading, setLoading] = useState(false);
-  const [error, setError] = useState(''), [notice, setNotice] = useState(''), [query, setQuery] = useState(''), [filter, setFilter] = useState('ALL'), [settingsOpen, setSettingsOpen] = useState(false);
+  const [error, setError] = useState(''), [notice, setNotice] = useState(''), [query, setQuery] = useState(''), [filter, setFilter] = useState('ALL'), [settingsOpen, setSettingsOpen] = useState(false), [financeOpen, setFinanceOpen] = useState(false);
   const [modal, setModal] = useState(null), [working, setWorking] = useState(false), [deleteClientError, setDeleteClientError] = useState('');
   const bootstrap = useCallback(async () => {
     setBooting(true); setSessionError('');
@@ -94,6 +98,10 @@ export default function App() {
   useEffect(() => {
     if (!user) return;
     const currentPage = NAV.find(item => item.id === page);
+    if ((page === 'invoices' && user.role !== 'ADMIN') || (page === 'payments' && !['ADMIN', 'TECHNICIAN'].includes(user.role))) {
+      setPage('dashboard');
+      return;
+    }
     if (currentPage?.roles && !currentPage.roles.includes(user.role)) {
       setPage('dashboard');
       return;
@@ -115,7 +123,7 @@ export default function App() {
   }, [user]);
   useEffect(() => { refresh(); }, [refresh]);
   useEffect(() => { if (!notice) return; const timer = setTimeout(() => setNotice(''), 5000); return () => clearTimeout(timer); }, [notice]);
-  function navigate(id) { setPage(id); setQuery(''); setFilter('ALL'); setSettingsOpen(false); }
+  function navigate(id) { setPage(id); setQuery(''); setFilter('ALL'); setSettingsOpen(false); setFinanceOpen(false); }
   async function save(path, method, body) {
     const result = await api(path, { method, body });
     if (path.startsWith('users/') && body instanceof FormData
@@ -150,7 +158,9 @@ export default function App() {
   const isAdmin = user?.role === 'ADMIN';
   const isTechnician = user?.role === 'TECHNICIAN';
   const nav = NAV.filter(item => (!item.roles || item.roles.includes(user?.role))
+    && !['invoices', 'payments'].includes(item.id)
     && !(user?.role === 'ADMIN' && ['users', 'holidays'].includes(item.id)));
+  const financeItems = FINANCE_NAV.filter(item => item.roles.includes(user?.role));
   const search = rows => rows.filter(row => Object.values(row).some(value => typeof value === 'string' && value.toLocaleLowerCase().includes(query.toLocaleLowerCase())));
   const technicians = data.users.filter(person => person.role === 'TECHNICIAN');
   const visibleRows = search(page === 'technicians' ? technicians : data[page] instanceof Array ? data[page] : []).filter(row => {
@@ -182,8 +192,11 @@ export default function App() {
                 <item.icon size={18} /><span>{item.label}</span>
                 {item.id === 'entries' && !isTechnician && data.dashboard.pending_entries > 0 && <small>{data.dashboard.pending_entries}</small>}
               </button>
-              {item.id === 'clients' && isAdmin && <button className={settingsOpen || ['holidays', 'users'].includes(page) ? 'topnav-link active' : 'topnav-link'} aria-expanded={settingsOpen} aria-controls="settings-subnav" onClick={() => setSettingsOpen(open => !open)}>
+              {item.id === 'clients' && isAdmin && <button className={settingsOpen || ['holidays', 'users'].includes(page) ? 'topnav-link active' : 'topnav-link'} aria-expanded={settingsOpen} aria-controls="settings-subnav" onClick={() => { setSettingsOpen(open => !open); setFinanceOpen(false); }}>
                 <Settings size={18} /><span>Paramètres</span><ChevronDown size={15} />
+              </button>}
+              {item.id === 'clients' && financeItems.length > 0 && <button className={financeOpen || ['invoices', 'payments'].includes(page) ? 'topnav-link active' : 'topnav-link'} aria-expanded={financeOpen} aria-controls="finance-subnav" onClick={() => { setFinanceOpen(open => !open); setSettingsOpen(false); }}>
+                <CreditCard size={18} /><span>Finances</span><ChevronDown size={15} />
               </button>}
             </Fragment>)}
           </nav>
@@ -199,6 +212,11 @@ export default function App() {
               <item.icon size={17} /><span>{item.label}</span>
             </button>
           )}
+        </nav>}
+        {financeOpen && financeItems.length > 0 && <nav className="settings-subnav finance-subnav" id="finance-subnav" aria-label="Finances">
+          {financeItems.map(item => <button key={item.id} className={page === item.id ? 'settings-subnav-link active' : 'settings-subnav-link'} aria-current={page === item.id ? 'page' : undefined} onClick={() => navigate(item.id)}>
+            <item.icon size={17} /><span>{item.label}</span>
+          </button>)}
         </nav>}
       </div>
     </header>
