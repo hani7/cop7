@@ -451,8 +451,7 @@ function TechnicianReport({ technician, rows, projects, close }) {
   });
   const clients = [...new Map(reportRows.map(row => [row.project?.client_details?.name, row.project?.client_details]).filter(([name, details]) => name && details)).values()];
   const subtotal = reportRows.reduce((total, row) => total + row.amount, 0);
-  const tax = subtotal * 0.19;
-  const total = subtotal + tax;
+  const total = subtotal;
   return <Modal title={`Relevé des pointages · ${technician.name}`} onClose={close} wide>
     <div className="technician-report">
       <header className="technician-report-header">

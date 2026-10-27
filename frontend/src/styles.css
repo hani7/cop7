@@ -33,6 +33,11 @@
 .technician-report-table td{padding:10px 7px;border:1px solid #b8cacc;vertical-align:top}
 .technician-report-table tfoot td{font-weight:700;text-align:right;background:#f2f7f7}
 .technician-report-table tfoot td:last-child{text-align:right}
+.technician-report-client{display:none!important}
+.technician-report-table th:nth-child(8),.technician-report-table td:nth-child(8){display:none}
+.technician-report-table tfoot tr:nth-child(2){display:none}
+.technician-report::after{content:'Signature du technicien                                      Signature et cachet';display:block;margin-top:64px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:10px;white-space:pre}
+.invoice-totals p:nth-child(2){display:none}
 .technician-payment-summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;padding:15px;border:1px solid #b7e9df;border-radius:9px;background:#e0f7f2}
 .technician-payment-summary div{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:11px}
 .technician-payment-summary strong{color:var(--petrol);font-size:18px}
