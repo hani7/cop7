@@ -16,6 +16,7 @@
 .login-story>.brand,.login-story>footer{position:relative;z-index:2}
 .login-story .story-content{position:relative;z-index:2}
 .login-story:before{content:'';position:absolute;inset:0;background:linear-gradient(115deg,rgb(1 51 60 / 78%),rgb(0 91 82 / 64%));z-index:1;pointer-events:none}
+.login-submit{color:#fff}
 .login-brand-logo{display:block;width:170px;height:auto;max-height:72px;object-fit:contain;object-position:left center}
 /* Technician profile and CV review */
 .form-grid > .field-wide { grid-column: 1 / -1; }
