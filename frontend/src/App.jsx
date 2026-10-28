@@ -420,7 +420,37 @@ function ProfileDocument({ url, name }) {
   </li>;
 }
 
+const frenchUnits = ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize'];
+function frenchNumber(value) {
+  const numberValue = Math.floor(Math.max(0, Number(value) || 0));
+  if (numberValue < 17) return frenchUnits[numberValue];
+  if (numberValue < 20) return `dix-${frenchUnits[numberValue - 10]}`;
+  if (numberValue < 70) { const tens = ['vingt', 'trente', 'quarante', 'cinquante', 'soixante'][Math.floor(numberValue / 10) - 2]; const rest = numberValue % 10; return `${tens}${rest ? rest === 1 ? ' et un' : `-${frenchUnits[rest]}` : ''}`; }
+  if (numberValue < 80) return `soixante-${frenchNumber(numberValue - 60)}`;
+  if (numberValue < 100) return `quatre-vingt${numberValue % 10 ? `-${frenchUnits[numberValue % 10]}` : 's'}`;
+  if (numberValue < 1000) { const hundreds = Math.floor(numberValue / 100); const rest = numberValue % 100; return `${hundreds === 1 ? 'cent' : `${frenchUnits[hundreds]} cent`}${rest ? ` ${frenchNumber(rest)}` : hundreds > 1 ? 's' : ''}`; }
+  if (numberValue < 1000000) { const thousands = Math.floor(numberValue / 1000); const rest = numberValue % 1000; return `${thousands === 1 ? 'mille' : `${frenchNumber(thousands)} mille`}${rest ? ` ${frenchNumber(rest)}` : ''}`; }
+  const millions = Math.floor(numberValue / 1000000); const rest = numberValue % 1000000;
+  return `${millions === 1 ? 'un million' : `${frenchNumber(millions)} millions`}${rest ? ` ${frenchNumber(rest)}` : ''}`;
+}
+function amountInFrenchDinars(value) {
+  const amount = Number(value) || 0; const dinars = Math.floor(amount); const centimes = Math.round((amount - dinars) * 100);
+  return `${frenchNumber(dinars)} dinars${centimes ? ` et ${frenchNumber(centimes)} centimes` : ''}`.toUpperCase();
+}
+
 function InvoiceDetail({ invoice, close }) {
+  return <Modal title={invoice.number} onClose={close} wide>
+    <div className="invoice-document exact-invoice">
+      <header className="exact-invoice-header"><img src={reportLogo} alt="Copetro Elite" /><div><span className="eyebrow green">FACTURE</span><h2>{invoice.number}</h2><p>Émise le {date(invoice.issued_at)} · Échéance : {date(invoice.due_date)}</p></div><Badge status={invoice.status} /></header>
+      <section className="exact-invoice-client"><h3>{invoice.client_name}</h3><p>{invoice.billing_address || '—'}</p><div><span>RC : {invoice.client_rc || '—'}</span><span>NIF : {invoice.client_nif || '—'}</span><span>N° article : {invoice.client_article_number || '—'}</span><span>NIS : {invoice.client_nis || '—'}</span></div></section>
+      <section className="exact-invoice-project"><strong>Projet : {invoice.project_name}</strong></section>
+      <table className="exact-invoice-table"><thead><tr><th>N°</th><th>Réf.</th><th>Désignation</th><th>P.U.</th><th>Quantité</th><th>Jour</th><th>Unité</th><th>TVA</th><th>Montant</th></tr></thead><tbody>{invoice.lines.map((line, index) => <tr key={line.id}><td>{index + 1}</td><td>{invoice.project_name}</td><td><strong>{line.technician_name}</strong><br />{line.description}</td><td>{money(line.rate, invoice.currency)}</td><td>{number(line.hours)}</td><td>{date(line.work_date)}</td><td>HEURES</td><td>{number(invoice.tax_percent)} %</td><td>{money(line.amount, invoice.currency)}</td></tr>)}</tbody><tfoot><tr><td colSpan="8">Total HT</td><td>{money(invoice.subtotal, invoice.currency)}</td></tr><tr><td colSpan="8">Total TVA</td><td>{money(invoice.tax_amount, invoice.currency)}</td></tr><tr><td colSpan="8">Total TTC</td><td>{money(invoice.total, invoice.currency)}</td></tr></tfoot></table>
+      <p className="invoice-total-words">Arrêté la présente facture à la somme de : <strong>{amountInFrenchDinars(invoice.total)}</strong></p>
+      <div className="invoice-signature-space">Signature et cachet</div>
+    </div>
+    <footer className="form-footer"><button className="button secondary" onClick={close}>Fermer</button><button className="button" onClick={() => window.print()}><FileText size={16} />Imprimer / PDF</button></footer>
+  </Modal>;
+  /* Legacy layout retained below for reference. */
   return <Modal title={invoice.number} onClose={close} wide>
     <div className="invoice-document">
       <div className="invoice-top"><div><span className="eyebrow green">FACTURE</span><h2>{invoice.number}</h2><p>Émise le {date(invoice.issued_at)}<br />Échéance : {date(invoice.due_date)}</p></div><Badge status={invoice.status} /></div>

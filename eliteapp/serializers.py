@@ -446,12 +446,17 @@ class InvoiceSerializer(serializers.ModelSerializer):
     payments = PaymentSerializer(many=True, read_only=True)
     paid = serializers.DecimalField(max_digits=14, decimal_places=2, read_only=True)
     balance = serializers.DecimalField(max_digits=14, decimal_places=2, read_only=True)
+    client_rc = serializers.CharField(source='project.client.rc', read_only=True)
+    client_nif = serializers.CharField(source='project.client.nif', read_only=True)
+    client_article_number = serializers.CharField(source='project.client.article_number', read_only=True)
+    client_nis = serializers.CharField(source='project.client.nis', read_only=True)
     number = serializers.CharField(read_only=True)
     status = serializers.CharField(read_only=True)
 
     class Meta:
         model = Invoice
-        fields = ['id', 'number', 'project', 'project_name', 'client_name', 'billing_address',
+        fields = ['id', 'number', 'project', 'project_name', 'client_name', 'billing_address', 'client_rc', 'client_nif',
+                  'client_article_number', 'client_nis',
                   'purchase_order', 'currency', 'tax_percent', 'subtotal', 'tax_amount', 'total',
                   'issued_at', 'due_date', 'paid', 'balance', 'status', 'lines', 'payments']
         read_only_fields = fields

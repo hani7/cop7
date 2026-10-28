@@ -38,6 +38,16 @@
 .technician-report-table tfoot tr:nth-child(2){display:none}
 .technician-report::after{content:'Signature et cachet';display:block;margin-top:64px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:10px;text-align:right}
 .invoice-totals p:nth-child(2){display:none}
+.exact-invoice{padding:30px;color:var(--petrol)}
+.exact-invoice-header{display:flex;align-items:flex-start;gap:22px;padding-bottom:18px;border-bottom:2px solid var(--petrol)}
+.exact-invoice-header img{width:145px;height:86px;object-fit:contain;object-position:left center}
+.exact-invoice-header h2{margin:4px 0;font-size:20px}.exact-invoice-header p{margin:0;color:var(--muted);font-size:11px}.exact-invoice-header>.badge{margin-left:auto}
+.exact-invoice-client{margin:20px 0;padding:14px;border:1px solid var(--line);border-radius:7px}.exact-invoice-client h3{margin:0 0 5px}.exact-invoice-client p{margin:0 0 10px;color:var(--muted);font-size:11px}.exact-invoice-client div{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:10px}
+.exact-invoice-project{margin:0 0 15px;font-size:12px}
+.exact-invoice-table{width:100%;border-collapse:collapse;font-size:10px}.exact-invoice-table th{padding:10px 7px;background:var(--petrol);color:#fff;border:1px solid var(--petrol);white-space:nowrap}.exact-invoice-table td{padding:9px 7px;border:1px solid #b8cacc;vertical-align:top}.exact-invoice-table tfoot td{font-weight:700;text-align:right;background:#f2f7f7}
+.invoice-total-words{margin:28px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:11px;text-transform:uppercase}.invoice-total-words strong{display:block;margin-top:6px;font-size:12px}
+.invoice-signature-space{margin-top:58px;padding-top:12px;border-top:1px solid var(--line);text-align:right;color:var(--muted);font-size:10px}
+@media print{.exact-invoice{padding:0}.exact-invoice-table th{print-color-adjust:exact}.invoice-signature-space{margin-top:70px}}
 .technician-payment-summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;padding:15px;border:1px solid #b7e9df;border-radius:9px;background:#e0f7f2}
 .technician-payment-summary div{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:11px}
 .technician-payment-summary strong{color:var(--petrol);font-size:18px}
