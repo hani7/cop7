@@ -21,9 +21,9 @@ export default function Editor({ modal, data, user, save, close }) {
   const editing = !!row;
   let title, fields, initial, resource, transform = x => x, extra, submitLabel;
   if (modal.type === 'specialty') {
-    title = 'Ajouter une spécialité'; resource = 'technician-specialties';
+    title = editing ? 'Modifier une spécialité' : 'Ajouter une spécialité'; resource = 'technician-specialties';
     fields = [text('name', 'Nom de la spécialité', true, { maxLength: 120 })];
-    initial = { name: '' };
+    initial = row ? { name: row.name } : { name: '' };
   } else if (modal.type === 'specialty-assign') {
     title = `Affecter un technicien · ${modal.row.name}`; resource = 'users';
     const availableTechnicians = data.users.filter(technician => technician.role === 'TECHNICIAN' && technician.is_active && technician.specialty !== modal.row.name);
@@ -66,6 +66,7 @@ export default function Editor({ modal, data, user, save, close }) {
       { name: 'technician_photo', hidden: values.role !== 'TECHNICIAN', render: (current, update) => <TechnicianPhoto values={current} update={update} /> },
       text('last_name', 'Nom', true, { className: 'technician-uppercase' }), text('first_name', 'Prénom', true, { className: 'technician-uppercase' }),
       { ...text('birth_date', 'Date de naissance', false, { type: 'date', max: maxBirthDate() }), hidden: values.role !== 'TECHNICIAN' },
+      { ...text('specialty', 'Spécialité', false, { type: 'select', options: options(data.specialties) }), hidden: values.role !== 'TECHNICIAN' },
       { ...text('address', 'Adresse', false, { type: 'textarea', maxLength: 2000, wide: true, className: 'technician-uppercase' }), hidden: values.role !== 'TECHNICIAN' },
       text('phone', 'Téléphone', false, { type: 'tel', maxLength: 10, pattern: '[0-9]{10}', inputMode: 'numeric', hint: 'Saisissez 10 chiffres.' }),
       text('email', 'Email', false, { type: 'email' }),

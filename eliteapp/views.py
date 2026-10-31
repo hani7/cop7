@@ -9,6 +9,7 @@ from django.db.models.deletion import ProtectedError
 from django.http import FileResponse, Http404
 from django.middleware.csrf import get_token
 from django.utils.decorators import method_decorator
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
@@ -89,8 +90,8 @@ class ClientViewSet(EditableViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.effective_role in [User.Role.ADMIN, User.Role.SUPERVISOR]:
-            return Client.objects.all()
-        return Client.objects.filter(pk__in=projects_for(user).values('client_id'))
+            return Client.objects.filter(deleted_at__isnull=True)
+        return Client.objects.filter(deleted_at__isnull=True, pk__in=projects_for(user).values('client_id'))
 
     def perform_create(self, serializer):
         require_role(self.request.user, User.Role.ADMIN, User.Role.SUPERVISOR)
@@ -103,15 +104,8 @@ class ClientViewSet(EditableViewSet):
     def destroy(self, request, *args, **kwargs):
         require_role(request.user, User.Role.ADMIN)
         client = self.get_object()
-        if client.projects.exists() or User.objects.filter(client=client).exists():
-            raise ValidationError('Ce client est lié à des projets ou à des comptes chef de projet. Désactivez-le pour conserver l’historique.')
-        logo = client.logo
-        client.delete()
-        if logo:
-            transaction.on_commit(
-                lambda storage=logo.storage, name=logo.name: storage.delete(name),
-                robust=True,
-            )
+        client.deleted_at = timezone.now()
+        client.save(update_fields=['deleted_at'])
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['get'], url_path='logo')
@@ -146,18 +140,8 @@ class UserViewSet(EditableViewSet):
         if (technician.pk == request.user.pk or technician.role != User.Role.TECHNICIAN
                 or technician.is_superuser or technician.is_staff):
             raise ValidationError('Seuls les comptes techniciens sans accès administrateur peuvent être supprimés.')
-        if technician.assigned_projects.exists() or technician.time_entries.exists():
-            raise ValidationError('Ce technicien est lié à des projets ou pointages. Désactivez son compte depuis Modifier pour conserver l’historique.')
-        files = [document.file for document in technician.certificate_documents.all()]
-        for field in [technician.cv, technician.photo]:
-            if field:
-                files.append(field)
-        try:
-            technician.delete()
-        except ProtectedError as exc:
-            raise ValidationError('Ce compte est lié à un historique. Désactivez-le depuis Modifier plutôt que de le supprimer.') from exc
-        for file in files:
-            transaction.on_commit(lambda storage=file.storage, name=file.name: storage.delete(name), robust=True)
+        technician.deleted_at = timezone.now()
+        technician.save(update_fields=['deleted_at'])
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['get'], url_path=r'certificates/(?P<certificate_id>\d+)')
@@ -259,12 +243,12 @@ class UserViewSet(EditableViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.effective_role in [User.Role.ADMIN, User.Role.SUPERVISOR]:
-            return User.objects.select_related('client').prefetch_related('certificate_documents').all()
+            return User.objects.select_related('client').prefetch_related('certificate_documents').filter(deleted_at__isnull=True)
         if user.effective_role == User.Role.PROJECT_MANAGER:
             projects = projects_for(user)
-            return User.objects.filter(role=User.Role.TECHNICIAN,
+            return User.objects.filter(deleted_at__isnull=True, role=User.Role.TECHNICIAN,
                                        assigned_projects__in=projects).distinct()
-        return User.objects.filter(pk=user.pk)
+        return User.objects.filter(pk=user.pk, deleted_at__isnull=True)
 
     def create(self, request, *args, **kwargs):
         require_role(request.user, User.Role.ADMIN)
@@ -275,7 +259,7 @@ class UserViewSet(EditableViewSet):
         return super().update(request, *args, **kwargs)
 
 
-class TechnicianSpecialtyViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+class TechnicianSpecialtyViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
     serializer_class = TechnicianSpecialtySerializer
 
     def get_queryset(self):
@@ -286,6 +270,47 @@ class TechnicianSpecialtyViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,
         require_role(request.user, User.Role.ADMIN)
         return super().create(request, *args, **kwargs)
 
+    def update(self, request, *args, **kwargs):
+        require_role(request.user, User.Role.ADMIN)
+        specialty = self.get_object()
+        previous_name = specialty.name
+        response = super().update(request, *args, **kwargs)
+        new_name = response.data['name']
+        if new_name != previous_name:
+            User.objects.filter(role=User.Role.TECHNICIAN, specialty=previous_name).update(specialty=new_name)
+        return response
+
+
+class TrashViewSet(viewsets.ViewSet):
+    def _model(self, kind):
+        return {'projects': Project, 'technicians': User, 'clients': Client}.get(kind)
+
+    def _queryset(self, kind):
+        model = self._model(kind)
+        if model is None:
+            raise ValidationError({'type': 'Type de corbeille invalide.'})
+        filters = {'deleted_at__isnull': False}
+        if kind == 'technicians':
+            filters['role'] = User.Role.TECHNICIAN
+        return model.objects.filter(**filters)
+
+    def list(self, request):
+        require_role(request.user, User.Role.ADMIN)
+        kind = request.query_params.get('type', 'projects')
+        rows = self._queryset(kind)
+        data = [{'id': row.pk, 'name': row.name if kind != 'technicians' else (row.get_full_name() or row.username),
+                 'deleted_at': row.deleted_at} for row in rows]
+        return Response({'count': len(data), 'results': data})
+
+    @action(detail=True, methods=['post'], url_path='restore')
+    def restore(self, request, pk=None):
+        require_role(request.user, User.Role.ADMIN)
+        kind = request.query_params.get('type', 'projects')
+        row = self._queryset(kind).get(pk=pk)
+        row.deleted_at = None
+        row.save(update_fields=['deleted_at'])
+        return Response({'id': row.pk, 'name': row.name if kind != 'technicians' else (row.get_full_name() or row.username)})
+
 
 class ProjectViewSet(mixins.DestroyModelMixin, EditableViewSet):
     serializer_class = ProjectSerializer
@@ -295,12 +320,8 @@ class ProjectViewSet(mixins.DestroyModelMixin, EditableViewSet):
     def destroy(self, request, *args, **kwargs):
         require_role(request.user, User.Role.ADMIN)
         project = self.get_object()
-        try:
-            project.delete()
-        except ProtectedError as exc:
-            raise ValidationError(
-                'Ce projet est lié à un historique ou à un compte client. Désactivez-le depuis Modifier pour conserver l’historique.'
-            ) from exc
+        project.deleted_at = timezone.now()
+        project.save(update_fields=['deleted_at'])
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['get', 'post'], url_path='access')

@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (ClientViewSet, DashboardView, InvoiceViewSet, LoginView, LogoutView,
                     PaymentViewSet, ProjectViewSet, PublicHolidayViewSet, SessionView,
-                    TechnicianPaymentViewSet, TechnicianSpecialtyViewSet,
+                    TechnicianPaymentViewSet, TechnicianSpecialtyViewSet, TrashViewSet,
                     TimeEntryViewSet, UserViewSet)
 
 router = DefaultRouter()
@@ -16,6 +16,7 @@ router.register('invoices', InvoiceViewSet, basename='invoice')
 router.register('payments', PaymentViewSet, basename='payment')
 router.register('technician-payments', TechnicianPaymentViewSet, basename='technician-payment')
 router.register('technician-specialties', TechnicianSpecialtyViewSet, basename='technician-specialty')
+router.register('trash', TrashViewSet, basename='trash')
 
 urlpatterns = [
     path('auth/session/', SessionView.as_view()),

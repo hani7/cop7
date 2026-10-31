@@ -19,6 +19,7 @@ class Client(models.Model):
     start_work_date = models.DateField('Date de début de travail', null=True, blank=True)
     logo = models.FileField('Logo', upload_to='client-logos/', blank=True)
     is_active = models.BooleanField('Actif', default=True)
+    deleted_at = models.DateTimeField(null=True, blank=True, db_index=True)
 
     class Meta:
         ordering = ['name']
@@ -53,6 +54,7 @@ class User(AbstractUser):
     specialty = models.CharField('Spécialité', max_length=120, blank=True)
     employee_number = models.CharField('Matricule', max_length=40, blank=True)
     hourly_cost = models.DecimalField('Coût horaire', max_digits=10, decimal_places=2, default=0)
+    deleted_at = models.DateTimeField(null=True, blank=True, db_index=True)
     objects = AppUserManager()
 
     @property
@@ -128,6 +130,7 @@ class Project(models.Model):
     purchase_order = models.CharField('Bon de commande', max_length=100, blank=True)
     status = models.CharField(max_length=12, choices=Status, default=Status.ACTIVE)
     created_at = models.DateTimeField(auto_now_add=True)
+    deleted_at = models.DateTimeField(null=True, blank=True, db_index=True)
 
     class Meta:
         ordering = ['-created_at']

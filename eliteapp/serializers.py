@@ -373,6 +373,9 @@ class TimeEntrySerializer(serializers.ModelSerializer):
         if not is_admin and user.effective_role != User.Role.TECHNICIAN:
             raise serializers.ValidationError('Seul le technicien saisit ses propres heures.')
         technician = attrs.get('technician', getattr(self.instance, 'technician', None))
+        if not is_admin:
+            technician = user
+            attrs['technician'] = user
         if not technician:
             raise serializers.ValidationError({'technician': 'Sélectionnez un technicien.'})
         if not is_admin and technician.pk != user.pk:

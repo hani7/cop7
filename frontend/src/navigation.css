@@ -91,7 +91,7 @@
   flex-wrap: wrap;
   min-width: 0;
   gap: 2px;
-  overflow-x: hidden;
+  overflow: visible;
 }
 
 .nav-dropdown {

@@ -10,7 +10,7 @@ def require_role(user, *roles):
 
 
 def projects_for(user):
-    queryset = Project.objects.all()
+    queryset = Project.objects.filter(deleted_at__isnull=True, client__deleted_at__isnull=True)
     if user.effective_role in [User.Role.ADMIN, User.Role.SUPERVISOR]:
         return queryset
     if user.effective_role == User.Role.PROJECT_MANAGER:

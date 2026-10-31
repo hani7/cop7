@@ -29,9 +29,9 @@ const FINANCE_NAV = [
   { id: 'payments', label: 'Paiements', icon: CreditCard, roles: ['ADMIN', 'TECHNICIAN'] },
   { id: 'technician-payments', label: 'Charges techniciens', icon: CreditCard, roles: ['ADMIN'] },
 ];
-const descriptions = { dashboard: 'Le suivi de vos équipes et de vos interventions, en un seul endroit.', projects: 'Organisez les interventions et affectez les bonnes équipes.', entries: 'Des heures saisies sur le terrain aux heures validées par le client.', technicians: 'Retrouvez les fiches, spécialités et affectations de vos techniciens.', users: 'Les personnes qui font avancer vos projets.', clients: 'Retrouvez vos entreprises clientes et leurs coordonnées.', holidays: 'Gérez les jours fériés utilisés pour calculer les coûts de main-d’œuvre.', specialties: 'Ajoutez les spécialités disponibles pour les techniciens.', invoices: 'Transformez les heures validées en factures.', payments: 'Gardez une vision claire des règlements reçus.' };
+const descriptions = { dashboard: 'Le suivi de vos équipes et de vos interventions, en un seul endroit.', projects: 'Organisez les interventions et affectez les bonnes équipes.', entries: 'Des heures saisies sur le terrain aux heures validées par le client.', technicians: 'Retrouvez les fiches, spécialités et affectations de vos techniciens.', users: 'Les personnes qui font avancer vos projets.', clients: 'Retrouvez vos entreprises clientes et leurs coordonnées.', holidays: 'Gérez les jours fériés utilisés pour calculer les coûts de main-d’œuvre.', specialties: 'Ajoutez les spécialités disponibles pour les techniciens.', trash: 'Restaurez les projets, techniciens et clients archivés.', invoices: 'Transformez les heures validées en factures.', payments: 'Gardez une vision claire des règlements reçus.' };
 descriptions['technician-payments'] = 'Suivez les paiements et charges versés aux techniciens.';
-const emptyData = { projects: [], entries: [], users: [], clients: [], holidays: [], specialties: [], invoices: [], payments: [], technicianPayments: [], dashboard: {} };
+const emptyData = { projects: [], entries: [], users: [], clients: [], holidays: [], specialties: [], invoices: [], payments: [], technicianPayments: [], trash: { projects: [], technicians: [], clients: [] }, dashboard: {} };
 const PAGE_STORAGE_KEY = 'copetrolite-current-page';
 const technicianLogin = window.location.pathname.replace(/\/+$/, '') === '/tech/login';
 const projectLogin = window.location.pathname.replace(/\/+$/, '') === '/project/login';
@@ -81,7 +81,7 @@ export default function App() {
     const storedPage = sessionStorage.getItem(PAGE_STORAGE_KEY);
     return NAV.some(item => item.id === storedPage) || FINANCE_NAV.some(item => item.id === storedPage) ? storedPage : 'dashboard';
   }), [data, setData] = useState(emptyData), [loading, setLoading] = useState(false), [lastRefreshAt, setLastRefreshAt] = useState(null);
-  const [error, setError] = useState(''), [notice, setNotice] = useState(''), [query, setQuery] = useState(''), [filter, setFilter] = useState('ALL'), [specialtyFilter, setSpecialtyFilter] = useState('ALL'), [projectFilter, setProjectFilter] = useState('ALL'), [technicianFilter, setTechnicianFilter] = useState('ALL'), [settingsOpen, setSettingsOpen] = useState(false), [financeOpen, setFinanceOpen] = useState(false);
+  const [error, setError] = useState(''), [notice, setNotice] = useState(''), [query, setQuery] = useState(''), [filter, setFilter] = useState('ALL'), [specialtyFilter, setSpecialtyFilter] = useState('ALL'), [projectFilter, setProjectFilter] = useState('ALL'), [technicianFilter, setTechnicianFilter] = useState('ALL'), [trashTab, setTrashTab] = useState('projects'), [settingsOpen, setSettingsOpen] = useState(false), [financeOpen, setFinanceOpen] = useState(false);
   const [modal, setModal] = useState(null), [report, setReport] = useState(null), [globalReport, setGlobalReport] = useState(null), [working, setWorking] = useState(false), [deleteClientError, setDeleteClientError] = useState('');
   const bootstrap = useCallback(async () => {
     setBooting(true); setSessionError('');
@@ -103,7 +103,7 @@ export default function App() {
   useEffect(() => {
     if (!user) return;
     const currentPage = NAV.find(item => item.id === page);
-    if ((['invoices', 'technician-payments', 'specialties'].includes(page) && user.role !== 'ADMIN') || (page === 'payments' && !['ADMIN', 'TECHNICIAN'].includes(user.role))) {
+    if ((['invoices', 'technician-payments', 'specialties', 'trash'].includes(page) && user.role !== 'ADMIN') || (page === 'payments' && !['ADMIN', 'TECHNICIAN'].includes(user.role))) {
       setPage('dashboard');
       return;
     }
@@ -124,7 +124,8 @@ export default function App() {
         user.role === 'ADMIN' ? listAll('technician-specialties/') : Promise.resolve([]),
         user.role === 'ADMIN' ? listAll('invoices/') : Promise.resolve([]), user.role === 'ADMIN' ? listAll('payments/') : user.role === 'TECHNICIAN' ? listAll('projects/earnings/') : Promise.resolve([]), user.role === 'ADMIN' ? listAll('technician-payments/') : Promise.resolve([]),
       ]);
-      setData({ dashboard, projects, entries, users, clients, holidays, specialties, invoices, payments, technicianPayments });
+      const trash = user.role === 'ADMIN' ? Object.fromEntries(await Promise.all(['projects', 'technicians', 'clients'].map(async type => [type, await listAll(`trash/?type=${type}`)]))) : emptyData.trash;
+      setData({ dashboard, projects, entries, users, clients, holidays, specialties, invoices, payments, technicianPayments, trash });
       setLastRefreshAt(new Date());
     } catch (err) { setError(err.message); } finally { setLoading(false); }
   }, [user]);
@@ -135,7 +136,12 @@ export default function App() {
     return () => window.clearInterval(timer);
   }, [page, refresh, user]);
   useEffect(() => { if (!notice) return; const timer = setTimeout(() => setNotice(''), 5000); return () => clearTimeout(timer); }, [notice]);
-  function navigate(id) { setPage(id); setQuery(''); setFilter('ALL'); setSpecialtyFilter('ALL'); setProjectFilter('ALL'); setTechnicianFilter('ALL'); setSettingsOpen(false); setFinanceOpen(false); }
+  function navigate(id) { setPage(id); setQuery(''); setFilter('ALL'); setSpecialtyFilter('ALL'); setProjectFilter('ALL'); setTechnicianFilter('ALL'); setTrashTab('projects'); setSettingsOpen(false); setFinanceOpen(false); }
+  async function restoreTrash(kind, id) {
+    setWorking(true); setError('');
+    try { await api(`trash/${id}/restore/?type=${kind}`, { method: 'POST', body: {} }); setNotice('Élément restauré.'); await refresh(); }
+    catch (err) { setError(err.message); } finally { setWorking(false); }
+  }
   async function save(path, method, body) {
     const result = await api(path, { method, body });
     if (path.startsWith('users/') && body instanceof FormData
@@ -230,7 +236,7 @@ export default function App() {
               {item.id === 'clients' && isAdmin && <div className="nav-dropdown"><button className={settingsOpen || ['holidays', 'users', 'specialties'].includes(page) ? 'topnav-link active' : 'topnav-link'} aria-expanded={settingsOpen} aria-controls="settings-subnav" onClick={() => { setSettingsOpen(open => !open); setFinanceOpen(false); }}>
                 <Settings size={18} /><span>Paramètres</span><ChevronDown size={15} />
               </button>{settingsOpen && <nav className="settings-subnav" id="settings-subnav" aria-label="Paramètres">
-                {[{ id: 'holidays', label: 'Calendrier', icon: CalendarDays }, { id: 'users', label: 'Équipe', icon: Users }, { id: 'specialties', label: 'Spécialités', icon: HardHat }].map(item =>
+                {[{ id: 'holidays', label: 'Calendrier', icon: CalendarDays }, { id: 'users', label: 'Équipe', icon: Users }, { id: 'specialties', label: 'Spécialités', icon: HardHat }, { id: 'trash', label: 'Corbeille', icon: Trash2 }].map(item =>
                   <button key={item.id} className={page === item.id ? 'settings-subnav-link active' : 'settings-subnav-link'} aria-current={page === item.id ? 'page' : undefined} onClick={() => navigate(item.id)}>
                     <item.icon size={17} /><span>{item.label}</span>
                   </button>
@@ -256,7 +262,7 @@ export default function App() {
     {report && <TechnicianReport technician={report.technician} rows={report.rows} projects={data.projects} close={() => setReport(null)} />}
     {globalReport && <GlobalReport rows={globalReport.rows} projects={data.projects} compact={globalReport.compact} close={() => setGlobalReport(null)} />}
     <div className="workspace">
-      <main className="main"><div className={`page-heading${isTechnician && page === 'dashboard' ? ' technician-dashboard-heading' : isTechnician && page === 'entries' ? ' technician-entries-heading' : ''}`}><div>{!isTechnician && <span className="eyebrow green">{'COPETROLITE / ' + (page === 'dashboard' ? 'TABLEAU DE BORD' : 'GESTION')}</span>}<h1>{isTechnician && page === 'dashboard' ? `Bonjour, ${user.full_name.split(' ')[0]}` : page === 'specialties' ? 'Spécialités techniciens' : NAV.find(n => n.id === page)?.label}</h1>{!(isTechnician && page === 'entries') && <p>{isTechnician && page === 'dashboard' ? 'Prêt pour votre prochaine intervention ?' : isTechnician && page === 'payments' ? 'Retrouvez vos gains par projet.' : descriptions[page]}</p>}</div>{primaryAction}</div>
+      <main className="main"><div className={`page-heading${isTechnician && page === 'dashboard' ? ' technician-dashboard-heading' : isTechnician && page === 'entries' ? ' technician-entries-heading' : ''}`}><div>{!isTechnician && <span className="eyebrow green">{'COPETROLITE / ' + (page === 'dashboard' ? 'TABLEAU DE BORD' : 'GESTION')}</span>}<h1>{isTechnician && page === 'dashboard' ? `Bonjour, ${user.full_name.split(' ')[0]}` : page === 'specialties' ? 'Spécialités techniciens' : page === 'trash' ? 'Corbeille' : NAV.find(n => n.id === page)?.label}</h1>{!(isTechnician && page === 'entries') && <p>{isTechnician && page === 'dashboard' ? 'Prêt pour votre prochaine intervention ?' : isTechnician && page === 'payments' ? 'Retrouvez vos gains par projet.' : descriptions[page]}</p>}</div>{primaryAction}</div>
         {notice && <div className="alert success" role="status"><CheckCheck size={18} />{notice}</div>}
         {error && <div className="alert error" role="alert">{error}<button className="text-button" onClick={refresh}>Réessayer</button></div>}
         {loading && <div className="loading-bar" role="status"><Spinner /> Actualisation des données…</div>}
@@ -307,7 +313,8 @@ export default function App() {
               {isAdmin && <button className="icon-button danger" title="Supprimer" aria-label={`Supprimer le client ${c.name}`} onClick={() => { setDeleteClientError(''); setModal({ type: 'delete-client', row: c }); }}><Trash2 size={16} /></button>}
             </div> },
           ]} />}
-          {page === 'specialties' && <Table rows={data.specialties} empty={<Empty title="Aucune spécialité" text="Ajoutez une spécialité, puis affectez vos techniciens depuis cette page." action={add('specialty', 'Ajouter une spécialité')} />} columns={[{ label: 'Spécialité', render: specialty => <strong>{specialty.name}</strong> }, { label: 'Techniciens affectés', render: specialty => { const assigned = data.users.filter(technician => technician.role === 'TECHNICIAN' && technician.specialty === specialty.name); return <div className="cell-stack"><strong>{assigned.length} technicien(s)</strong><span>{assigned.map(technician => technician.full_name).join(', ') || 'Aucun technicien affecté'}</span></div>; } }, { label: 'Actions', render: specialty => <button className="icon-button" title={`Affecter un technicien à ${specialty.name}`} aria-label={`Affecter un technicien à ${specialty.name}`} onClick={() => setModal({ type: 'specialty-assign', row: specialty })}><Plus size={16} /></button> }]} />}
+          {page === 'specialties' && <Table rows={data.specialties} empty={<Empty title="Aucune spécialité" text="Ajoutez une spécialité, puis affectez vos techniciens depuis cette page." action={add('specialty', 'Ajouter une spécialité')} />} columns={[{ label: 'Spécialité', render: specialty => <strong>{specialty.name}</strong> }, { label: 'Techniciens affectés', render: specialty => { const assigned = data.users.filter(technician => technician.role === 'TECHNICIAN' && technician.specialty === specialty.name); return <div className="cell-stack"><strong>{assigned.length} technicien(s)</strong><span>{assigned.map(technician => technician.full_name).join(', ') || 'Aucun technicien affecté'}</span></div>; } }, { label: 'Actions', render: specialty => <button className="icon-button" title={`Modifier ${specialty.name}`} aria-label={`Modifier ${specialty.name}`} onClick={() => setModal({ type: 'specialty', row: specialty })}><Pencil size={16} /></button> }]} />}
+          {page === 'trash' && <><div className="trash-tabs" role="tablist" aria-label="Éléments supprimés">{[{ id: 'projects', label: 'Projets' }, { id: 'technicians', label: 'Techniciens' }, { id: 'clients', label: 'Clients' }].map(tab => <button key={tab.id} className={trashTab === tab.id ? 'trash-tab active' : 'trash-tab'} role="tab" aria-selected={trashTab === tab.id} onClick={() => setTrashTab(tab.id)}>{tab.label} ({data.trash[tab.id].length})</button>)}</div><Table rows={data.trash[trashTab]} empty={<Empty title="Corbeille vide" text="Aucun élément supprimé dans cette catégorie." />} columns={[{ label: 'Élément', render: item => <strong>{item.name}</strong> }, { label: 'Supprimé le', render: item => date(item.deleted_at) }, { label: 'Actions', render: item => <button className="button compact" disabled={working} onClick={() => restoreTrash(trashTab, item.id)}>Restaurer</button> }]} /></>}
           {page === 'invoices' && <Table rows={search(data.invoices)} columns={[
             { label: 'Facture', render: i => <div className="cell-stack"><strong>{i.number}</strong><span>{i.project_name}</span></div> }, { label: 'Client', render: i => i.client_name }, { label: 'Échéance', render: i => date(i.due_date) }, { label: 'Total TTC', render: i => <strong>{money(i.total, i.currency)}</strong> }, { label: 'Solde', render: i => money(i.balance, i.currency) }, { label: 'Statut', render: i => <Badge status={i.status} /> }, { label: 'Actions', render: i => <div className="row-actions"><button className="text-button" onClick={() => setModal({ type: 'invoice-detail', row: i })}>Consulter</button>{Number(i.balance) > 0 && <button className="icon-button" title="Enregistrer un paiement" aria-label="Enregistrer un paiement" onClick={() => setModal({ type: 'payment', invoice: i })}><ArrowDownLeft size={18} /></button>}</div> },
           ]} />}
@@ -345,7 +352,7 @@ export default function App() {
         <h2>{modal.row.name}</h2>
       </div>
       <dl className="client-detail-fields">{[['Société', modal.row.name], ['Personne à contacter', modal.row.contact_name], ['Email', modal.row.email], ['Téléphone', modal.row.phone], ['N° RC', modal.row.rc], ['NIF', modal.row.nif], ['N° article', modal.row.article_number], ['NIS', modal.row.nis], ['Adresse', modal.row.billing_address], ['Date de début de travail', date(modal.row.start_work_date)], ['Statut', modal.row.is_active ? 'Actif' : 'Désactivé']].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value || '—'}</dd></div>)}</dl>
-    </div></Modal> : modal?.type === 'delete-client' ? <Modal title="Supprimer le Client" titleIcon={<Building2 size={20} aria-hidden="true" />} onClose={() => setModal(null)}><div className="detail"><p>Voulez-vous vraiment supprimer le client <strong>{modal.row.name}</strong> ? Cette action est définitive. Un client associé à des projets ou à des comptes chef de projet ne peut pas être supprimé.</p>{deleteClientError && <div className="alert error" role="alert">{deleteClientError}</div>}<footer className="form-footer"><button className="button secondary" onClick={() => setModal(null)} disabled={working}>Annuler</button><button className="button" onClick={async () => {
+    </div></Modal> : modal?.type === 'delete-client' ? <Modal title="Supprimer le Client" titleIcon={<Building2 size={20} aria-hidden="true" />} onClose={() => setModal(null)}><div className="detail"><p>Voulez-vous déplacer le client <strong>{modal.row.name}</strong> vers la corbeille ? Il pourra être restauré depuis Paramètres → Corbeille.</p>{deleteClientError && <div className="alert error" role="alert">{deleteClientError}</div>}<footer className="form-footer"><button className="button secondary" onClick={() => setModal(null)} disabled={working}>Annuler</button><button className="button" onClick={async () => {
       setWorking(true); setDeleteClientError('');
       try { await api(`clients/${modal.row.id}/`, { method: 'DELETE' }); setData(current => ({ ...current, clients: current.clients.filter(client => client.id !== modal.row.id) })); setModal(null); setNotice('Client supprimé.'); await refresh(); }
       catch (err) { setDeleteClientError(err.message); }
