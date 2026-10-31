@@ -76,6 +76,18 @@ class TechnicianSequence(models.Model):
     last_number = models.PositiveIntegerField(default=0)
 
 
+class TechnicianSpecialty(models.Model):
+    name = models.CharField('Spécialité', max_length=120, unique=True)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Spécialité technicien'
+        verbose_name_plural = 'Spécialités techniciens'
+
+    def __str__(self):
+        return self.name
+
+
 class TechnicianCertificate(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='certificate_documents')
     file = models.FileField('Certificat', upload_to='technician-certificates/', max_length=255)

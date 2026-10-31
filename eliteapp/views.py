@@ -19,10 +19,10 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 
 from .access import entries_for, projects_for, require_role
-from .models import Client, Invoice, Payment, Project, PublicHoliday, TechnicianCertificate, TechnicianPayment, TimeEntry, User
+from .models import Client, Invoice, Payment, Project, PublicHoliday, TechnicianCertificate, TechnicianPayment, TechnicianSpecialty, TimeEntry, User
 from .serializers import (ClientSerializer, InvoiceCreateSerializer, InvoiceSerializer,
                           PaymentSerializer, ProjectSerializer, PublicHolidaySerializer,
-                          TechnicianPaymentSerializer,
+                          TechnicianPaymentSerializer, TechnicianSpecialtySerializer,
                           TimeEntrySerializer, UserSerializer)
 from .services import create_invoice, record_payment, transition_entry
 from .cv import extract_cv, extract_cv_photo
@@ -275,8 +275,33 @@ class UserViewSet(EditableViewSet):
         return super().update(request, *args, **kwargs)
 
 
-class ProjectViewSet(EditableViewSet):
+class TechnicianSpecialtyViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+    serializer_class = TechnicianSpecialtySerializer
+
+    def get_queryset(self):
+        require_role(self.request.user, User.Role.ADMIN)
+        return TechnicianSpecialty.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        require_role(request.user, User.Role.ADMIN)
+        return super().create(request, *args, **kwargs)
+
+
+class ProjectViewSet(mixins.DestroyModelMixin, EditableViewSet):
     serializer_class = ProjectSerializer
+    http_method_names = [*EditableViewSet.http_method_names, 'delete']
+
+    @transaction.atomic
+    def destroy(self, request, *args, **kwargs):
+        require_role(request.user, User.Role.ADMIN)
+        project = self.get_object()
+        try:
+            project.delete()
+        except ProtectedError as exc:
+            raise ValidationError(
+                'Ce projet est lié à un historique ou à un compte client. Désactivez-le depuis Modifier pour conserver l’historique.'
+            ) from exc
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['get', 'post'], url_path='access')
     @transaction.atomic
@@ -379,8 +404,11 @@ class TimeEntryViewSet(EditableViewSet):
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
-        require_role(request.user, User.Role.TECHNICIAN)
-        User.objects.select_for_update().get(pk=request.user.pk)
+        require_role(request.user, User.Role.ADMIN, User.Role.TECHNICIAN)
+        technician_id = request.data.get('technician', request.user.pk)
+        if request.user.effective_role == User.Role.TECHNICIAN:
+            technician_id = request.user.pk
+        User.objects.select_for_update().get(pk=technician_id, role=User.Role.TECHNICIAN)
         return super().create(request, *args, **kwargs)
 
     @transaction.atomic

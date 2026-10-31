@@ -12,13 +12,25 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from .models import (Client, Invoice, InvoiceLine, Payment, Project, PublicHoliday, TechnicianCertificate,
-                     TechnicianPayment, TechnicianSequence, TimeEntry, TimeEntryEvent, User)
+                     TechnicianPayment, TechnicianSequence, TechnicianSpecialty, TimeEntry, TimeEntryEvent, User)
 from .cv import extract_cv_photo, validate_certificate, validate_cv, validate_profile_photo
 
 
 def api_url(serializer, path):
     request = serializer.context.get('request')
     return request.build_absolute_uri(path) if request else path
+
+
+class TechnicianSpecialtySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TechnicianSpecialty
+        fields = ['id', 'name']
+
+    def validate_name(self, value):
+        value = ' '.join(value.split()).strip().upper()
+        if not value:
+            raise serializers.ValidationError('Saisissez une spécialité.')
+        return value
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -336,6 +348,9 @@ class TimeEntryEventSerializer(serializers.ModelSerializer):
 
 
 class TimeEntrySerializer(serializers.ModelSerializer):
+    technician = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.filter(role=User.Role.TECHNICIAN), required=False,
+    )
     technician_name = serializers.SerializerMethodField()
     project_name = serializers.CharField(source='project.name', read_only=True)
     client_name = serializers.CharField(source='project.client.name', read_only=True)
@@ -347,19 +362,25 @@ class TimeEntrySerializer(serializers.ModelSerializer):
         fields = ['id', 'technician', 'technician_name', 'project', 'project_name', 'client_name',
                   'start', 'end', 'break_minutes', 'description', 'hours', 'status',
                   'reviewed_by', 'reviewed_at', 'rejection_reason', 'events']
-        read_only_fields = ['technician', 'status', 'reviewed_by', 'reviewed_at', 'rejection_reason']
+        read_only_fields = ['status', 'reviewed_by', 'reviewed_at', 'rejection_reason']
 
     def get_technician_name(self, obj):
         return obj.technician.get_full_name() or obj.technician.username
 
     def validate(self, attrs):
         user = self.context['request'].user
-        if user.effective_role != User.Role.TECHNICIAN:
+        is_admin = user.effective_role == User.Role.ADMIN
+        if not is_admin and user.effective_role != User.Role.TECHNICIAN:
             raise serializers.ValidationError('Seul le technicien saisit ses propres heures.')
-        if self.instance and (self.instance.technician_id != user.pk or self.instance.status not in ['DRAFT', 'REJECTED']):
+        technician = attrs.get('technician', getattr(self.instance, 'technician', None))
+        if not technician:
+            raise serializers.ValidationError({'technician': 'Sélectionnez un technicien.'})
+        if not is_admin and technician.pk != user.pk:
+            raise serializers.ValidationError({'technician': 'Vous ne pouvez saisir que vos propres heures.'})
+        if self.instance and (self.instance.technician_id != technician.pk or self.instance.status not in ['DRAFT', 'REJECTED']):
             raise serializers.ValidationError('Ce pointage ne peut plus être modifié.')
         project = attrs.get('project', getattr(self.instance, 'project', None))
-        if not project or project.status != 'ACTIVE' or not project.client.is_active or not project.technicians.filter(pk=user.pk).exists():
+        if not project or project.status != 'ACTIVE' or not project.client.is_active or not project.technicians.filter(pk=technician.pk).exists():
             raise serializers.ValidationError({'project': 'Choisissez un projet actif auquel vous êtes affecté.'})
         start = attrs.get('start', getattr(self.instance, 'start', None))
         end = attrs.get('end', getattr(self.instance, 'end', None))
@@ -371,7 +392,7 @@ class TimeEntrySerializer(serializers.ModelSerializer):
         if pause < 0 or (end - start).total_seconds() - pause * 60 < 60:
             raise serializers.ValidationError({'break_minutes': 'La pause doit laisser au moins une minute de travail.'})
         # Caller holds a lock on this technician, serializing overlap checks on MySQL.
-        overlap = TimeEntry.objects.filter(technician=user, start__lt=end, end__gt=start)
+        overlap = TimeEntry.objects.filter(technician=technician, start__lt=end, end__gt=start)
         if self.instance:
             overlap = overlap.exclude(pk=self.instance.pk)
         if overlap.exists():
@@ -379,7 +400,7 @@ class TimeEntrySerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        entry = super().create({**validated_data, 'technician': self.context['request'].user})
+        entry = super().create(validated_data)
         TimeEntryEvent.objects.create(entry=entry, actor=self.context['request'].user, status=entry.status)
         return entry
 

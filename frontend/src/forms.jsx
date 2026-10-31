@@ -20,7 +20,16 @@ export default function Editor({ modal, data, user, save, close }) {
   const row = modal.row;
   const editing = !!row;
   let title, fields, initial, resource, transform = x => x, extra, submitLabel;
-  if (modal.type === 'client') {
+  if (modal.type === 'specialty') {
+    title = 'Ajouter une spécialité'; resource = 'technician-specialties';
+    fields = [text('name', 'Nom de la spécialité', true, { maxLength: 120 })];
+    initial = { name: '' };
+  } else if (modal.type === 'specialty-assign') {
+    title = `Affecter un technicien · ${modal.row.name}`; resource = 'users';
+    const availableTechnicians = data.users.filter(technician => technician.role === 'TECHNICIAN' && technician.is_active && technician.specialty !== modal.row.name);
+    fields = [select('technician', 'Technicien', options(availableTechnicians, 'full_name'))];
+    initial = { technician: '' };
+  } else if (modal.type === 'client') {
     title = editing ? 'Modifier le Client' : 'Nouveau Client'; resource = 'clients';
     fields = [
       { name: 'logo', wide: true, render: (current, update) => <ClientLogo values={current} update={update} /> },
@@ -57,7 +66,6 @@ export default function Editor({ modal, data, user, save, close }) {
       { name: 'technician_photo', hidden: values.role !== 'TECHNICIAN', render: (current, update) => <TechnicianPhoto values={current} update={update} /> },
       text('last_name', 'Nom', true, { className: 'technician-uppercase' }), text('first_name', 'Prénom', true, { className: 'technician-uppercase' }),
       { ...text('birth_date', 'Date de naissance', false, { type: 'date', max: maxBirthDate() }), hidden: values.role !== 'TECHNICIAN' },
-      text('specialty', 'Poste / Spécialité', false, { maxLength: 120, className: 'technician-uppercase' }),
       { ...text('address', 'Adresse', false, { type: 'textarea', maxLength: 2000, wide: true, className: 'technician-uppercase' }), hidden: values.role !== 'TECHNICIAN' },
       text('phone', 'Téléphone', false, { type: 'tel', maxLength: 10, pattern: '[0-9]{10}', inputMode: 'numeric', hint: 'Saisissez 10 chiffres.' }),
       text('email', 'Email', false, { type: 'email' }),
@@ -137,18 +145,21 @@ export default function Editor({ modal, data, user, save, close }) {
       const { project_manager, ...project } = values;
       return { ...project, client: Number(values.client), technicians: (values.technicians || []).map(Number) };
     };
-  } else if (modal.type === 'time') {
-    title = editing ? 'Corriger le pointage' : 'Nouveau pointage'; resource = 'time-entries';
-    const activeProjects = data.projects.filter(p => p.status === 'ACTIVE' && p.technicians.includes(user.id));
+  } else if (modal.type === 'time' || modal.type === 'admin-time') {
+    const adminTime = modal.type === 'admin-time';
+    title = adminTime ? 'Saisir un pointage manuellement' : editing ? 'Corriger le pointage' : 'Nouveau pointage'; resource = 'time-entries';
+    const activeTechnicians = data.users.filter(person => person.role === 'TECHNICIAN' && person.is_active);
+    const activeProjects = data.projects.filter(p => p.status === 'ACTIVE' && (adminTime || p.technicians.includes(user.id)));
     fields = [
+      ...(adminTime ? [select('technician', 'Technicien', options(activeTechnicians, 'full_name'))] : []),
       select('project', 'Projet en cours', options(activeProjects)),
       text('work_date', 'Date de l’intervention', true, { type: 'date', max: localDate() }),
       text('hours', 'Nombre d’heures travaillées ce jour', true, { type: 'number', min: 0.02, max: 24, step: 0.01, inputMode: 'decimal' }),
       text('description', 'Travaux réalisés', true, { type: 'textarea' }),
     ];
     initial = row
-      ? { project: row.project, work_date: localDay(row.start), hours: duration(row.start, row.end, row.break_minutes), description: row.description }
-      : { project: activeProjects[0]?.id || '', work_date: localDate(), hours: '', description: '' };
+      ? { technician: row.technician, project: row.project, work_date: localDay(row.start), hours: duration(row.start, row.end, row.break_minutes), description: row.description }
+      : { technician: activeTechnicians[0]?.id || '', project: activeProjects[0]?.id || '', work_date: localDate(), hours: '', description: '' };
     transform = values => {
       const hours = Number(values.hours);
       if (!values.work_date || !Number.isFinite(hours) || hours < 0.02 || hours > 24) {
@@ -170,7 +181,7 @@ export default function Editor({ modal, data, user, save, close }) {
       if (end > new Date(Date.now() + 60_000)) {
         throw new Error('Le nombre d’heures dépasse le temps écoulé depuis le début de la journée.');
       }
-      return { project: Number(values.project), start: start.toISOString(), end: end.toISOString(), break_minutes: 0, description: values.description };
+      return { ...(adminTime ? { technician: Number(values.technician) } : {}), project: Number(values.project), start: start.toISOString(), end: end.toISOString(), break_minutes: 0, description: values.description };
     };
     extra = values => <div className="form-summary"><span>Heures déclarées ce jour</span><strong>{number(values.hours || 0)} h</strong></div>;
   } else if (modal.type === 'reject') {
@@ -219,5 +230,5 @@ export default function Editor({ modal, data, user, save, close }) {
       return values.technician ? <div className="technician-payment-summary"><div><span>Total heures validées</span><strong>{number(hours)} h</strong></div><div><span>Montant total calculé</span><strong>{money(amount, user.currency)}</strong></div></div> : null;
     };
   }
-  return <Modal title={title} titleIcon={modal.type === 'technician' ? <HardHat size={20} aria-hidden="true" /> : modal.type === 'client' ? <Building2 size={20} aria-hidden="true" /> : null} onClose={close}><RecordForm fields={fields} initial={initial} onClose={close} submitLabel={submitLabel} fullWidthActions={modal.type === 'technician' || modal.type === 'user'} fieldLabelsUppercase={modal.type === 'client'} onSave={values => modal.type === 'reject' ? save(`time-entries/${row.id}/reject/`, 'POST', values) : save(`${resource}/${editing ? row.id + '/' : ''}`, editing ? 'PATCH' : 'POST', transform(values))}>{extra}</RecordForm></Modal>;
+  return <Modal title={title} titleIcon={modal.type === 'technician' ? <HardHat size={20} aria-hidden="true" /> : modal.type === 'client' ? <Building2 size={20} aria-hidden="true" /> : null} onClose={close}><RecordForm fields={fields} initial={initial} onClose={close} submitLabel={submitLabel} fullWidthActions={modal.type === 'technician' || modal.type === 'user'} fieldLabelsUppercase={modal.type === 'client'} onSave={values => modal.type === 'reject' ? save(`time-entries/${row.id}/reject/`, 'POST', values) : modal.type === 'specialty-assign' ? save(`users/${values.technician}/`, 'PATCH', { specialty: modal.row.name }) : save(`${resource}/${editing ? row.id + '/' : ''}`, editing ? 'PATCH' : 'POST', transform(values))}>{extra}</RecordForm></Modal>;
 }

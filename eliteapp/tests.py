@@ -153,6 +153,40 @@ class ProjectAccessTests(APITestCase):
         self.assertEqual(self.client.get('/api/projects/').data['count'], 0)
         self.assertEqual(self.client.post(f'/api/time-entries/{self.entry.pk}/approve/').status_code, 404)
 
+    def test_admin_can_delete_unlinked_project_but_history_is_protected(self):
+        self.client.force_authenticate(self.admin)
+        self.assertEqual(self.client.delete(f'/api/projects/{self.other_project.pk}/').status_code, 400)
+        deletable = Project.objects.create(name='Projet supprimable', client=self.company, hourly_rate='10')
+        response = self.client.delete(f'/api/projects/{deletable.pk}/')
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(Project.objects.filter(pk=deletable.pk).exists())
+
+    def test_admin_can_create_a_manual_time_entry_for_an_assigned_technician(self):
+        self.client.force_authenticate(self.admin)
+        start = timezone.now() - timedelta(hours=3)
+        response = self.client.post('/api/time-entries/', {
+            'technician': self.tech.pk, 'project': self.project.pk,
+            'start': start.isoformat(), 'end': (start + timedelta(hours=1)).isoformat(),
+            'break_minutes': 0, 'description': 'Pointage saisi manuellement',
+        }, format='json')
+        self.assertEqual(response.status_code, 201, response.data)
+        self.assertEqual(response.data['technician'], self.tech.pk)
+        self.assertEqual(response.data['status'], 'DRAFT')
+
+    def test_only_admin_can_add_technician_specialties(self):
+        self.client.force_authenticate(self.admin)
+        response = self.client.post('/api/technician-specialties/', {'name': '  soudeur  '}, format='json')
+        self.assertEqual(response.status_code, 201, response.data)
+        self.assertEqual(response.data['name'], 'SOUDEUR')
+        self.assertEqual(self.client.get('/api/technician-specialties/').data['results'][0]['name'], 'SOUDEUR')
+        assigned = self.client.patch(f'/api/users/{self.tech.pk}/', {'specialty': 'SOUDEUR'}, format='json')
+        self.assertEqual(assigned.status_code, 200, assigned.data)
+        self.tech.refresh_from_db()
+        self.assertEqual(self.tech.specialty, 'SOUDEUR')
+        self.client.force_authenticate(self.tech)
+        self.assertEqual(self.client.get('/api/technician-specialties/').status_code, 403)
+        self.assertEqual(self.client.post('/api/technician-specialties/', {'name': 'Peintre'}).status_code, 403)
+
 
 class WorkflowTests(APITestCase):
     @classmethod

@@ -13,6 +13,7 @@
 }
 
 .header-content {
+  position: relative;
   padding: 0 16px;
 }
 
@@ -93,6 +94,12 @@
   overflow-x: hidden;
 }
 
+.nav-dropdown {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+
 .topnav-link {
   flex: 0 1 auto;
   display: inline-flex;
@@ -144,7 +151,16 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 0 12px 220px;
+  position: absolute;
+  z-index: 20;
+  top: calc(100% - 1px);
+  right: 0;
+  min-width: max-content;
+  padding: 10px;
+  border: 1px solid #ffffff20;
+  border-radius: 0 0 9px 9px;
+  background: var(--petrol);
+  box-shadow: 0 12px 24px #01333c40;
 }
 
 .settings-subnav-link {

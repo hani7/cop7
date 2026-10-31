@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useState } from 'react';
-import { ArrowDownLeft, ArrowRight, ArrowUpRight, BriefcaseBusiness, Building2, CalendarDays, Check, CheckCheck, ChevronDown, ChevronRight, Clock3, CreditCard, Download, Eye, FileText, HardHat, LayoutDashboard, LogOut, Pencil, Plus, Search, Send, Settings, ShieldCheck, Trash2, Users, X } from 'lucide-react';
+import { ArrowDownLeft, ArrowRight, ArrowUpRight, BriefcaseBusiness, Building2, CalendarDays, Check, CheckCheck, ChevronDown, ChevronRight, Clock3, CreditCard, Download, Eye, FileText, HardHat, LayoutDashboard, LogOut, Pencil, Plus, RefreshCw, Search, Send, Settings, ShieldCheck, Trash2, Users, X } from 'lucide-react';
 import { api, listAll } from './api';
 import { Badge, Empty, Field, Modal, Spinner, Table } from './components';
 import Editor from './forms';
@@ -29,9 +29,9 @@ const FINANCE_NAV = [
   { id: 'payments', label: 'Paiements', icon: CreditCard, roles: ['ADMIN', 'TECHNICIAN'] },
   { id: 'technician-payments', label: 'Charges techniciens', icon: CreditCard, roles: ['ADMIN'] },
 ];
-const descriptions = { dashboard: 'Le suivi de vos équipes et de vos interventions, en un seul endroit.', projects: 'Organisez les interventions et affectez les bonnes équipes.', entries: 'Des heures saisies sur le terrain aux heures validées par le client.', technicians: 'Retrouvez les fiches, spécialités et affectations de vos techniciens.', users: 'Les personnes qui font avancer vos projets.', clients: 'Retrouvez vos entreprises clientes et leurs coordonnées.', holidays: 'Gérez les jours fériés utilisés pour calculer les coûts de main-d’œuvre.', invoices: 'Transformez les heures validées en factures.', payments: 'Gardez une vision claire des règlements reçus.' };
+const descriptions = { dashboard: 'Le suivi de vos équipes et de vos interventions, en un seul endroit.', projects: 'Organisez les interventions et affectez les bonnes équipes.', entries: 'Des heures saisies sur le terrain aux heures validées par le client.', technicians: 'Retrouvez les fiches, spécialités et affectations de vos techniciens.', users: 'Les personnes qui font avancer vos projets.', clients: 'Retrouvez vos entreprises clientes et leurs coordonnées.', holidays: 'Gérez les jours fériés utilisés pour calculer les coûts de main-d’œuvre.', specialties: 'Ajoutez les spécialités disponibles pour les techniciens.', invoices: 'Transformez les heures validées en factures.', payments: 'Gardez une vision claire des règlements reçus.' };
 descriptions['technician-payments'] = 'Suivez les paiements et charges versés aux techniciens.';
-const emptyData = { projects: [], entries: [], users: [], clients: [], holidays: [], invoices: [], payments: [], technicianPayments: [], dashboard: {} };
+const emptyData = { projects: [], entries: [], users: [], clients: [], holidays: [], specialties: [], invoices: [], payments: [], technicianPayments: [], dashboard: {} };
 const PAGE_STORAGE_KEY = 'copetrolite-current-page';
 const technicianLogin = window.location.pathname.replace(/\/+$/, '') === '/tech/login';
 const projectLogin = window.location.pathname.replace(/\/+$/, '') === '/project/login';
@@ -80,8 +80,8 @@ export default function App() {
     if (projectLogin) return 'entries';
     const storedPage = sessionStorage.getItem(PAGE_STORAGE_KEY);
     return NAV.some(item => item.id === storedPage) || FINANCE_NAV.some(item => item.id === storedPage) ? storedPage : 'dashboard';
-  }), [data, setData] = useState(emptyData), [loading, setLoading] = useState(false);
-  const [error, setError] = useState(''), [notice, setNotice] = useState(''), [query, setQuery] = useState(''), [filter, setFilter] = useState('ALL'), [projectFilter, setProjectFilter] = useState('ALL'), [settingsOpen, setSettingsOpen] = useState(false), [financeOpen, setFinanceOpen] = useState(false);
+  }), [data, setData] = useState(emptyData), [loading, setLoading] = useState(false), [lastRefreshAt, setLastRefreshAt] = useState(null);
+  const [error, setError] = useState(''), [notice, setNotice] = useState(''), [query, setQuery] = useState(''), [filter, setFilter] = useState('ALL'), [specialtyFilter, setSpecialtyFilter] = useState('ALL'), [projectFilter, setProjectFilter] = useState('ALL'), [technicianFilter, setTechnicianFilter] = useState('ALL'), [settingsOpen, setSettingsOpen] = useState(false), [financeOpen, setFinanceOpen] = useState(false);
   const [modal, setModal] = useState(null), [report, setReport] = useState(null), [globalReport, setGlobalReport] = useState(null), [working, setWorking] = useState(false), [deleteClientError, setDeleteClientError] = useState('');
   const bootstrap = useCallback(async () => {
     setBooting(true); setSessionError('');
@@ -103,7 +103,7 @@ export default function App() {
   useEffect(() => {
     if (!user) return;
     const currentPage = NAV.find(item => item.id === page);
-    if ((['invoices', 'technician-payments'].includes(page) && user.role !== 'ADMIN') || (page === 'payments' && !['ADMIN', 'TECHNICIAN'].includes(user.role))) {
+    if ((['invoices', 'technician-payments', 'specialties'].includes(page) && user.role !== 'ADMIN') || (page === 'payments' && !['ADMIN', 'TECHNICIAN'].includes(user.role))) {
       setPage('dashboard');
       return;
     }
@@ -117,18 +117,25 @@ export default function App() {
     if (!user) return;
     setLoading(true); setError('');
     try {
-      const [dashboard, projects, entries, users, clients, holidays, invoices, payments, technicianPayments] = await Promise.all([
+      const [dashboard, projects, entries, users, clients, holidays, specialties, invoices, payments, technicianPayments] = await Promise.all([
         api('dashboard/'), listAll('projects/'), listAll('time-entries/'), listAll('users/'),
         ['ADMIN', 'SUPERVISOR'].includes(user.role) ? listAll('clients/') : Promise.resolve([]),
         user.role === 'ADMIN' ? listAll('holidays/') : Promise.resolve([]),
+        user.role === 'ADMIN' ? listAll('technician-specialties/') : Promise.resolve([]),
         user.role === 'ADMIN' ? listAll('invoices/') : Promise.resolve([]), user.role === 'ADMIN' ? listAll('payments/') : user.role === 'TECHNICIAN' ? listAll('projects/earnings/') : Promise.resolve([]), user.role === 'ADMIN' ? listAll('technician-payments/') : Promise.resolve([]),
       ]);
-      setData({ dashboard, projects, entries, users, clients, holidays, invoices, payments, technicianPayments });
+      setData({ dashboard, projects, entries, users, clients, holidays, specialties, invoices, payments, technicianPayments });
+      setLastRefreshAt(new Date());
     } catch (err) { setError(err.message); } finally { setLoading(false); }
   }, [user]);
   useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => {
+    if (!user || page !== 'entries') return undefined;
+    const timer = window.setInterval(refresh, 120000);
+    return () => window.clearInterval(timer);
+  }, [page, refresh, user]);
   useEffect(() => { if (!notice) return; const timer = setTimeout(() => setNotice(''), 5000); return () => clearTimeout(timer); }, [notice]);
-  function navigate(id) { setPage(id); setQuery(''); setFilter('ALL'); setProjectFilter('ALL'); setSettingsOpen(false); setFinanceOpen(false); }
+  function navigate(id) { setPage(id); setQuery(''); setFilter('ALL'); setSpecialtyFilter('ALL'); setProjectFilter('ALL'); setTechnicianFilter('ALL'); setSettingsOpen(false); setFinanceOpen(false); }
   async function save(path, method, body) {
     const result = await api(path, { method, body });
     if (path.startsWith('users/') && body instanceof FormData
@@ -148,6 +155,12 @@ export default function App() {
     if (!window.confirm(`Supprimer le jour férié « ${holiday.name} » ?`)) return;
     setWorking(true); setError('');
     try { await api(`holidays/${holiday.id}/`, { method: 'DELETE' }); setNotice('Jour férié supprimé.'); await refresh(); }
+    catch (err) { setError(err.message); } finally { setWorking(false); }
+  }
+  async function deleteProject(project) {
+    if (!window.confirm(`Supprimer le projet « ${project.name} » ?`)) return;
+    setWorking(true); setError('');
+    try { await api(`projects/${project.id}/`, { method: 'DELETE' }); setNotice('Projet supprimé.'); await refresh(); }
     catch (err) { setError(err.message); } finally { setWorking(false); }
   }
   async function act(entry, action) {
@@ -170,28 +183,39 @@ export default function App() {
   const technicians = data.users.filter(person => person.role === 'TECHNICIAN');
   const visibleRows = search(page === 'technicians' ? technicians : page === 'technician-payments' ? data.technicianPayments : data[page] instanceof Array ? data[page] : []).filter(row => {
     if (page === 'entries' && projectFilter !== 'ALL' && String(row.project) !== String(projectFilter)) return false;
+    if (page === 'entries' && technicianFilter !== 'ALL' && String(row.technician) !== String(technicianFilter)) return false;
+    if (page === 'technicians' && specialtyFilter !== 'ALL' && row.specialty !== specialtyFilter) return false;
     if (filter === 'ALL') return true;
     if (page === 'technicians') return row.is_active === (filter === 'ACTIVE');
     return page !== 'entries' || row.status === filter;
-  });
+  }).sort((a, b) => page === 'entries' ? new Date(a.start) - new Date(b.start) : 0);
   const numberedTechnicians = visibleRows.map((technician, index) => ({ ...technician, listNumber: index + 1 }));
   const edit = (type, row) => <button className="icon-button" title="Modifier" aria-label={`Modifier ${row.name || row.full_name || 'le pointage'}`} onClick={() => setModal({ type, row })}><Pencil size={16} /></button>;
   const add = (type, label, iconOnly = false) => <button className="button" aria-label={iconOnly ? label : undefined} title={iconOnly ? label : undefined} onClick={() => setModal({ type })}>{iconOnly && type === 'time' ? <Clock3 size={17} aria-hidden="true" /> : <Plus size={17} aria-hidden="true" />}{!iconOnly && label}</button>;
-  const openTechnicianReport = entry => setReport({
-    technician: { id: entry.technician, name: entry.technician_name },
-    rows: data.entries.filter(row => row.technician === entry.technician),
-  });
+  const selectedProject = data.projects.find(project => String(project.id) === String(projectFilter));
+  const technicianOptions = data.users.filter(person => person.role === 'TECHNICIAN' && person.is_active
+    && (projectFilter === 'ALL' || selectedProject?.technicians.includes(person.id)));
+  const reportRows = visibleRows;
+  const openGlobalReport = compact => setGlobalReport({ rows: reportRows, compact });
+  const projectById = new Map(data.projects.map(project => [project.id, project]));
+  const entryAmounts = entry => {
+    const project = projectById.get(entry.project);
+    const hours = Number(entry.hours || 0);
+    const clientCost = hours * Number(project?.hourly_rate || 0);
+    const technicianCost = hours * Number(project?.technician_hourly_rate || 0);
+    return { clientCost, benefit: clientCost - technicianCost };
+  };
   const entryColumns = [
     { label: 'Technicien / Projet', render: e => <div className="cell-stack"><strong>{e.technician_name}</strong><span>{e.project_name}</span></div> },
     { label: 'Intervention', render: e => <div className="cell-stack"><strong>{date(e.start)}</strong>{!isTechnician && <span>{time(e.start)} – {time(e.end)} · {e.break_minutes} min de pause</span>}</div> },
     { label: 'Heures', render: e => <b className="tabular">{number(e.hours)} h</b> },
     ...(!isTechnician ? [{ label: 'Statut', render: e => <Badge status={e.status} /> }] : []),
-    { label: 'PDF', render: e => <button className="icon-button" title="RelevÃ© PDF du technicien" aria-label="RelevÃ© PDF du technicien" onClick={() => openTechnicianReport(e)}><Download size={16} /></button> },
-    { label: 'Actions', render: e => <div className="row-actions"><button className="text-button" onClick={() => setModal({ type: 'entry-detail', row: e })}>Détail</button>{user?.role === 'TECHNICIAN' && ['DRAFT', 'REJECTED'].includes(e.status) && <>{edit('time', e)}<button className="button compact" disabled={working} onClick={() => act(e, 'submit')}><Send size={14} />Soumettre</button></>}{user?.role === 'PROJECT_MANAGER' && e.status === 'SUBMITTED' && <><button className="button compact" disabled={working} onClick={() => act(e, 'approve')}><Check size={14} />Valider</button><button className="icon-button danger" aria-label="Refuser le pointage" disabled={working} onClick={() => setModal({ type: 'reject', row: e })}><X size={17} /></button></>}</div> },
+    ...(!isTechnician ? [{ label: 'Coût client', render: e => money(entryAmounts(e).clientCost, user.currency) }, { label: 'Bénéfice', render: e => money(entryAmounts(e).benefit, user.currency) }] : []),
+    { label: 'Actions', render: e => <div className="row-actions"><button className="text-button" onClick={() => setModal({ type: 'entry-detail', row: e })}>Détail</button>{user?.role === 'ADMIN' && e.status === 'REJECTED' && <button className="icon-button" title="Saisir un nouveau pointage" aria-label={`Saisir un nouveau pointage pour ${e.technician_name}`} onClick={() => setModal({ type: 'admin-time', row: e })}><Plus size={16} /></button>}{user?.role === 'TECHNICIAN' && ['DRAFT', 'REJECTED'].includes(e.status) && <>{edit('time', e)}<button className="button compact" disabled={working} onClick={() => act(e, 'submit')}><Send size={14} />Soumettre</button></>}{user?.role === 'PROJECT_MANAGER' && e.status === 'SUBMITTED' && <><button className="button compact" disabled={working} onClick={() => act(e, 'approve')}><Check size={14} />Valider</button><button className="icon-button danger" aria-label="Refuser le pointage" disabled={working} onClick={() => setModal({ type: 'reject', row: e })}><X size={17} /></button></>}</div> },
   ];
   if (booting) return <div className="boot"><Spinner /><span>Ouverture de votre espace…</span></div>;
   if (!user) return <Login onLogin={account => { setUser(account); if (account.project_access) { setPage('entries'); setFilter('SUBMITTED'); } }} initialError={sessionError} retry={bootstrap} technicianOnly={technicianLogin} projectOnly={projectLogin} />;
-  const primaryAction = page === 'technicians' && isAdmin ? add('technician', 'Ajouter un technicien') : page === 'projects' && internal ? add('project', 'Nouveau projet') : page === 'clients' && internal ? add('client', 'Nouveau client') : page === 'holidays' && isAdmin ? add('holiday', 'Ajouter un jour férié') : page === 'users' && isAdmin ? add('user', 'Ajouter un collaborateur') : page === 'entries' && isAdmin ? <button className="button" onClick={() => setGlobalReport({ rows: visibleRows })}><Download size={17} />Fiche globale PDF</button> : page === 'entries' && user.role === 'TECHNICIAN' ? add('time', 'Saisir mes heures', true) : page === 'invoices' && isAdmin ? add('invoice', 'Créer une facture') : page === 'payments' && isAdmin ? add('payment', 'Enregistrer un paiement') : page === 'technician-payments' && isAdmin ? add('technician-payment', 'Enregistrer une charge') : page === 'dashboard' && user.role === 'TECHNICIAN' ? add('time', 'Saisir mes heures', true) : null;
+  const primaryAction = page === 'technicians' && isAdmin ? add('technician', 'Ajouter un technicien') : page === 'projects' && internal ? add('project', 'Nouveau projet') : page === 'clients' && internal ? add('client', 'Nouveau client') : page === 'holidays' && isAdmin ? add('holiday', 'Ajouter un jour férié') : page === 'specialties' && isAdmin ? add('specialty', 'Ajouter une spécialité') : page === 'users' && isAdmin ? add('user', 'Ajouter un collaborateur') : page === 'entries' && user.role === 'TECHNICIAN' ? add('time', 'Saisir mes heures', true) : page === 'invoices' && isAdmin ? add('invoice', 'Créer une facture') : page === 'payments' && isAdmin ? add('payment', 'Enregistrer un paiement') : page === 'technician-payments' && isAdmin ? add('technician-payment', 'Enregistrer une charge') : page === 'dashboard' && user.role === 'TECHNICIAN' ? add('time', 'Saisir mes heures', true) : null;
   return <div className={`app-shell${isTechnician ? ' technician-shell' : ''}${isTechnician && modal ? ' technician-modal-open' : ''}`}>
     <header className="app-header">
       <div className="header-content">
@@ -203,12 +227,22 @@ export default function App() {
                 <item.icon size={18} /><span>{item.label}</span>
                 {item.id === 'entries' && !isTechnician && data.dashboard.pending_entries > 0 && <small>{data.dashboard.pending_entries}</small>}
               </button>
-              {item.id === 'clients' && isAdmin && <button className={settingsOpen || ['holidays', 'users'].includes(page) ? 'topnav-link active' : 'topnav-link'} aria-expanded={settingsOpen} aria-controls="settings-subnav" onClick={() => { setSettingsOpen(open => !open); setFinanceOpen(false); }}>
+              {item.id === 'clients' && isAdmin && <div className="nav-dropdown"><button className={settingsOpen || ['holidays', 'users', 'specialties'].includes(page) ? 'topnav-link active' : 'topnav-link'} aria-expanded={settingsOpen} aria-controls="settings-subnav" onClick={() => { setSettingsOpen(open => !open); setFinanceOpen(false); }}>
                 <Settings size={18} /><span>Paramètres</span><ChevronDown size={15} />
-              </button>}
-              {item.id === 'clients' && financeItems.length > 0 && <button className={financeOpen || ['invoices', 'payments'].includes(page) ? 'topnav-link active' : 'topnav-link'} aria-expanded={financeOpen} aria-controls="finance-subnav" onClick={() => { setFinanceOpen(open => !open); setSettingsOpen(false); }}>
+              </button>{settingsOpen && <nav className="settings-subnav" id="settings-subnav" aria-label="Paramètres">
+                {[{ id: 'holidays', label: 'Calendrier', icon: CalendarDays }, { id: 'users', label: 'Équipe', icon: Users }, { id: 'specialties', label: 'Spécialités', icon: HardHat }].map(item =>
+                  <button key={item.id} className={page === item.id ? 'settings-subnav-link active' : 'settings-subnav-link'} aria-current={page === item.id ? 'page' : undefined} onClick={() => navigate(item.id)}>
+                    <item.icon size={17} /><span>{item.label}</span>
+                  </button>
+                )}
+              </nav>}</div>}
+              {item.id === 'clients' && financeItems.length > 0 && <div className="nav-dropdown"><button className={financeOpen || ['invoices', 'payments'].includes(page) ? 'topnav-link active' : 'topnav-link'} aria-expanded={financeOpen} aria-controls="finance-subnav" onClick={() => { setFinanceOpen(open => !open); setSettingsOpen(false); }}>
                 <CreditCard size={18} /><span>Finances</span><ChevronDown size={15} />
-              </button>}
+              </button>{financeOpen && <nav className="settings-subnav finance-subnav" id="finance-subnav" aria-label="Finances">
+                {financeItems.map(item => <button key={item.id} className={page === item.id ? 'settings-subnav-link active' : 'settings-subnav-link'} aria-current={page === item.id ? 'page' : undefined} onClick={() => navigate(item.id)}>
+                  <item.icon size={17} /><span>{item.label}</span>
+                </button>)}
+              </nav>}</div>}
             </Fragment>)}
           </nav>
           <div className="header-profile">
@@ -217,24 +251,12 @@ export default function App() {
             <button className="icon-button" onClick={signOut} aria-label="Se déconnecter" title="Se déconnecter"><LogOut size={18} /></button>
           </div>
         </div>
-        {isAdmin && settingsOpen && <nav className="settings-subnav" id="settings-subnav" aria-label="Paramètres">
-          {[{ id: 'holidays', label: 'Calendrier', icon: CalendarDays }, { id: 'users', label: 'Équipe', icon: Users }].map(item =>
-            <button key={item.id} className={page === item.id ? 'settings-subnav-link active' : 'settings-subnav-link'} aria-current={page === item.id ? 'page' : undefined} onClick={() => navigate(item.id)}>
-              <item.icon size={17} /><span>{item.label}</span>
-            </button>
-          )}
-        </nav>}
-        {financeOpen && financeItems.length > 0 && <nav className="settings-subnav finance-subnav" id="finance-subnav" aria-label="Finances">
-          {financeItems.map(item => <button key={item.id} className={page === item.id ? 'settings-subnav-link active' : 'settings-subnav-link'} aria-current={page === item.id ? 'page' : undefined} onClick={() => navigate(item.id)}>
-            <item.icon size={17} /><span>{item.label}</span>
-          </button>)}
-        </nav>}
       </div>
     </header>
     {report && <TechnicianReport technician={report.technician} rows={report.rows} projects={data.projects} close={() => setReport(null)} />}
-    {globalReport && <GlobalReport rows={globalReport.rows} projects={data.projects} close={() => setGlobalReport(null)} />}
+    {globalReport && <GlobalReport rows={globalReport.rows} projects={data.projects} compact={globalReport.compact} close={() => setGlobalReport(null)} />}
     <div className="workspace">
-      <main className="main"><div className={`page-heading${isTechnician && page === 'dashboard' ? ' technician-dashboard-heading' : isTechnician && page === 'entries' ? ' technician-entries-heading' : ''}`}><div>{!isTechnician && <span className="eyebrow green">{'COPETROLITE / ' + (page === 'dashboard' ? 'TABLEAU DE BORD' : 'GESTION')}</span>}<h1>{isTechnician && page === 'dashboard' ? `Bonjour, ${user.full_name.split(' ')[0]}` : NAV.find(n => n.id === page)?.label}</h1>{!(isTechnician && page === 'entries') && <p>{isTechnician && page === 'dashboard' ? 'Prêt pour votre prochaine intervention ?' : isTechnician && page === 'payments' ? 'Retrouvez vos gains par projet.' : descriptions[page]}</p>}</div>{primaryAction}</div>
+      <main className="main"><div className={`page-heading${isTechnician && page === 'dashboard' ? ' technician-dashboard-heading' : isTechnician && page === 'entries' ? ' technician-entries-heading' : ''}`}><div>{!isTechnician && <span className="eyebrow green">{'COPETROLITE / ' + (page === 'dashboard' ? 'TABLEAU DE BORD' : 'GESTION')}</span>}<h1>{isTechnician && page === 'dashboard' ? `Bonjour, ${user.full_name.split(' ')[0]}` : page === 'specialties' ? 'Spécialités techniciens' : NAV.find(n => n.id === page)?.label}</h1>{!(isTechnician && page === 'entries') && <p>{isTechnician && page === 'dashboard' ? 'Prêt pour votre prochaine intervention ?' : isTechnician && page === 'payments' ? 'Retrouvez vos gains par projet.' : descriptions[page]}</p>}</div>{primaryAction}</div>
         {notice && <div className="alert success" role="status"><CheckCheck size={18} />{notice}</div>}
         {error && <div className="alert error" role="alert">{error}<button className="text-button" onClick={refresh}>Réessayer</button></div>}
         {loading && <div className="loading-bar" role="status"><Spinner /> Actualisation des données…</div>}
@@ -243,7 +265,7 @@ export default function App() {
           <div className="dashboard-grid"><section className="panel"><div className="panel-heading"><div><h2>{isTechnician ? 'Mes projets en cours' : 'Les projets en cours'}</h2><p>Vos interventions actives</p></div><button className="text-button" onClick={() => navigate('projects')}>Tous les projets <ArrowUpRight size={16} /></button></div>{data.projects.filter(p => p.status === 'ACTIVE').length ? <div className="project-list">{data.projects.filter(p => p.status === 'ACTIVE').slice(0, 4).map(p => <button key={p.id} className="project-row" onClick={() => navigate('projects')}><span className="project-symbol"><BriefcaseBusiness size={20} /></span><span><strong>{p.name}</strong><small>{p.client_name} · {p.site}</small></span><Badge status={p.status} /><ChevronRight size={16} /></button>)}</div> : <Empty title={isTechnician ? 'Aucun projet actif' : 'Votre premier projet commence ici'} text={isTechnician ? 'Vos affectations actives apparaîtront ici.' : 'Créez un client, son chef de projet, puis affectez vos techniciens.'} action={internal && add('project', 'Créer un projet')} />}</section>{!isTechnician && <section className="workflow-card"><span className="eyebrow">UN SUIVI SANS RUPTURE</span><h2>Du terrain<br />à la facturation.</h2><p>Chaque intervention suit un parcours clair et partagé.</p><ol><li><span>01</span>Le technicien saisit ses heures</li><li><span>02</span>Le chef de projet client valide</li><li><span>03</span>L’administrateur facture</li></ol><button onClick={() => navigate('entries')}>Consulter les pointages <ArrowRight size={18} /></button></section>}</div>
           <section className="panel"><div className="panel-heading"><div><h2>{isTechnician ? 'Mes derniers pointages' : 'Derniers pointages'}</h2><p>Les interventions les plus récentes</p></div><button className="text-button" onClick={() => navigate('entries')}>Tout consulter <ArrowUpRight size={16} /></button></div>{isTechnician && <div className="tech-entry-cards dashboard-entry-cards">{data.entries.slice(0, 4).map(entry => <TechnicianEntryCard key={entry.id} entry={entry} hideStatus={isTechnician} onDetail={() => setModal({ type: 'entry-detail', row: entry })} />)}{!data.entries.length && <Empty title="Aucun pointage" text="Vos interventions récentes apparaîtront ici." />}</div>}<div className={isTechnician ? 'technician-desktop-table' : ''}><Table columns={entryColumns} rows={data.entries.slice(0, 5)} empty={<Empty title="Aucun pointage pour le moment" text="Les heures saisies par les techniciens apparaîtront ici." />} /></div></section>
         </> : <section className="panel"><div className="list-toolbar"><label className="search"><Search size={18} /><input aria-label="Rechercher dans la liste" placeholder="Rechercher…" value={query} onChange={e => setQuery(e.target.value)} /></label>{page === 'entries' && !isTechnician && <select aria-label="Filtrer les pointages" value={filter} onChange={e => setFilter(e.target.value)}><option value="ALL">Tous les statuts</option>{['DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED', 'INVOICED'].map(s => <option value={s} key={s}>{statusLabels[s]}</option>)}</select>}{page === 'technicians' && <select aria-label="Filtrer les techniciens" value={filter} onChange={e => setFilter(e.target.value)}><option value="ALL">Tous les techniciens</option><option value="ACTIVE">Actifs</option><option value="INACTIVE">Désactivés</option></select>}<span className="muted small">{visibleRows.length} résultat(s)</span></div>
-          {page === 'entries' && <div className="project-filter-bar"><label htmlFor="entries-project-filter">Filtrer par projet</label><select id="entries-project-filter" value={projectFilter} onChange={e => setProjectFilter(e.target.value)}><option value="ALL">Tous les projets</option>{data.projects.map(project => <option value={project.id} key={project.id}>{project.name}</option>)}</select></div>}
+          {page === 'entries' && <div className="project-filter-bar"><label htmlFor="entries-project-filter">Filtrer par projet</label><select id="entries-project-filter" value={projectFilter} onChange={e => { setProjectFilter(e.target.value); setTechnicianFilter('ALL'); }}><option value="ALL">Tous les projets</option>{data.projects.map(project => <option value={project.id} key={project.id}>{project.name}</option>)}</select><label htmlFor="entries-technician-filter">Filtrer par technicien</label><select id="entries-technician-filter" value={technicianFilter} onChange={e => setTechnicianFilter(e.target.value)}><option value="ALL">Tous les techniciens</option>{technicianOptions.map(technician => <option value={technician.id} key={technician.id}>{technician.full_name}</option>)}</select><span className="last-refresh">Dernière actualisation : {lastRefreshAt ? lastRefreshAt.toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) : '—'}</span><button className="icon-button" title="Actualiser les pointages" aria-label="Actualiser les pointages" disabled={loading} onClick={refresh}><RefreshCw size={16} className={loading ? 'spin' : ''} /></button>{isAdmin && <div className="report-filter-actions"><button className="icon-button" title="Générer le PDF détaillé" aria-label="Générer le PDF détaillé" onClick={() => openGlobalReport(false)}><Download size={16} /></button><button className="icon-button" title="Générer le PDF résumé" aria-label="Générer le PDF résumé" onClick={() => openGlobalReport(true)}><FileText size={16} /></button></div>}</div>}
           {page === 'entries' && <>
             {isTechnician && <div className="tech-entry-cards">{visibleRows.map(entry => <TechnicianEntryCard key={entry.id} entry={entry} hideStatus={isTechnician} onDetail={() => setModal({ type: 'entry-detail', row: entry })} onEdit={['DRAFT', 'REJECTED'].includes(entry.status) ? () => setModal({ type: 'time', row: entry }) : undefined} onSubmit={['DRAFT', 'REJECTED'].includes(entry.status) ? () => act(entry, 'submit') : undefined} working={working} />)}{!visibleRows.length && <Empty title="Aucun pointage" text="Saisissez vos heures pour commencer à suivre vos interventions." action={add('time', 'Saisir mes heures')} />}</div>}
             <div className={isTechnician ? 'technician-desktop-table' : ''}><Table columns={entryColumns} rows={visibleRows} /></div>
@@ -253,6 +275,7 @@ export default function App() {
             { label: 'Jour férié', render: holiday => holiday.name },
             { label: 'Actions', render: holiday => <div className="row-actions">{edit('holiday', holiday)}<button className="icon-button danger" title="Supprimer" aria-label={`Supprimer ${holiday.name}`} disabled={working} onClick={() => deleteHoliday(holiday)}><Trash2 size={16} /></button></div> },
           ]} />}
+          {page === 'technicians' && isAdmin && <div className="specialty-filter-inline"><label htmlFor="technician-specialty-filter">Spécialité</label><select id="technician-specialty-filter" aria-label="Filtrer par spécialité" value={specialtyFilter} onChange={e => setSpecialtyFilter(e.target.value)}><option value="ALL">Toutes les spécialités</option>{data.specialties.map(specialty => <option value={specialty.name} key={specialty.id}>{specialty.name}</option>)}</select></div>}
           {page === 'technicians' && <Table rows={numberedTechnicians} empty={<Empty
             title={technicians.length ? 'Aucun technicien trouvé' : 'Aucun technicien pour le moment'}
             text={technicians.length ? 'Modifiez votre recherche ou le filtre de statut.' : isAdmin ? 'Ajoutez un technicien pour préparer ses affectations et ses pointages.' : 'Les techniciens accessibles dans vos projets apparaîtront ici.'}
@@ -272,7 +295,7 @@ export default function App() {
             </div> },
           ]} />}
           {page === 'projects' && <>{isTechnician && <div className="tech-project-cards">{search(data.projects).map(project => <article className="tech-project-card" key={project.id}><div className="tech-project-icon"><BriefcaseBusiness size={20} /></div><div className="tech-project-main"><div className="tech-project-title"><h2>{project.name}</h2><Badge status={project.status} /></div><p>{project.client_name}</p><div className="tech-project-meta"><span><Building2 size={15} />{project.site}</span>{project.manager_name && <span><Users size={15} />{project.manager_name}</span>}</div></div></article>)}{!search(data.projects).length && <Empty title="Aucun projet affecté" text="Vos projets s’afficheront ici dès qu’ils vous seront attribués." />}</div>}<div className={isTechnician ? 'technician-desktop-table' : ''}><Table rows={search(data.projects)} columns={[
-            { label: 'Projet / Site', render: p => <div className="cell-stack"><strong>{p.name}</strong><span>{p.site}</span></div> }, { label: 'Client', render: p => p.client_name }, { label: 'Chef de projet', render: p => p.manager_name }, { label: 'Équipe', render: p => <div className="cell-stack"><strong>{p.technicians.length} technicien(s)</strong><span>{p.technician_names.join(', ') || 'À affecter'}</span></div> }, { label: 'Statut', render: p => <Badge status={p.status} /> }, ...(internal ? [{ label: 'Tarif / h', render: p => money(p.hourly_rate, user.currency) }, { label: 'Coût techniciens', render: p => money(p.technician_labor_cost, user.currency) }, { label: 'Actions', render: p => <div className="row-actions">{edit('project', p)}{isAdmin && <button className="text-button" onClick={() => setModal({ type: 'project-access', row: p })}>Acc?s client</button>}</div> }] : []),
+            { label: 'Projet / Site', render: p => <div className="cell-stack"><strong>{p.name}</strong><span>{p.site}</span></div> }, { label: 'Client', render: p => p.client_name }, { label: 'Chef de projet', render: p => p.manager_name }, { label: 'Équipe', render: p => <div className="cell-stack"><strong>{p.technicians.length} technicien(s)</strong><span>{p.technician_names.join(', ') || 'À affecter'}</span></div> }, { label: 'Statut', render: p => <Badge status={p.status} /> }, ...(internal ? [{ label: 'Tarif / h', render: p => money(p.hourly_rate, user.currency) }, { label: 'Coût techniciens', render: p => money(p.technician_labor_cost, user.currency) }, { label: 'Actions', render: p => <div className="row-actions">{edit('project', p)}{isAdmin && <><button className="text-button" onClick={() => setModal({ type: 'project-access', row: p })}>Accès client</button><button className="icon-button danger" title="Supprimer" aria-label={`Supprimer le projet ${p.name}`} disabled={working} onClick={() => deleteProject(p)}><Trash2 size={16} /></button></>}</div> }] : []),
           ]} /></div></>}
           {page === 'users' && <Table rows={search(data.users)} columns={[
             { label: 'Collaborateur', render: u => <div className="person-cell"><span className="avatar light">{u.full_name.slice(0, 2).toUpperCase()}</span><div className="cell-stack"><strong>{u.full_name}</strong><span>{u.email || u.specialty || '—'}</span></div></div> }, { label: 'Rôle', render: u => roleLabels[u.role] }, { label: 'Client / Spécialité', render: u => u.client_name || u.specialty || '—' }, { label: 'Compte', render: u => <span className={`badge ${u.is_active ? 'status-active' : 'status-completed'}`}>{u.is_active ? 'Actif' : 'Désactivé'}</span> }, ...(isAdmin ? [{ label: 'Actions', render: u => edit('user', u) }] : []),
@@ -284,6 +307,7 @@ export default function App() {
               {isAdmin && <button className="icon-button danger" title="Supprimer" aria-label={`Supprimer le client ${c.name}`} onClick={() => { setDeleteClientError(''); setModal({ type: 'delete-client', row: c }); }}><Trash2 size={16} /></button>}
             </div> },
           ]} />}
+          {page === 'specialties' && <Table rows={data.specialties} empty={<Empty title="Aucune spécialité" text="Ajoutez une spécialité, puis affectez vos techniciens depuis cette page." action={add('specialty', 'Ajouter une spécialité')} />} columns={[{ label: 'Spécialité', render: specialty => <strong>{specialty.name}</strong> }, { label: 'Techniciens affectés', render: specialty => { const assigned = data.users.filter(technician => technician.role === 'TECHNICIAN' && technician.specialty === specialty.name); return <div className="cell-stack"><strong>{assigned.length} technicien(s)</strong><span>{assigned.map(technician => technician.full_name).join(', ') || 'Aucun technicien affecté'}</span></div>; } }, { label: 'Actions', render: specialty => <button className="icon-button" title={`Affecter un technicien à ${specialty.name}`} aria-label={`Affecter un technicien à ${specialty.name}`} onClick={() => setModal({ type: 'specialty-assign', row: specialty })}><Plus size={16} /></button> }]} />}
           {page === 'invoices' && <Table rows={search(data.invoices)} columns={[
             { label: 'Facture', render: i => <div className="cell-stack"><strong>{i.number}</strong><span>{i.project_name}</span></div> }, { label: 'Client', render: i => i.client_name }, { label: 'Échéance', render: i => date(i.due_date) }, { label: 'Total TTC', render: i => <strong>{money(i.total, i.currency)}</strong> }, { label: 'Solde', render: i => money(i.balance, i.currency) }, { label: 'Statut', render: i => <Badge status={i.status} /> }, { label: 'Actions', render: i => <div className="row-actions"><button className="text-button" onClick={() => setModal({ type: 'invoice-detail', row: i })}>Consulter</button>{Number(i.balance) > 0 && <button className="icon-button" title="Enregistrer un paiement" aria-label="Enregistrer un paiement" onClick={() => setModal({ type: 'payment', invoice: i })}><ArrowDownLeft size={18} /></button>}</div> },
           ]} />}
@@ -502,20 +526,23 @@ function TechnicianReport({ technician, rows, projects, close }) {
   </Modal>;
 }
 
-function GlobalReport({ rows, projects, close }) {
+function GlobalReport({ rows, projects, compact = false, close }) {
   const projectById = new Map(projects.map(project => [project.id, project]));
   const reportRows = rows.map((entry, index) => {
     const project = projectById.get(entry.project);
-    const rate = Number(project?.technician_hourly_rate || 0);
-    const amount = Number(entry.hours || 0) * rate;
-    return { entry, project, index: index + 1, rate, amount };
+    const quantity = Number(entry.hours || 0);
+    const clientRate = Number(project?.hourly_rate || 0);
+    const clientCost = quantity * clientRate;
+    const benefit = clientCost - quantity * Number(project?.technician_hourly_rate || 0);
+    return { entry, project, index: index + 1, quantity, clientRate, clientCost, benefit };
   });
   const hours = reportRows.reduce((total, row) => total + Number(row.entry.hours || 0), 0);
-  const total = reportRows.reduce((sum, row) => sum + row.amount, 0);
-  return <Modal title="Fiche globale des relevés de pointage" onClose={close} wide>
+  const totalClientCost = reportRows.reduce((sum, row) => sum + row.clientCost, 0);
+  const totalBenefit = reportRows.reduce((sum, row) => sum + row.benefit, 0);
+  return <Modal title={compact ? 'Résumé des pointages' : 'Fiche détaillée des pointages'} onClose={close} wide>
     <div className="technician-report">
-      <header className="technician-report-header"><img src={reportLogo} alt="Copetro Elite" /><div><span className="eyebrow green">RELEVÉ GLOBAL</span><h2>Tous les techniciens</h2><p>{date(new Date())} · {number(hours)} h au total</p></div></header>
-      <table className="technician-report-table"><thead><tr><th>N°</th><th>Technicien</th><th>Projet</th><th>Désignation</th><th>P.U.</th><th>Quantité</th><th>Jour</th><th>Unité</th><th>Montant</th></tr></thead><tbody>{reportRows.map(({ entry, project, index, rate, amount }) => <tr key={entry.id}><td>{index}</td><td>{entry.technician_name}</td><td>{project?.name || entry.project_name}</td><td>{entry.description || 'Heures standard'}</td><td>{rate ? money(rate, 'DZD') : '—'}</td><td>{number(entry.hours)}</td><td>{date(entry.start)}</td><td>HEURES</td><td>{rate ? money(amount, 'DZD') : '—'}</td></tr>)}</tbody><tfoot><tr><td colSpan="8">Total TTC</td><td>{money(total, 'DZD')}</td></tr></tfoot></table>
+      <header className="technician-report-header"><img src={reportLogo} alt="Copetro Elite" /><div><span className="eyebrow green">{compact ? 'RÉSUMÉ DES POINTAGES' : 'RELEVÉ GLOBAL'}</span><h2>{compact ? 'Techniciens sélectionnés' : 'Tous les techniciens'}</h2><p>{date(new Date())} · {number(hours)} h au total</p></div></header>
+      <table className="technician-report-table"><thead><tr>{compact ? <><th>N°</th><th>Technicien</th><th>Projet</th><th>Quantité</th><th>Jour</th></> : <><th>N°</th><th>Technicien</th><th>Projet</th><th>P.U. client</th><th>Quantité</th><th>Jour</th><th>Coût client</th><th>Bénéfice</th></>}</tr></thead><tbody>{reportRows.map(({ entry, project, index, quantity, clientRate, clientCost, benefit }) => <tr key={entry.id}>{compact ? <><td>{index}</td><td>{entry.technician_name}</td><td>{project?.name || entry.project_name}</td><td>{number(quantity)} h</td><td>{date(entry.start)}</td></> : <><td>{index}</td><td>{entry.technician_name}</td><td>{project?.name || entry.project_name}</td><td>{clientRate ? money(clientRate, 'DZD') : '—'}</td><td>{number(quantity)} h</td><td>{date(entry.start)}</td><td>{money(clientCost, 'DZD')}</td><td>{money(benefit, 'DZD')}</td></>}</tr>)}</tbody>{!compact && <tfoot><tr><td colSpan="6">Total coût client</td><td>{money(totalClientCost, 'DZD')}</td><td>{money(totalBenefit, 'DZD')}</td></tr></tfoot>}</table>
     </div>
     <footer className="form-footer technician-report-actions"><button className="button secondary" onClick={close}>Fermer</button><button className="button" onClick={() => window.print()}><Download size={16} />Télécharger en PDF</button></footer>
   </Modal>;
