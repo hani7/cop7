@@ -82,6 +82,7 @@
 }
 
 .delete-confirm-modal{padding:24px;color:var(--petrol)}.delete-confirm-modal>p{margin:0 0 12px;font-size:14px}.delete-confirm-modal .form-footer{margin-top:22px}
+.row-actions .text-button:first-child{min-height:32px;padding:7px 10px;border-radius:7px;background:var(--coral);color:#fff;text-decoration:none}.row-actions .text-button:first-child:hover{background:#ff755f;color:#fff}
 
 @media(max-width:760px){.login-technician .login-panel{justify-content:center!important;gap:18px!important}.login-technician .tech-login-brand{flex-direction:column!important;gap:8px!important}.login-technician .login-box{background:rgb(255 255 255 / 76%)!important;backdrop-filter:blur(18px)}}
 @media print{.technician-report{padding:0}.technician-report-actions{display:none!important}.technician-report-table{font-size:9px}.technician-report-table th{print-color-adjust:exact}}
