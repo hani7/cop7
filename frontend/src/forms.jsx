@@ -32,7 +32,10 @@ function MissionExpenses({ values, update }) {
 }
 
 function PurchaseOrderBlock({ values, update }) {
-  return <div className="purchase-order-block"><div className="purchase-order-heading"><strong>Bon de commande</strong><small>Renseignez le numéro et joignez la fiche correspondante.</small></div><div className="purchase-order-fields"><input type="text" placeholder="N° bon de commande" value={values.purchase_order || ''} onChange={event => update('purchase_order', event.target.value)} /><label className="purchase-order-file"><span>Choisir un fichier</span><input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={event => update('purchase_order_file', event.target.files?.[0] || null)} />{values.purchase_order_file?.name || values.purchase_order_file_url || 'Aucun fichier choisi'}</label></div></div>;
+  const orders = values.purchase_orders || [{ number: values.purchase_order || '', file: null, existingFile: values.purchase_order_file_url || '' }];
+  const updateRow = (index, changes) => update('purchase_orders', orders.map((order, rowIndex) => rowIndex === index ? { ...order, ...changes } : order));
+  const removeRow = index => update('purchase_orders', orders.length === 1 ? [{ number: '', file: null, existingFile: '' }] : orders.filter((_, rowIndex) => rowIndex !== index));
+  return <div className="purchase-order-block"><div className="purchase-order-heading"><div><strong>Bon de commande</strong><small>Renseignez le numéro et joignez la fiche correspondante.</small></div><button type="button" className="button compact" onClick={() => update('purchase_orders', [...orders, { number: '', file: null, existingFile: '' }])}><Plus size={15} />Ajouter une ligne</button></div>{orders.map((order, index) => <div className="purchase-order-fields" key={index}><input type="text" placeholder="N° bon de commande" value={order.number || ''} onChange={event => updateRow(index, { number: event.target.value })} /><label className="purchase-order-file"><span>Choisir un fichier</span><input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={event => updateRow(index, { file: event.target.files?.[0] || null })} />{order.file?.name || order.existingFile || 'Aucun fichier choisi'}</label><button type="button" className="icon-button danger" title="Supprimer la ligne" aria-label="Supprimer la ligne" onClick={() => removeRow(index)}><X size={16} /></button></div>)}</div>;
 }
 
 export default function Editor({ modal, data, user, save, close, openModal }) {
@@ -158,18 +161,21 @@ export default function Editor({ modal, data, user, save, close, openModal }) {
       },
       ];
     const assignments = row ? Object.entries(data.users.filter(technician => row.technicians?.includes(technician.id)).reduce((groups, technician) => { const specialty = technician.specialty || ''; (groups[specialty] ||= []).push(technician.id); return groups; }, {})).map(([specialty, technicians]) => ({ specialty, technicians })) : [];
-    initial = row ? { ...row, manager_name: row.manager_name || '', purchase_order_file: null, technician_assignments: assignments.length ? assignments : [{ specialty: '', technicians: [] }], mission_expenses: row.mission_expenses || [{ object: '', amount: '' }] } : { name: '', client: '', site: '', manager_name: '', technician_assignments: [{ specialty: '', technicians: [] }], mission_expenses: [{ object: '', amount: '' }], purchase_order: '', purchase_order_file: null, description: '' };
+    initial = row ? { ...row, manager_name: row.manager_name || '', purchase_order_file: null, purchase_orders: row.purchase_orders?.length ? row.purchase_orders.map(order => ({ number: order.number || '', file: null, existingFile: order.file_name || row.purchase_order_file_url || '' })) : [{ number: row.purchase_order || '', file: null, existingFile: row.purchase_order_file_url || '' }], technician_assignments: assignments.length ? assignments : [{ specialty: '', technicians: [] }], mission_expenses: row.mission_expenses || [{ object: '', amount: '' }] } : { name: '', client: '', site: '', manager_name: '', technician_assignments: [{ specialty: '', technicians: [] }], mission_expenses: [{ object: '', amount: '' }], purchase_orders: [{ number: '', file: null, existingFile: '' }], purchase_order: '', purchase_order_file: null, description: '' };
     transform = values => {
-      const { project_manager, technician_assignments, purchase_order_file, purchase_order_file_url, ...project } = values;
-      const payload = { ...project, client: Number(values.client), technicians: (technician_assignments || []).flatMap(assignment => assignment.technicians || []).map(Number) };
-      if (!(purchase_order_file instanceof File)) return payload;
+      const { project_manager, technician_assignments, purchase_orders, purchase_order_file, purchase_order_file_url, ...project } = values;
+      const orderMetadata = (purchase_orders || []).filter(order => order.number || order.file || order.existingFile).map(order => ({ number: order.number || '', file_name: order.file?.name || order.existingFile || '' }));
+      const firstOrder = purchase_orders?.[0] || {};
+      const payload = { ...project, purchase_order: firstOrder.number || '', purchase_orders: orderMetadata, client: Number(values.client), technicians: (technician_assignments || []).flatMap(assignment => assignment.technicians || []).map(Number) };
+      const firstFile = purchase_orders?.find(order => order.file)?.file;
+      if (!(firstFile instanceof File)) return payload;
       const body = new FormData();
       Object.entries(payload).forEach(([key, value]) => {
         if (key === 'mission_expenses') body.append(key, JSON.stringify(value || []));
         else if (Array.isArray(value)) value.forEach(item => body.append(key, item));
         else body.append(key, value ?? '');
       });
-      body.append('purchase_order_file', purchase_order_file);
+      body.append('purchase_order_file', firstFile);
       return body;
     };
   } else if (modal.type === 'time' || modal.type === 'admin-time') {

@@ -265,7 +265,7 @@ class ProjectSerializer(serializers.ModelSerializer):
                   'manager_name', 'technicians', 'technician_names', 'technician_specialties', 'hourly_rate',
                   'holiday_billing_day_rate', 'technician_hourly_rate', 'holiday_day_rate',
                   'technician_labor_cost', 'budget',
-                  'purchase_order', 'purchase_order_file', 'purchase_order_file_url', 'status', 'created_at', 'mission_expenses']
+                  'purchase_order', 'purchase_order_file', 'purchase_order_file_url', 'purchase_orders', 'status', 'created_at', 'mission_expenses']
         read_only_fields = ['created_at']
 
     def get_fields(self):
