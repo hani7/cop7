@@ -1,5 +1,5 @@
 import { Field, Modal, RecordForm } from './components';
-import { Building2, HardHat } from 'lucide-react';
+import { Building2, HardHat, Plus, X } from 'lucide-react';
 import CVImport from './CVImport';
 import ExperienceEditor from './ExperienceEditor';
 import CertificateUploads from './CertificateUploads';
@@ -15,6 +15,14 @@ const localDay = value => {
   const current = new Date(value);
   return `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, '0')}-${String(current.getDate()).padStart(2, '0')}`;
 };
+
+function TechnicianAssignments({ values, update, data }) {
+  const assignments = values.technician_assignments || [{ specialty: '', technicians: [] }];
+  const technicians = data.users.filter(user => user.role === 'TECHNICIAN' && user.is_active);
+  const updateRow = (index, changes) => update('technician_assignments', assignments.map((row, rowIndex) => rowIndex === index ? { ...row, ...changes } : row));
+  const removeRow = index => update('technician_assignments', assignments.length === 1 ? [{ specialty: '', technicians: [] }] : assignments.filter((_, rowIndex) => rowIndex !== index));
+  return <div className="technician-assignments"><div className="technician-assignments-heading"><div><strong>Techniciens affectés</strong><small>Choisissez une spécialité puis les techniciens à affecter.</small></div><button type="button" className="button compact" onClick={() => update('technician_assignments', [...assignments, { specialty: '', technicians: [] }])}><Plus size={15} />Ajouter une ligne</button></div>{assignments.map((assignment, index) => { const available = technicians.filter(technician => !assignment.specialty || technician.specialty === assignment.specialty); return <div className="technician-assignment-row" key={index}><select value={assignment.specialty} onChange={event => updateRow(index, { specialty: event.target.value, technicians: [] })}><option value="">Spécialité</option>{data.specialties.map(specialty => <option key={specialty.id} value={specialty.name}>{specialty.name}</option>)}</select><select multiple value={(assignment.technicians || []).map(String)} onChange={event => updateRow(index, { technicians: [...event.target.selectedOptions].map(option => Number(option.value)) })}>{available.map(technician => <option key={technician.id} value={technician.id}>{technician.full_name}</option>)}</select><button type="button" className="icon-button danger" title="Supprimer la ligne" aria-label="Supprimer la ligne" onClick={() => removeRow(index)}><X size={16} /></button></div>; })}</div>;
+}
 
 export default function Editor({ modal, data, user, save, close, openModal }) {
   const row = modal.row;
@@ -116,22 +124,14 @@ export default function Editor({ modal, data, user, save, close, openModal }) {
     };
   } else if (modal.type === 'project') {
     title = editing ? 'Modifier le projet' : 'Nouveau projet'; resource = 'projects';
-    fields = values => {
-      const selectedSpecialty = values.technician_specialty || '';
-      const technicians = data.users.filter(u => u.role === 'TECHNICIAN' && u.is_active
-        && (!selectedSpecialty || u.specialty === selectedSpecialty)).map(u => ({
-          value: u.id,
-          label: `${u.full_name || u.username}${u.specialty ? ` - ${u.specialty}` : ''}`,
-        }));
-      return [
+    fields = values => [
       text('name', 'Nom du projet', true),
       text('client', 'Client', true, { type: 'searchable-select', options: options(data.clients.filter(c => c.is_active)) }),
       text('site', 'Site industriel', true),
       text('manager_name', 'Chef de projet client', true),
       text('purchase_order', 'Bon de commande'),
       text('description', 'Description', false, { type: 'textarea' }),
-      select('technician_specialty', 'Spécialité technicien', data.specialties.map(specialty => ({ value: specialty.name, label: specialty.name })), false),
-      text('technicians', 'Techniciens affectés', false, { type: 'searchable-multiselect', options: technicians, hint: selectedSpecialty ? 'Les techniciens affichés correspondent à la spécialité choisie.' : 'Choisissez une spécialité pour filtrer les techniciens.', action: values => window.dispatchEvent(new CustomEvent('open-technician-editor', { detail: { specialty: values.technician_specialty } })), actionLabel: 'Ajouter un technicien' }),
+      { name: 'technician_assignments', wide: true, render: (current, update) => <TechnicianAssignments values={values} update={update} data={data} /> },
       {
         name: 'commercial-info',
         type: 'group',
@@ -145,14 +145,11 @@ export default function Editor({ modal, data, user, save, close, openModal }) {
         ],
       },
       ];
-    };
-    const assignedSpecialties = row ? data.users.filter(technician => row.technicians?.includes(technician.id)).map(technician => technician.specialty).filter(Boolean) : [];
-    initial = row ? { ...row, manager_name: row.manager_name || '', technician_specialty: assignedSpecialties.length === 1 ? assignedSpecialties[0] : '' } : { name: '', client: '', site: '', manager_name: '', technician_specialty: '', technicians: [], hourly_rate: '', holiday_billing_day_rate: '0', technician_hourly_rate: '0', holiday_day_rate: '0', purchase_order: '', description: '' };
+    const assignments = row ? Object.entries(data.users.filter(technician => row.technicians?.includes(technician.id)).reduce((groups, technician) => { const specialty = technician.specialty || ''; (groups[specialty] ||= []).push(technician.id); return groups; }, {})).map(([specialty, technicians]) => ({ specialty, technicians })) : [];
+    initial = row ? { ...row, manager_name: row.manager_name || '', technician_assignments: assignments.length ? assignments : [{ specialty: '', technicians: [] }] } : { name: '', client: '', site: '', manager_name: '', technician_assignments: [{ specialty: '', technicians: [] }], hourly_rate: '', holiday_billing_day_rate: '0', technician_hourly_rate: '0', holiday_day_rate: '0', purchase_order: '', description: '' };
     transform = values => {
-      const { project_manager, technician_specialty, ...project } = values;
-      const allowedTechnicians = data.users.filter(technician => technician.role === 'TECHNICIAN' && technician.is_active
-        && (!technician_specialty || technician.specialty === technician_specialty)).map(technician => technician.id);
-      return { ...project, client: Number(values.client), technicians: (values.technicians || []).map(Number).filter(id => allowedTechnicians.includes(id)) };
+      const { project_manager, technician_assignments, ...project } = values;
+      return { ...project, client: Number(values.client), technicians: (technician_assignments || []).flatMap(assignment => assignment.technicians || []).map(Number) };
     };
   } else if (modal.type === 'time' || modal.type === 'admin-time') {
     const adminTime = modal.type === 'admin-time';
