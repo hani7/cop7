@@ -23,7 +23,7 @@ export function Field({ label, children, hint, wide = false, className = '' }) {
   return <label className={`field${wide ? ' field-wide' : ''}${className ? ` ${className}` : ''}`}><span>{label}</span>{children}{hint && <small>{hint}</small>}</label>;
 }
 
-function SearchableSelect({ id, label, options, value, required, multiple = false, onChange }) {
+export function SearchableSelect({ id, label, options, value, required, multiple = false, onChange }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
