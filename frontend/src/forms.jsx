@@ -16,7 +16,7 @@ const localDay = value => {
   return `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, '0')}-${String(current.getDate()).padStart(2, '0')}`;
 };
 
-export default function Editor({ modal, data, user, save, close }) {
+export default function Editor({ modal, data, user, save, close, openModal }) {
   const row = modal.row;
   const editing = !!row;
   let title, fields, initial, resource, transform = x => x, extra, submitLabel;
@@ -81,7 +81,7 @@ export default function Editor({ modal, data, user, save, close }) {
       { ...select('client', 'Entreprise cliente', options(data.clients.filter(c => c.is_active))), hidden: technicianOnly || values.role !== 'PROJECT_MANAGER' },
       text('is_active', 'Compte actif', false, { type: 'switch' }),
     ];
-    initial = row ? { ...row, password: '' } : { username: '', first_name: '', last_name: '', email: '', password: '', role: 'TECHNICIAN', client: '', specialty: '', phone: '', birth_date: '', assignment_date: '', address: '', experience: '', certificates: '', is_active: true };
+    initial = row ? { ...row, password: '' } : { username: '', first_name: '', last_name: '', email: '', password: '', role: 'TECHNICIAN', client: '', specialty: modal.initialSpecialty || '', phone: '', birth_date: '', assignment_date: '', address: '', experience: '', certificates: '', is_active: true };
     initial = { ...initial, certificate_uploads: [{ key: 'first-certificate', file: null }], remove_certificate_ids: [] };
     transform = values => {
       const role = technicianOnly ? 'TECHNICIAN' : values.role;
@@ -131,7 +131,7 @@ export default function Editor({ modal, data, user, save, close }) {
       text('purchase_order', 'Bon de commande'),
       text('description', 'Description', false, { type: 'textarea' }),
       select('technician_specialty', 'Spécialité technicien', data.specialties.map(specialty => ({ value: specialty.name, label: specialty.name })), false),
-      text('technicians', 'Techniciens affectés', false, { type: 'searchable-multiselect', options: technicians, hint: selectedSpecialty ? 'Les techniciens affichés correspondent à la spécialité choisie.' : 'Choisissez une spécialité pour filtrer les techniciens.', wide: true }),
+      text('technicians', 'Techniciens affectés', false, { type: 'searchable-multiselect', options: technicians, hint: selectedSpecialty ? 'Les techniciens affichés correspondent à la spécialité choisie.' : 'Choisissez une spécialité pour filtrer les techniciens.', action: values => window.dispatchEvent(new CustomEvent('open-technician-editor', { detail: { specialty: values.technician_specialty } })), actionLabel: 'Ajouter un technicien' }),
       {
         name: 'commercial-info',
         type: 'group',

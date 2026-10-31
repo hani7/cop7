@@ -125,7 +125,7 @@ export function RecordForm({ fields, initial, onSave, onClose, submitLabel = 'En
   const resolved = typeof fields === 'function' ? fields(values) : fields;
   const renderField = f => f.render ? <div className={f.wide === false ? '' : 'field-wide'} key={f.name}>{f.render(values, update, busy)}</div> : ['searchable-select', 'searchable-multiselect'].includes(f.type) ? <div key={f.name} className={`field${f.wide ? ' field-wide' : ''}${f.required ? ' field-required' : ''}`}>
     <label htmlFor={`field-${f.name}`}>{f.label}</label>
-    <SearchableSelect id={`field-${f.name}`} label={f.label} options={f.options} value={values[f.name] ?? (f.type === 'searchable-multiselect' ? [] : '')} required={f.required} multiple={f.type === 'searchable-multiselect'} onChange={value => update(f.name, value)} />
+    <div className={f.action ? 'field-input-with-action' : ''}><SearchableSelect id={`field-${f.name}`} label={f.label} options={f.options} value={values[f.name] ?? (f.type === 'searchable-multiselect' ? [] : '')} required={f.required} multiple={f.type === 'searchable-multiselect'} onChange={value => update(f.name, value)} />{f.action && <button type="button" className="icon-button" title={f.actionLabel || 'Ajouter'} aria-label={f.actionLabel || 'Ajouter'} onClick={() => f.action(values)}><Plus size={16} /></button>}</div>
     {f.hint && <small>{f.hint}</small>}
   </div> : <Field key={f.name} label={f.label} hint={f.hint} wide={f.wide} className={`${f.className || ''}${f.required ? ' field-required' : ''}`}>
     {f.type === 'select' ? <select required={f.required} value={values[f.name] ?? ''} onChange={e => update(f.name, e.target.value)}>

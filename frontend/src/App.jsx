@@ -101,6 +101,11 @@ export default function App() {
   }, []);
   useEffect(() => { bootstrap(); }, [bootstrap]);
   useEffect(() => {
+    const openTechnicianEditor = event => setModal({ type: 'technician', initialSpecialty: event.detail?.specialty || '' });
+    window.addEventListener('open-technician-editor', openTechnicianEditor);
+    return () => window.removeEventListener('open-technician-editor', openTechnicianEditor);
+  }, []);
+  useEffect(() => {
     if (!user) return;
     const currentPage = NAV.find(item => item.id === page);
     if ((['invoices', 'technician-payments', 'specialties', 'trash'].includes(page) && user.role !== 'ADMIN') || (page === 'payments' && !['ADMIN', 'TECHNICIAN'].includes(user.role))) {
@@ -265,7 +270,6 @@ export default function App() {
     {globalReport && <GlobalReport rows={globalReport.rows} projects={data.projects} holidays={data.holidays} technicianName={globalReport.technicianName} compact={globalReport.compact} close={() => setGlobalReport(null)} />}
     <div className="workspace">
       <main className="main"><div className={`page-heading${isTechnician && page === 'dashboard' ? ' technician-dashboard-heading' : isTechnician && page === 'entries' ? ' technician-entries-heading' : ''}`}><div>{!isTechnician && <span className="eyebrow green">{'COPETROLITE / ' + (page === 'dashboard' ? 'TABLEAU DE BORD' : 'GESTION')}</span>}<h1>{isTechnician && page === 'dashboard' ? `Bonjour, ${user.full_name.split(' ')[0]}` : page === 'specialties' ? 'Spécialités techniciens' : page === 'trash' ? 'Corbeille' : NAV.find(n => n.id === page)?.label}</h1>{!(isTechnician && page === 'entries') && <p>{isTechnician && page === 'dashboard' ? 'Prêt pour votre prochaine intervention ?' : isTechnician && page === 'payments' ? 'Retrouvez vos gains par projet.' : descriptions[page]}</p>}</div>{primaryAction}</div>
-        {page === 'entries' && <div className="last-refresh page-heading-refresh">Dernière actualisation : {lastRefreshAt ? lastRefreshAt.toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) : '—'}</div>}
         {notice && <div className="alert success" role="status"><CheckCheck size={18} />{notice}</div>}
         {error && <div className="alert error" role="alert">{error}<button className="text-button" onClick={refresh}>Réessayer</button></div>}
         {loading && <div className="loading-bar" role="status"><Spinner /> Actualisation des données…</div>}
