@@ -132,6 +132,7 @@ class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     deleted_at = models.DateTimeField(null=True, blank=True, db_index=True)
     mission_expenses = models.JSONField(default=list, blank=True)
+    purchase_order_file = models.FileField(upload_to='purchase-orders/', blank=True)
 
     class Meta:
         ordering = ['-created_at']

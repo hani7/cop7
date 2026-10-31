@@ -31,6 +31,10 @@ function MissionExpenses({ values, update }) {
   return <div className="mission-expenses"><div className="mission-expenses-heading"><div><strong>Frais de mission</strong><small>Ajoutez les frais liés à ce projet.</small></div><button type="button" className="button compact" onClick={() => update('mission_expenses', [...expenses, { object: '', amount: '' }])}><Plus size={15} />Ajouter une ligne</button></div>{expenses.map((expense, index) => <div className="mission-expense-row" key={index}><input type="text" placeholder="Objet" value={expense.object} onChange={event => updateRow(index, { object: event.target.value })} /><input type="number" min="0" step="0.01" placeholder="Montant" value={expense.amount} onChange={event => updateRow(index, { amount: event.target.value })} /><button type="button" className="icon-button danger" title="Supprimer la ligne" aria-label="Supprimer la ligne" onClick={() => removeRow(index)}><X size={16} /></button></div>)}</div>;
 }
 
+function PurchaseOrderBlock({ values, update }) {
+  return <div className="purchase-order-block"><div className="purchase-order-heading"><strong>Bon de commande</strong><small>Renseignez le numéro et joignez la fiche correspondante.</small></div><div className="purchase-order-fields"><input type="text" placeholder="N° bon de commande" value={values.purchase_order || ''} onChange={event => update('purchase_order', event.target.value)} /><label className="purchase-order-file"><span>Choisir un fichier</span><input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={event => update('purchase_order_file', event.target.files?.[0] || null)} />{values.purchase_order_file?.name || values.purchase_order_file_url || 'Aucun fichier choisi'}</label></div></div>;
+}
+
 export default function Editor({ modal, data, user, save, close, openModal }) {
   const row = modal.row;
   const editing = !!row;
@@ -136,7 +140,7 @@ export default function Editor({ modal, data, user, save, close, openModal }) {
       text('client', 'Client', true, { type: 'searchable-select', options: options(data.clients.filter(c => c.is_active)) }),
       text('site', 'Site industriel', true),
       text('manager_name', 'Chef de projet client', true),
-      text('purchase_order', 'Bon de commande'),
+      { name: 'purchase-order', wide: true, render: (current, update) => <PurchaseOrderBlock values={values} update={update} /> },
       text('description', 'Description', false, { type: 'textarea' }),
       { name: 'technician_assignments', wide: true, render: (current, update) => <TechnicianAssignments values={values} update={update} data={data} /> },
       { name: 'mission_expenses', wide: true, render: (current, update) => <MissionExpenses values={values} update={update} /> },
@@ -154,10 +158,19 @@ export default function Editor({ modal, data, user, save, close, openModal }) {
       },
       ];
     const assignments = row ? Object.entries(data.users.filter(technician => row.technicians?.includes(technician.id)).reduce((groups, technician) => { const specialty = technician.specialty || ''; (groups[specialty] ||= []).push(technician.id); return groups; }, {})).map(([specialty, technicians]) => ({ specialty, technicians })) : [];
-    initial = row ? { ...row, manager_name: row.manager_name || '', technician_assignments: assignments.length ? assignments : [{ specialty: '', technicians: [] }], mission_expenses: row.mission_expenses || [{ object: '', amount: '' }] } : { name: '', client: '', site: '', manager_name: '', technician_assignments: [{ specialty: '', technicians: [] }], mission_expenses: [{ object: '', amount: '' }], hourly_rate: '', holiday_billing_day_rate: '0', technician_hourly_rate: '0', holiday_day_rate: '0', purchase_order: '', description: '' };
+    initial = row ? { ...row, manager_name: row.manager_name || '', purchase_order_file: null, technician_assignments: assignments.length ? assignments : [{ specialty: '', technicians: [] }], mission_expenses: row.mission_expenses || [{ object: '', amount: '' }] } : { name: '', client: '', site: '', manager_name: '', technician_assignments: [{ specialty: '', technicians: [] }], mission_expenses: [{ object: '', amount: '' }], purchase_order: '', purchase_order_file: null, description: '' };
     transform = values => {
-      const { project_manager, technician_assignments, ...project } = values;
-      return { ...project, client: Number(values.client), technicians: (technician_assignments || []).flatMap(assignment => assignment.technicians || []).map(Number) };
+      const { project_manager, technician_assignments, purchase_order_file, purchase_order_file_url, ...project } = values;
+      const payload = { ...project, client: Number(values.client), technicians: (technician_assignments || []).flatMap(assignment => assignment.technicians || []).map(Number) };
+      if (!(purchase_order_file instanceof File)) return payload;
+      const body = new FormData();
+      Object.entries(payload).forEach(([key, value]) => {
+        if (key === 'mission_expenses') body.append(key, JSON.stringify(value || []));
+        else if (Array.isArray(value)) value.forEach(item => body.append(key, item));
+        else body.append(key, value ?? '');
+      });
+      body.append('purchase_order_file', purchase_order_file);
+      return body;
     };
   } else if (modal.type === 'time' || modal.type === 'admin-time') {
     const adminTime = modal.type === 'admin-time';

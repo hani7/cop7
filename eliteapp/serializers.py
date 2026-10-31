@@ -255,15 +255,17 @@ class ProjectSerializer(serializers.ModelSerializer):
     client_details = serializers.SerializerMethodField()
     manager_name = serializers.CharField(required=False, allow_blank=True, max_length=200)
     technician_names = serializers.SerializerMethodField()
+    technician_specialties = serializers.SerializerMethodField()
     technician_labor_cost = serializers.SerializerMethodField()
+    purchase_order_file_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
         fields = ['id', 'name', 'client', 'client_name', 'client_details', 'site', 'description', 'project_manager',
-                  'manager_name', 'technicians', 'technician_names', 'hourly_rate',
+                  'manager_name', 'technicians', 'technician_names', 'technician_specialties', 'hourly_rate',
                   'holiday_billing_day_rate', 'technician_hourly_rate', 'holiday_day_rate',
                   'technician_labor_cost', 'budget',
-                  'purchase_order', 'status', 'created_at', 'mission_expenses']
+                  'purchase_order', 'purchase_order_file', 'purchase_order_file_url', 'status', 'created_at', 'mission_expenses']
         read_only_fields = ['created_at']
 
     def get_fields(self):
@@ -277,6 +279,9 @@ class ProjectSerializer(serializers.ModelSerializer):
     def get_technician_names(self, obj):
         return [u.get_full_name() or u.username for u in obj.technicians.all()]
 
+    def get_technician_specialties(self, obj):
+        return [u.specialty for u in obj.technicians.all() if u.specialty]
+
     def get_client_details(self, obj):
         client = obj.client
         return {
@@ -287,6 +292,9 @@ class ProjectSerializer(serializers.ModelSerializer):
             'nis': client.nis,
             'billing_address': client.billing_address,
         }
+
+    def get_purchase_order_file_url(self, obj):
+        return api_url(self, f'/media/{obj.purchase_order_file.name}') if obj.purchase_order_file else ''
 
     def get_technician_labor_cost(self, obj):
         entries = getattr(obj, 'cost_entries', None)
