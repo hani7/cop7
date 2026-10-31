@@ -45,10 +45,14 @@ def transition_entry(entry_id, user, action, reason=''):
 
 
 @transaction.atomic
-def create_invoice(user, project, entry_ids, due_date, tax_percent):
+def create_invoice(user, project, entry_ids, due_date, tax_percent, date_from=None, date_to=None):
     require_role(user, User.Role.ADMIN)
     project = Project.objects.select_for_update().get(pk=project.pk)
     entries = list(TimeEntry.objects.select_for_update().filter(pk__in=entry_ids).order_by('pk'))
+    if date_from:
+        entries = [entry for entry in entries if timezone.localtime(entry.start).date() >= date_from]
+    if date_to:
+        entries = [entry for entry in entries if timezone.localtime(entry.start).date() <= date_to]
     if len(entries) != len(entry_ids) or any(e.project_id != project.pk or e.status != 'APPROVED' for e in entries):
         raise ValidationError('Choisissez uniquement des pointages validés et non facturés de ce projet.')
     if not entries:

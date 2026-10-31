@@ -223,12 +223,11 @@ export default function Editor({ modal, data, user, save, close, openModal }) {
     initial = { reason: '' }; submitLabel = 'Refuser le pointage';
   } else if (modal.type === 'invoice') {
     title = 'Créer une facture'; resource = 'invoices';
-    const due = new Date(); due.setDate(due.getDate() + 30);
-    fields = [select('project', 'Projet à facturer', options(data.projects.filter(p => data.entries.some(e => e.project === p.id && e.status === 'APPROVED')))), text('due_date', 'Date d’échéance', true, { type: 'date', min: localDate() }), amount('tax_percent', 'Taxe (%)', true)];
-    initial = { project: '', due_date: localDate(due), tax_percent: '0', entry_ids: [] };
+    fields = [select('project', 'Projet à facturer', options(data.projects.filter(p => data.entries.some(e => e.project === p.id && e.status === 'APPROVED')))), text('date_from', 'Du', true, { type: 'date' }), text('date_to', 'Au', true, { type: 'date' })];
+    initial = { project: '', date_from: localDate(), date_to: localDate(), entry_ids: [] };
     submitLabel = 'Émettre la facture';
     extra = (values, update) => {
-      const entries = data.entries.filter(e => String(e.project) === String(values.project) && e.status === 'APPROVED');
+      const entries = data.entries.filter(e => String(e.project) === String(values.project) && e.status === 'APPROVED' && (!values.date_from || localDay(e.start) >= values.date_from) && (!values.date_to || localDay(e.start) <= values.date_to));
       const project = data.projects.find(p => String(p.id) === String(values.project));
       const selected = entries.filter(e => values.entry_ids.includes(e.id));
       const holidayDates = new Set(data.holidays.map(holiday => holiday.date));
@@ -240,12 +239,12 @@ export default function Editor({ modal, data, user, save, close, openModal }) {
         else subtotal += Math.round(Number(entry.hours) * Number(project?.hourly_rate || 0) * 100) / 100;
       }
       subtotal += holidayEntries.size * Number(project?.holiday_billing_day_rate || 0);
-      return <div className="invoice-selection"><h3>Pointages validés à facturer</h3>{!entries.length && <p className="muted">Choisissez un projet avec des heures validées.</p>}{entries.map(e => <label className="check-row" key={e.id}><input type="checkbox" checked={values.entry_ids.includes(e.id)} onChange={event => update('entry_ids', event.target.checked ? [...values.entry_ids, e.id] : values.entry_ids.filter(id => id !== e.id))} /><span><strong>{e.technician_name}</strong><small>{date(e.start)} · {e.description}</small></span><b>{number(e.hours)} h</b></label>)}<div className="form-summary"><span>Total estimé TTC</span><strong>{money(subtotal * (1 + Number(values.tax_percent) / 100), user.currency)}</strong></div><p className="muted small">Les heures et les tarifs seront figés à l’émission.</p></div>;
+      return <div className="invoice-selection">{project?.purchase_order && <div className="invoice-purchase-order"><strong>Bon de commande :</strong> {project.purchase_order}</div>}<h3>Pointages validés à facturer</h3>{!entries.length && <p className="muted">Aucun pointage validé dans cette période.</p>}{entries.map(e => <label className="check-row" key={e.id}><input type="checkbox" checked={values.entry_ids.includes(e.id)} onChange={event => update('entry_ids', event.target.checked ? [...values.entry_ids, e.id] : values.entry_ids.filter(id => id !== e.id))} /><span><strong>{e.technician_name}</strong><small>{date(e.start)} · {e.description}</small></span><b>{number(e.hours)} h</b></label>)}<div className="form-summary"><span>Total à facturer</span><strong>{money(subtotal, user.currency)}</strong></div><p className="muted small">Les heures et les tarifs seront figés à l’émission.</p></div>;
     };
     transform = values => {
       const ids = values.entry_ids.filter(id => data.entries.some(e => e.id === id && String(e.project) === String(values.project)));
       if (!ids.length) throw new Error('Sélectionnez au moins un pointage validé.');
-      return { ...values, project: Number(values.project), entry_ids: ids };
+      return { ...values, project: Number(values.project), entry_ids: ids, tax_percent: 0 };
     };
   } else if (modal.type === 'payment') {
     title = 'Enregistrer un paiement'; resource = 'payments';

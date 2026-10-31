@@ -526,13 +526,22 @@ class InvoiceSerializer(serializers.ModelSerializer):
 class InvoiceCreateSerializer(serializers.Serializer):
     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
     entry_ids = serializers.ListField(child=serializers.IntegerField(min_value=1), allow_empty=False)
-    due_date = serializers.DateField()
+    due_date = serializers.DateField(required=False)
     tax_percent = serializers.DecimalField(max_digits=5, decimal_places=2, min_value=0, max_value=100, default=0)
+    date_from = serializers.DateField(required=False)
+    date_to = serializers.DateField(required=False)
 
     def validate_due_date(self, value):
         if value < timezone.localdate():
             raise serializers.ValidationError('L’échéance ne peut pas être dans le passé.')
         return value
+
+    def validate(self, attrs):
+        if not attrs.get('due_date'):
+            attrs['due_date'] = timezone.localdate() + timedelta(days=30)
+        if attrs.get('date_from') and attrs.get('date_to') and attrs['date_from'] > attrs['date_to']:
+            raise serializers.ValidationError({'date_to': 'La date de fin doit être postérieure à la date de début.'})
+        return attrs
 
     def validate_entry_ids(self, value):
         if len(value) != len(set(value)):
