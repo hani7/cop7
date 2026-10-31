@@ -24,6 +24,13 @@ function TechnicianAssignments({ values, update, data }) {
   return <div className="technician-assignments"><div className="technician-assignments-heading"><div><strong>Techniciens affectés</strong><small>Choisissez une spécialité puis les techniciens à affecter.</small></div><button type="button" className="button compact" onClick={() => update('technician_assignments', [...assignments, { specialty: '', technicians: [] }])}><Plus size={15} />Ajouter une ligne</button></div>{assignments.map((assignment, index) => { const selectedElsewhere = new Set(assignments.flatMap((row, rowIndex) => rowIndex === index ? [] : row.technicians || [])); const available = technicians.filter(technician => (!assignment.specialty || technician.specialty === assignment.specialty) && (!selectedElsewhere.has(technician.id) || (assignment.technicians || []).includes(technician.id))).map(technician => ({ value: technician.id, label: technician.full_name })); return <div className="technician-assignment-row" key={index}><select value={assignment.specialty} onChange={event => updateRow(index, { specialty: event.target.value, technicians: [] })}><option value="">Spécialité</option>{data.specialties.map(specialty => <option key={specialty.id} value={specialty.name}>{specialty.name}</option>)}</select><SearchableSelect id={`technician-assignment-${index}`} label="Techniciens" options={available} value={assignment.technicians || []} multiple onChange={value => updateRow(index, { technicians: value.map(Number) })} /><button type="button" className="icon-button danger" title="Supprimer la ligne" aria-label="Supprimer la ligne" onClick={() => removeRow(index)}><X size={16} /></button></div>; })}</div>;
 }
 
+function MissionExpenses({ values, update }) {
+  const expenses = values.mission_expenses || [{ object: '', amount: '' }];
+  const updateRow = (index, changes) => update('mission_expenses', expenses.map((expense, rowIndex) => rowIndex === index ? { ...expense, ...changes } : expense));
+  const removeRow = index => update('mission_expenses', expenses.length === 1 ? [{ object: '', amount: '' }] : expenses.filter((_, rowIndex) => rowIndex !== index));
+  return <div className="mission-expenses"><div className="mission-expenses-heading"><div><strong>Frais de mission</strong><small>Ajoutez les frais liés à ce projet.</small></div><button type="button" className="button compact" onClick={() => update('mission_expenses', [...expenses, { object: '', amount: '' }])}><Plus size={15} />Ajouter une ligne</button></div>{expenses.map((expense, index) => <div className="mission-expense-row" key={index}><input type="text" placeholder="Objet" value={expense.object} onChange={event => updateRow(index, { object: event.target.value })} /><input type="number" min="0" step="0.01" placeholder="Montant" value={expense.amount} onChange={event => updateRow(index, { amount: event.target.value })} /><button type="button" className="icon-button danger" title="Supprimer la ligne" aria-label="Supprimer la ligne" onClick={() => removeRow(index)}><X size={16} /></button></div>)}</div>;
+}
+
 export default function Editor({ modal, data, user, save, close, openModal }) {
   const row = modal.row;
   const editing = !!row;
@@ -132,6 +139,7 @@ export default function Editor({ modal, data, user, save, close, openModal }) {
       text('purchase_order', 'Bon de commande'),
       text('description', 'Description', false, { type: 'textarea' }),
       { name: 'technician_assignments', wide: true, render: (current, update) => <TechnicianAssignments values={values} update={update} data={data} /> },
+      { name: 'mission_expenses', wide: true, render: (current, update) => <MissionExpenses values={values} update={update} /> },
       {
         name: 'commercial-info',
         type: 'group',
@@ -146,7 +154,7 @@ export default function Editor({ modal, data, user, save, close, openModal }) {
       },
       ];
     const assignments = row ? Object.entries(data.users.filter(technician => row.technicians?.includes(technician.id)).reduce((groups, technician) => { const specialty = technician.specialty || ''; (groups[specialty] ||= []).push(technician.id); return groups; }, {})).map(([specialty, technicians]) => ({ specialty, technicians })) : [];
-    initial = row ? { ...row, manager_name: row.manager_name || '', technician_assignments: assignments.length ? assignments : [{ specialty: '', technicians: [] }] } : { name: '', client: '', site: '', manager_name: '', technician_assignments: [{ specialty: '', technicians: [] }], hourly_rate: '', holiday_billing_day_rate: '0', technician_hourly_rate: '0', holiday_day_rate: '0', purchase_order: '', description: '' };
+    initial = row ? { ...row, manager_name: row.manager_name || '', technician_assignments: assignments.length ? assignments : [{ specialty: '', technicians: [] }], mission_expenses: row.mission_expenses || [{ object: '', amount: '' }] } : { name: '', client: '', site: '', manager_name: '', technician_assignments: [{ specialty: '', technicians: [] }], mission_expenses: [{ object: '', amount: '' }], hourly_rate: '', holiday_billing_day_rate: '0', technician_hourly_rate: '0', holiday_day_rate: '0', purchase_order: '', description: '' };
     transform = values => {
       const { project_manager, technician_assignments, ...project } = values;
       return { ...project, client: Number(values.client), technicians: (technician_assignments || []).flatMap(assignment => assignment.technicians || []).map(Number) };

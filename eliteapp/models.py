@@ -131,6 +131,7 @@ class Project(models.Model):
     status = models.CharField(max_length=12, choices=Status, default=Status.ACTIVE)
     created_at = models.DateTimeField(auto_now_add=True)
     deleted_at = models.DateTimeField(null=True, blank=True, db_index=True)
+    mission_expenses = models.JSONField(default=list, blank=True)
 
     class Meta:
         ordering = ['-created_at']

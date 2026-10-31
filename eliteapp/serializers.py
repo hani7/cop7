@@ -263,7 +263,7 @@ class ProjectSerializer(serializers.ModelSerializer):
                   'manager_name', 'technicians', 'technician_names', 'hourly_rate',
                   'holiday_billing_day_rate', 'technician_hourly_rate', 'holiday_day_rate',
                   'technician_labor_cost', 'budget',
-                  'purchase_order', 'status', 'created_at']
+                  'purchase_order', 'status', 'created_at', 'mission_expenses']
         read_only_fields = ['created_at']
 
     def get_fields(self):
@@ -307,6 +307,22 @@ class ProjectSerializer(serializers.ModelSerializer):
                 total += entry.hours * obj.technician_hourly_rate
         total += obj.holiday_day_rate * len(holiday_workdays)
         return total.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
+    def validate_mission_expenses(self, value):
+        if not isinstance(value, list):
+            raise serializers.ValidationError('Les frais de mission doivent être une liste.')
+        normalized = []
+        for expense in value:
+            if not isinstance(expense, dict) or not str(expense.get('object', '')).strip():
+                raise serializers.ValidationError('Chaque frais de mission doit avoir un objet.')
+            try:
+                amount = Decimal(str(expense.get('amount', 0)))
+            except Exception as exc:
+                raise serializers.ValidationError('Le montant du frais de mission est invalide.') from exc
+            if amount < 0:
+                raise serializers.ValidationError('Le montant du frais de mission doit être positif ou nul.')
+            normalized.append({'object': ' '.join(str(expense['object']).split()).strip(), 'amount': str(amount.quantize(Decimal('0.01')))})
+        return normalized
 
     def validate(self, attrs):
         client = attrs.get('client', getattr(self.instance, 'client', None))
