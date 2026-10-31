@@ -82,7 +82,7 @@ export default function App() {
     return NAV.some(item => item.id === storedPage) || FINANCE_NAV.some(item => item.id === storedPage) ? storedPage : 'dashboard';
   }), [data, setData] = useState(emptyData), [loading, setLoading] = useState(false), [lastRefreshAt, setLastRefreshAt] = useState(null);
   const [error, setError] = useState(''), [notice, setNotice] = useState(''), [query, setQuery] = useState(''), [filter, setFilter] = useState('ALL'), [specialtyFilter, setSpecialtyFilter] = useState('ALL'), [projectFilter, setProjectFilter] = useState('ALL'), [technicianFilter, setTechnicianFilter] = useState('ALL'), [trashTab, setTrashTab] = useState('projects'), [settingsOpen, setSettingsOpen] = useState(false), [financeOpen, setFinanceOpen] = useState(false);
-  const [modal, setModal] = useState(null), [report, setReport] = useState(null), [globalReport, setGlobalReport] = useState(null), [working, setWorking] = useState(false), [deleteClientError, setDeleteClientError] = useState('');
+  const [modal, setModal] = useState(null), [childModal, setChildModal] = useState(null), [report, setReport] = useState(null), [globalReport, setGlobalReport] = useState(null), [working, setWorking] = useState(false), [deleteClientError, setDeleteClientError] = useState('');
   const bootstrap = useCallback(async () => {
     setBooting(true); setSessionError('');
     try {
@@ -101,7 +101,7 @@ export default function App() {
   }, []);
   useEffect(() => { bootstrap(); }, [bootstrap]);
   useEffect(() => {
-    const openTechnicianEditor = event => setModal({ type: 'technician', initialSpecialty: event.detail?.specialty || '' });
+    const openTechnicianEditor = event => setChildModal({ type: 'technician', initialSpecialty: event.detail?.specialty || '' });
     window.addEventListener('open-technician-editor', openTechnicianEditor);
     return () => window.removeEventListener('open-technician-editor', openTechnicianEditor);
   }, []);
@@ -153,7 +153,8 @@ export default function App() {
       && body.has('cv') && !result.cv_url) {
       throw new Error('Le serveur n’a pas confirmé l’enregistrement du CV. Le fichier reste sélectionné ; réessayez.');
     }
-    setModal(null); setNotice('Enregistrement effectué.'); await refresh();
+    if (childModal) setChildModal(null); else setModal(null);
+    setNotice('Enregistrement effectué.'); await refresh();
     return result;
   }
   async function deleteTechnician(technician) {
@@ -268,6 +269,7 @@ export default function App() {
     </header>
     {report && <TechnicianReport technician={report.technician} rows={report.rows} projects={data.projects} close={() => setReport(null)} />}
     {globalReport && <GlobalReport rows={globalReport.rows} projects={data.projects} holidays={data.holidays} technicianName={globalReport.technicianName} compact={globalReport.compact} close={() => setGlobalReport(null)} />}
+    {childModal && <Editor key={`child-${childModal.type}`} modal={childModal} data={data} user={user} save={save} close={() => setChildModal(null)} />}
     <div className="workspace">
       <main className="main"><div className={`page-heading${isTechnician && page === 'dashboard' ? ' technician-dashboard-heading' : isTechnician && page === 'entries' ? ' technician-entries-heading' : ''}`}><div>{!isTechnician && <span className="eyebrow green">{'COPETROLITE / ' + (page === 'dashboard' ? 'TABLEAU DE BORD' : 'GESTION')}</span>}<h1>{isTechnician && page === 'dashboard' ? `Bonjour, ${user.full_name.split(' ')[0]}` : page === 'specialties' ? 'Spécialités techniciens' : page === 'trash' ? 'Corbeille' : NAV.find(n => n.id === page)?.label}</h1>{!(isTechnician && page === 'entries') && <p>{isTechnician && page === 'dashboard' ? 'Prêt pour votre prochaine intervention ?' : isTechnician && page === 'payments' ? 'Retrouvez vos gains par projet.' : descriptions[page]}</p>}</div>{primaryAction}</div>
         {notice && <div className="alert success" role="status"><CheckCheck size={18} />{notice}</div>}
