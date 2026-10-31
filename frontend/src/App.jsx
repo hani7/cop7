@@ -82,7 +82,7 @@ export default function App() {
     return NAV.some(item => item.id === storedPage) || FINANCE_NAV.some(item => item.id === storedPage) ? storedPage : 'dashboard';
   }), [data, setData] = useState(emptyData), [loading, setLoading] = useState(false), [lastRefreshAt, setLastRefreshAt] = useState(null);
   const [error, setError] = useState(''), [notice, setNotice] = useState(''), [query, setQuery] = useState(''), [filter, setFilter] = useState('ALL'), [specialtyFilter, setSpecialtyFilter] = useState('ALL'), [projectFilter, setProjectFilter] = useState('ALL'), [technicianFilter, setTechnicianFilter] = useState('ALL'), [trashTab, setTrashTab] = useState('projects'), [settingsOpen, setSettingsOpen] = useState(false), [financeOpen, setFinanceOpen] = useState(false);
-  const [modal, setModal] = useState(null), [childModal, setChildModal] = useState(null), [projectDetail, setProjectDetail] = useState(null), [report, setReport] = useState(null), [globalReport, setGlobalReport] = useState(null), [working, setWorking] = useState(false), [deleteClientError, setDeleteClientError] = useState('');
+  const [modal, setModal] = useState(null), [childModal, setChildModal] = useState(null), [projectDetail, setProjectDetail] = useState(null), [confirmDelete, setConfirmDelete] = useState(null), [report, setReport] = useState(null), [globalReport, setGlobalReport] = useState(null), [working, setWorking] = useState(false), [deleteClientError, setDeleteClientError] = useState('');
   const bootstrap = useCallback(async () => {
     setBooting(true); setSessionError('');
     try {
@@ -163,23 +163,29 @@ export default function App() {
     setModal(null); setNotice('Technicien supprimé.');
     await refresh();
   }
-  async function deleteHoliday(holiday) {
-    if (!window.confirm(`Supprimer le jour férié « ${holiday.name} » ?`)) return;
-    setWorking(true); setError('');
-    try { await api(`holidays/${holiday.id}/`, { method: 'DELETE' }); setNotice('Jour férié supprimé.'); await refresh(); }
-    catch (err) { setError(err.message); } finally { setWorking(false); }
+  function requestDelete(title, message, action) {
+    setConfirmDelete({ title, message, action });
+  }
+  function deleteHoliday(holiday) {
+    requestDelete('Supprimer le jour férié', `Déplacer « ${holiday.name} » vers la corbeille ?`, async () => {
+      setWorking(true); setError('');
+      try { await api(`holidays/${holiday.id}/`, { method: 'DELETE' }); setNotice('Jour férié supprimé.'); await refresh(); }
+      catch (err) { setError(err.message); } finally { setWorking(false); }
+    });
   }
   async function deleteProject(project) {
-    if (!window.confirm(`Supprimer le projet « ${project.name} » ?`)) return;
-    setWorking(true); setError('');
-    try { await api(`projects/${project.id}/`, { method: 'DELETE' }); setNotice('Projet supprimé.'); await refresh(); }
-    catch (err) { setError(err.message); } finally { setWorking(false); }
+    requestDelete('Supprimer le projet', `Déplacer « ${project.name} » vers la corbeille ?`, async () => {
+      setWorking(true); setError('');
+      try { await api(`projects/${project.id}/`, { method: 'DELETE' }); setNotice('Projet supprimé.'); await refresh(); }
+      catch (err) { setError(err.message); } finally { setWorking(false); }
+    });
   }
   async function deleteTechnicianPayment(payment) {
-    if (!window.confirm('Supprimer cette charge technicien ?')) return;
-    setWorking(true); setError('');
-    try { await api(`technician-payments/${payment.id}/`, { method: 'DELETE' }); setNotice('Charge supprimée.'); await refresh(); }
-    catch (err) { setError(err.message); } finally { setWorking(false); }
+    requestDelete('Supprimer la charge technicien', 'Voulez-vous déplacer cette charge vers la corbeille ?', async () => {
+      setWorking(true); setError('');
+      try { await api(`technician-payments/${payment.id}/`, { method: 'DELETE' }); setNotice('Charge supprimée.'); await refresh(); }
+      catch (err) { setError(err.message); } finally { setWorking(false); }
+    });
   }
   async function act(entry, action) {
     setWorking(true); setError('');
@@ -276,6 +282,7 @@ export default function App() {
     {report && <TechnicianReport technician={report.technician} rows={report.rows} projects={data.projects} close={() => setReport(null)} />}
     {globalReport && <GlobalReport rows={globalReport.rows} projects={data.projects} holidays={data.holidays} technicianName={globalReport.technicianName} compact={globalReport.compact} close={() => setGlobalReport(null)} />}
     {projectDetail && <ProjectDetail project={projectDetail} users={data.users} close={() => setProjectDetail(null)} currency={user.currency} />}
+    {confirmDelete && <Modal title={confirmDelete.title} onClose={() => !working && setConfirmDelete(null)}><div className="delete-confirm-modal"><p>{confirmDelete.message}</p><p className="muted small">L’élément pourra être restauré depuis Paramètres → Corbeille si cette fonction est disponible.</p><footer className="form-footer"><button className="button secondary" disabled={working} onClick={() => setConfirmDelete(null)}>Annuler</button><button className="button" disabled={working} onClick={async () => { const action = confirmDelete.action; setConfirmDelete(null); await action(); }}>{working ? <Spinner /> : <Trash2 size={16} />}Supprimer</button></footer></div></Modal>}
     {childModal && <Editor key={`child-${childModal.type}`} modal={childModal} data={data} user={user} save={save} close={() => setChildModal(null)} />}
     <div className="workspace">
       <main className="main"><div className={`page-heading${isTechnician && page === 'dashboard' ? ' technician-dashboard-heading' : isTechnician && page === 'entries' ? ' technician-entries-heading' : ''}`}><div>{!isTechnician && <span className="eyebrow green">{'COPETROLITE / ' + (page === 'dashboard' ? 'TABLEAU DE BORD' : 'GESTION')}</span>}<h1>{isTechnician && page === 'dashboard' ? `Bonjour, ${user.full_name.split(' ')[0]}` : page === 'specialties' ? 'Spécialités techniciens' : page === 'trash' ? 'Corbeille' : NAV.find(n => n.id === page)?.label}</h1>{!(isTechnician && page === 'entries') && <p>{isTechnician && page === 'dashboard' ? 'Prêt pour votre prochaine intervention ?' : isTechnician && page === 'payments' ? 'Retrouvez vos gains par projet.' : descriptions[page]}</p>}</div>{primaryAction}</div>
