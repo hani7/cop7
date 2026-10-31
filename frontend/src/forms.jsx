@@ -256,9 +256,9 @@ export default function Editor({ modal, data, user, save, close, openModal }) {
     fields = [select('invoice', 'Facture', data.invoices.filter(i => Number(i.balance) > 0).map(i => ({ value: i.id, label: `${i.number} · ${i.client_name} · ${money(i.balance, i.currency)}` }))), amount('amount', 'Montant reçu', true), text('date', 'Date du paiement', true, { type: 'date', max: localDate() }), select('method', 'Mode de paiement', [{ value: 'TRANSFER', label: 'Virement' }, { value: 'CHECK', label: 'Chèque' }, { value: 'CASH', label: 'Espèces' }]), text('reference', 'Référence du paiement')];
     initial = { invoice: modal.invoice?.id || '', amount: modal.invoice?.balance || '', date: localDate(), method: 'TRANSFER', reference: '' };
   } else if (modal.type === 'technician-payment') {
-    title = 'Enregistrer une charge technicien'; resource = 'technician-payments';
+    title = editing ? 'Modifier une charge technicien' : 'Enregistrer une charge technicien'; resource = 'technician-payments';
     fields = [select('technician', 'Technicien', data.users.filter(person => person.role === 'TECHNICIAN' && person.is_active).map(person => ({ value: person.id, label: person.full_name || person.username }))), amount('amount', 'Montant versé', true), text('date', 'Date du paiement', true, { type: 'date', max: localDate() }), select('method', 'Mode de paiement', [{ value: 'TRANSFER', label: 'Virement' }, { value: 'CHECK', label: 'Chèque' }, { value: 'CASH', label: 'Espèces' }]), text('reference', 'Référence'), text('note', 'Note')];
-    initial = { technician: '', amount: '', date: localDate(), method: 'TRANSFER', reference: '', note: '' };
+    initial = row ? { technician: row.technician, amount: row.amount, date: row.date, method: row.method, reference: row.reference || '', note: row.note || '' } : { technician: '', amount: '', date: localDate(), method: 'TRANSFER', reference: '', note: '' };
     extra = values => {
       const entries = data.entries.filter(entry => String(entry.technician) === String(values.technician) && ['APPROVED', 'INVOICED'].includes(entry.status));
       const projects = new Map(data.projects.map(project => [project.id, project]));

@@ -489,7 +489,7 @@ class PaymentViewSet(mixins.CreateModelMixin, viewsets.ReadOnlyModelViewSet):
         return Response(self.get_serializer(payment).data, status=status.HTTP_201_CREATED)
 
 
-class TechnicianPaymentViewSet(mixins.CreateModelMixin, viewsets.ReadOnlyModelViewSet):
+class TechnicianPaymentViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.ReadOnlyModelViewSet):
     serializer_class = TechnicianPaymentSerializer
 
     def get_queryset(self):
@@ -502,6 +502,14 @@ class TechnicianPaymentViewSet(mixins.CreateModelMixin, viewsets.ReadOnlyModelVi
         serializer.is_valid(raise_exception=True)
         payment = serializer.save(created_by=request.user)
         return Response(self.get_serializer(payment).data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        require_role(request.user, User.Role.ADMIN)
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        require_role(request.user, User.Role.ADMIN)
+        return super().destroy(request, *args, **kwargs)
 
 
 class DashboardView(APIView):

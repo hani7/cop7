@@ -175,6 +175,12 @@ export default function App() {
     try { await api(`projects/${project.id}/`, { method: 'DELETE' }); setNotice('Projet supprimé.'); await refresh(); }
     catch (err) { setError(err.message); } finally { setWorking(false); }
   }
+  async function deleteTechnicianPayment(payment) {
+    if (!window.confirm('Supprimer cette charge technicien ?')) return;
+    setWorking(true); setError('');
+    try { await api(`technician-payments/${payment.id}/`, { method: 'DELETE' }); setNotice('Charge supprimée.'); await refresh(); }
+    catch (err) { setError(err.message); } finally { setWorking(false); }
+  }
   async function act(entry, action) {
     setWorking(true); setError('');
     try { await api(`time-entries/${entry.id}/${action}/`, { method: 'POST', body: {} }); setNotice(action === 'submit' ? 'Pointage transmis au chef de projet.' : 'Pointage validé.'); await refresh(); }
@@ -345,7 +351,7 @@ export default function App() {
             { label: 'Date', render: p => date(p.date) }, { label: 'Facture', render: p => data.invoices.find(i => i.id === p.invoice)?.number || '—' }, { label: 'Montant reçu', render: p => <strong className="green">{money(p.amount, user.currency)}</strong> }, { label: 'Mode', render: p => ({ TRANSFER: 'Virement', CASH: 'Espèces', CHECK: 'Chèque' })[p.method] }, { label: 'Référence', render: p => p.reference || '—' }, { label: 'État', render: p => { const invoice = data.invoices.find(i => i.id === p.invoice); const total = Number(invoice?.total || 0); const balance = Number(invoice?.balance || 0); const paid = total - balance; const percentage = total ? Math.min(100, Math.round((paid / total) * 100)) : 0; return balance <= 0 ? <span className="badge status-paid">Payé</span> : <div className="cell-stack"><span>{percentage} % payé</span><strong className="muted">Reste : {money(balance, user.currency)}</strong></div>; } },
           ]} />}
           {page === 'technician-payments' && isAdmin && <Table rows={search(data.technicianPayments)} columns={[
-            { label: 'Date', render: p => date(p.date) }, { label: 'Technicien', render: p => p.technician_name }, { label: 'Montant versé', render: p => <strong className="green">{money(p.amount, user.currency)}</strong> }, { label: 'Mode', render: p => p.method_label || ({ TRANSFER: 'Virement', CASH: 'Espèces', CHECK: 'Chèque' })[p.method] }, { label: 'Référence', render: p => p.reference || '—' }, { label: 'Note', render: p => p.note || '—' },
+            { label: 'Date', render: p => date(p.date) }, { label: 'Technicien', render: p => p.technician_name }, { label: 'Montant versé', render: p => <strong className="green">{money(p.amount, user.currency)}</strong> }, { label: 'Mode', render: p => p.method_label || ({ TRANSFER: 'Virement', CASH: 'Espèces', CHECK: 'Chèque' })[p.method] }, { label: 'Référence', render: p => p.reference || '—' }, { label: 'Note', render: p => p.note || '—' }, { label: 'Actions', render: p => <div className="row-actions">{edit('technician-payment', p)}<button className="icon-button danger" title="Supprimer" aria-label="Supprimer la charge" disabled={working} onClick={() => deleteTechnicianPayment(p)}><Trash2 size={16} /></button></div> },
           ]} />}
         </section>}
         <footer className="main-footer"><span>Copetrolite · Gestion des interventions industrielles</span><span>Votre espace, votre équipe.</span></footer>
