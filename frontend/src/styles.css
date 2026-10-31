@@ -50,7 +50,7 @@
 .technician-payment-summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;padding:15px;border:1px solid #b7e9df;border-radius:9px;background:#e0f7f2}
 .technician-payment-summary div{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:11px}
 .technician-payment-summary strong{color:var(--petrol);font-size:18px}
-.project-filter-bar{display:flex;align-items:center;gap:10px;padding:12px 24px;border-bottom:1px solid var(--line);background:#f8fbfb;font-size:11px;color:var(--muted)}
+.project-filter-bar{display:flex;align-items:center;gap:10px;position:absolute;top:12px;left:600px;right:18px;padding:0;border:0;background:transparent;font-size:11px;color:var(--muted);z-index:3}
 .report-filter-actions{display:flex;align-items:center;gap:4px;margin-left:auto}
 .last-refresh{font-size:10px;color:var(--muted);white-space:nowrap;margin-left:auto}
 .page-heading-refresh{margin:0 0 12px;text-align:right}
