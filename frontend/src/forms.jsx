@@ -171,7 +171,7 @@ export default function Editor({ modal, data, user, save, close, openModal }) {
       if (!(firstFile instanceof File)) return payload;
       const body = new FormData();
       Object.entries(payload).forEach(([key, value]) => {
-        if (key === 'mission_expenses') body.append(key, JSON.stringify(value || []));
+        if (key === 'mission_expenses' || key === 'purchase_orders') body.append(key, JSON.stringify(value || []));
         else if (Array.isArray(value)) value.forEach(item => body.append(key, item));
         else body.append(key, value ?? '');
       });
@@ -228,7 +228,8 @@ export default function Editor({ modal, data, user, save, close, openModal }) {
     submitLabel = 'Émettre la facture';
     extra = (values, update) => {
       const entries = data.entries.filter(e => String(e.project) === String(values.project) && e.status === 'APPROVED' && (!values.date_from || localDay(e.start) >= values.date_from) && (!values.date_to || localDay(e.start) <= values.date_to));
-      const project = data.projects.find(p => String(p.id) === String(values.project));
+      const selectedProject = data.projects.find(p => String(p.id) === String(values.project));
+      const project = selectedProject ? { ...selectedProject, purchase_order: selectedProject.purchase_order || 'Aucun bon de commande renseigné.' } : selectedProject;
       const selected = entries.filter(e => values.entry_ids.includes(e.id));
       const holidayDates = new Set(data.holidays.map(holiday => holiday.date));
       const holidayEntries = new Set();
