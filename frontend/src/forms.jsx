@@ -66,7 +66,7 @@ export default function Editor({ modal, data, user, save, close }) {
       { name: 'technician_photo', hidden: values.role !== 'TECHNICIAN', render: (current, update) => <TechnicianPhoto values={current} update={update} /> },
       text('last_name', 'Nom', true, { className: 'technician-uppercase' }), text('first_name', 'Prénom', true, { className: 'technician-uppercase' }),
       { ...text('birth_date', 'Date de naissance', false, { type: 'date', max: maxBirthDate() }), hidden: values.role !== 'TECHNICIAN' },
-      { ...text('specialty', 'Spécialité', false, { type: 'select', options: options(data.specialties) }), hidden: values.role !== 'TECHNICIAN' },
+      { ...text('specialty', 'Spécialité', false, { type: 'select', options: data.specialties.map(specialty => ({ value: specialty.name, label: specialty.name })) }), hidden: values.role !== 'TECHNICIAN' },
       { ...text('address', 'Adresse', false, { type: 'textarea', maxLength: 2000, wide: true, className: 'technician-uppercase' }), hidden: values.role !== 'TECHNICIAN' },
       text('phone', 'Téléphone', false, { type: 'tel', maxLength: 10, pattern: '[0-9]{10}', inputMode: 'numeric', hint: 'Saisissez 10 chiffres.' }),
       text('email', 'Email', false, { type: 'email' }),
@@ -116,18 +116,22 @@ export default function Editor({ modal, data, user, save, close }) {
     };
   } else if (modal.type === 'project') {
     title = editing ? 'Modifier le projet' : 'Nouveau projet'; resource = 'projects';
-    const technicians = data.users.filter(u => u.role === 'TECHNICIAN' && u.is_active).map(u => ({
-      value: u.id,
-      label: `${u.full_name || u.username}${u.specialty ? ` - ${u.specialty}` : ''}`,
-    }));
-    fields = [
+    fields = values => {
+      const selectedSpecialty = values.technician_specialty || '';
+      const technicians = data.users.filter(u => u.role === 'TECHNICIAN' && u.is_active
+        && (!selectedSpecialty || u.specialty === selectedSpecialty)).map(u => ({
+          value: u.id,
+          label: `${u.full_name || u.username}${u.specialty ? ` - ${u.specialty}` : ''}`,
+        }));
+      return [
       text('name', 'Nom du projet', true),
       text('client', 'Client', true, { type: 'searchable-select', options: options(data.clients.filter(c => c.is_active)) }),
       text('site', 'Site industriel', true),
       text('manager_name', 'Chef de projet client', true),
       text('purchase_order', 'Bon de commande'),
       text('description', 'Description', false, { type: 'textarea' }),
-      text('technicians', 'Techniciens affectés', false, { type: 'searchable-multiselect', options: technicians, hint: 'Recherchez puis sélectionnez un ou plusieurs techniciens.', wide: true }),
+      select('technician_specialty', 'Spécialité technicien', data.specialties.map(specialty => ({ value: specialty.name, label: specialty.name })), false),
+      text('technicians', 'Techniciens affectés', false, { type: 'searchable-multiselect', options: technicians, hint: selectedSpecialty ? 'Les techniciens affichés correspondent à la spécialité choisie.' : 'Choisissez une spécialité pour filtrer les techniciens.', wide: true }),
       {
         name: 'commercial-info',
         type: 'group',
@@ -140,11 +144,15 @@ export default function Editor({ modal, data, user, save, close }) {
           amount('holiday_day_rate', `Coût technicien journée fériée (${user.currency})`, true),
         ],
       },
-    ];
-    initial = row ? { ...row, manager_name: row.manager_name || '' } : { name: '', client: '', site: '', manager_name: '', technicians: [], hourly_rate: '', holiday_billing_day_rate: '0', technician_hourly_rate: '0', holiday_day_rate: '0', purchase_order: '', description: '' };
+      ];
+    };
+    const assignedSpecialties = row ? data.users.filter(technician => row.technicians?.includes(technician.id)).map(technician => technician.specialty).filter(Boolean) : [];
+    initial = row ? { ...row, manager_name: row.manager_name || '', technician_specialty: assignedSpecialties.length === 1 ? assignedSpecialties[0] : '' } : { name: '', client: '', site: '', manager_name: '', technician_specialty: '', technicians: [], hourly_rate: '', holiday_billing_day_rate: '0', technician_hourly_rate: '0', holiday_day_rate: '0', purchase_order: '', description: '' };
     transform = values => {
-      const { project_manager, ...project } = values;
-      return { ...project, client: Number(values.client), technicians: (values.technicians || []).map(Number) };
+      const { project_manager, technician_specialty, ...project } = values;
+      const allowedTechnicians = data.users.filter(technician => technician.role === 'TECHNICIAN' && technician.is_active
+        && (!technician_specialty || technician.specialty === technician_specialty)).map(technician => technician.id);
+      return { ...project, client: Number(values.client), technicians: (values.technicians || []).map(Number).filter(id => allowedTechnicians.includes(id)) };
     };
   } else if (modal.type === 'time' || modal.type === 'admin-time') {
     const adminTime = modal.type === 'admin-time';

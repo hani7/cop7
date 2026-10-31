@@ -177,7 +177,7 @@ class ProjectAccessTests(APITestCase):
         }, format='json')
         self.assertEqual(response.status_code, 201, response.data)
         self.assertEqual(response.data['technician'], self.tech.pk)
-        self.assertEqual(response.data['status'], 'DRAFT')
+        self.assertEqual(response.data['status'], 'APPROVED')
 
     def test_only_admin_can_add_technician_specialties(self):
         self.client.force_authenticate(self.admin)

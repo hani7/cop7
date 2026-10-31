@@ -187,10 +187,11 @@ export default function App() {
   const financeItems = FINANCE_NAV.filter(item => item.roles.includes(user?.role));
   const search = rows => rows.filter(row => Object.values(row).some(value => typeof value === 'string' && value.toLocaleLowerCase().includes(query.toLocaleLowerCase())));
   const technicians = data.users.filter(person => person.role === 'TECHNICIAN');
+  const technicianSpecialty = technician => data.specialties.find(specialty => String(specialty.id) === String(technician.specialty))?.name || technician.specialty;
   const visibleRows = search(page === 'technicians' ? technicians : page === 'technician-payments' ? data.technicianPayments : data[page] instanceof Array ? data[page] : []).filter(row => {
     if (page === 'entries' && projectFilter !== 'ALL' && String(row.project) !== String(projectFilter)) return false;
     if (page === 'entries' && technicianFilter !== 'ALL' && String(row.technician) !== String(technicianFilter)) return false;
-    if (page === 'technicians' && specialtyFilter !== 'ALL' && row.specialty !== specialtyFilter) return false;
+    if (page === 'technicians' && specialtyFilter !== 'ALL' && technicianSpecialty(row) !== specialtyFilter) return false;
     if (filter === 'ALL') return true;
     if (page === 'technicians') return row.is_active === (filter === 'ACTIVE');
     return page !== 'entries' || row.status === filter;
@@ -202,7 +203,8 @@ export default function App() {
   const technicianOptions = data.users.filter(person => person.role === 'TECHNICIAN' && person.is_active
     && (projectFilter === 'ALL' || selectedProject?.technicians.includes(person.id)));
   const reportRows = visibleRows;
-  const openGlobalReport = compact => setGlobalReport({ rows: reportRows, compact });
+  const selectedTechnician = data.users.find(technician => String(technician.id) === String(technicianFilter));
+  const openGlobalReport = compact => setGlobalReport({ rows: reportRows, compact, technicianName: selectedTechnician?.full_name || 'Tous les techniciens' });
   const projectById = new Map(data.projects.map(project => [project.id, project]));
   const entryAmounts = entry => {
     const project = projectById.get(entry.project);
@@ -217,7 +219,7 @@ export default function App() {
     { label: 'Heures', render: e => <b className="tabular">{number(e.hours)} h</b> },
     ...(!isTechnician ? [{ label: 'Statut', render: e => <Badge status={e.status} /> }] : []),
     ...(!isTechnician ? [{ label: 'Coût client', render: e => money(entryAmounts(e).clientCost, user.currency) }, { label: 'Bénéfice', render: e => money(entryAmounts(e).benefit, user.currency) }] : []),
-    { label: 'Actions', render: e => <div className="row-actions"><button className="text-button" onClick={() => setModal({ type: 'entry-detail', row: e })}>Détail</button>{user?.role === 'ADMIN' && e.status === 'REJECTED' && <button className="icon-button" title="Saisir un nouveau pointage" aria-label={`Saisir un nouveau pointage pour ${e.technician_name}`} onClick={() => setModal({ type: 'admin-time', row: e })}><Plus size={16} /></button>}{user?.role === 'TECHNICIAN' && ['DRAFT', 'REJECTED'].includes(e.status) && <>{edit('time', e)}<button className="button compact" disabled={working} onClick={() => act(e, 'submit')}><Send size={14} />Soumettre</button></>}{user?.role === 'PROJECT_MANAGER' && e.status === 'SUBMITTED' && <><button className="button compact" disabled={working} onClick={() => act(e, 'approve')}><Check size={14} />Valider</button><button className="icon-button danger" aria-label="Refuser le pointage" disabled={working} onClick={() => setModal({ type: 'reject', row: e })}><X size={17} /></button></>}</div> },
+    { label: 'Actions', render: e => <div className="row-actions"><button className="text-button" onClick={() => setModal({ type: 'entry-detail', row: e })}>Détail</button>{user?.role === 'ADMIN' && e.status === 'REJECTED' && <button className="icon-button" title="Saisir les heures corrigées" aria-label={`Saisir les heures corrigées pour ${e.technician_name}`} onClick={() => setModal({ type: 'admin-time', row: e })}><Plus size={16} /></button>}{user?.role === 'TECHNICIAN' && ['DRAFT', 'REJECTED'].includes(e.status) && <>{edit('time', e)}<button className="button compact" disabled={working} onClick={() => act(e, 'submit')}><Send size={14} />Soumettre</button></>}{user?.role === 'PROJECT_MANAGER' && e.status === 'SUBMITTED' && <><button className="button compact" disabled={working} onClick={() => act(e, 'approve')}><Check size={14} />Valider</button><button className="icon-button danger" aria-label="Refuser le pointage" disabled={working} onClick={() => setModal({ type: 'reject', row: e })}><X size={17} /></button></>}</div> },
   ];
   if (booting) return <div className="boot"><Spinner /><span>Ouverture de votre espace…</span></div>;
   if (!user) return <Login onLogin={account => { setUser(account); if (account.project_access) { setPage('entries'); setFilter('SUBMITTED'); } }} initialError={sessionError} retry={bootstrap} technicianOnly={technicianLogin} projectOnly={projectLogin} />;
@@ -260,9 +262,10 @@ export default function App() {
       </div>
     </header>
     {report && <TechnicianReport technician={report.technician} rows={report.rows} projects={data.projects} close={() => setReport(null)} />}
-    {globalReport && <GlobalReport rows={globalReport.rows} projects={data.projects} compact={globalReport.compact} close={() => setGlobalReport(null)} />}
+    {globalReport && <GlobalReport rows={globalReport.rows} projects={data.projects} holidays={data.holidays} technicianName={globalReport.technicianName} compact={globalReport.compact} close={() => setGlobalReport(null)} />}
     <div className="workspace">
       <main className="main"><div className={`page-heading${isTechnician && page === 'dashboard' ? ' technician-dashboard-heading' : isTechnician && page === 'entries' ? ' technician-entries-heading' : ''}`}><div>{!isTechnician && <span className="eyebrow green">{'COPETROLITE / ' + (page === 'dashboard' ? 'TABLEAU DE BORD' : 'GESTION')}</span>}<h1>{isTechnician && page === 'dashboard' ? `Bonjour, ${user.full_name.split(' ')[0]}` : page === 'specialties' ? 'Spécialités techniciens' : page === 'trash' ? 'Corbeille' : NAV.find(n => n.id === page)?.label}</h1>{!(isTechnician && page === 'entries') && <p>{isTechnician && page === 'dashboard' ? 'Prêt pour votre prochaine intervention ?' : isTechnician && page === 'payments' ? 'Retrouvez vos gains par projet.' : descriptions[page]}</p>}</div>{primaryAction}</div>
+        {page === 'entries' && <div className="last-refresh page-heading-refresh">Dernière actualisation : {lastRefreshAt ? lastRefreshAt.toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) : '—'}</div>}
         {notice && <div className="alert success" role="status"><CheckCheck size={18} />{notice}</div>}
         {error && <div className="alert error" role="alert">{error}<button className="text-button" onClick={refresh}>Réessayer</button></div>}
         {loading && <div className="loading-bar" role="status"><Spinner /> Actualisation des données…</div>}
@@ -288,7 +291,7 @@ export default function App() {
             action={!technicians.length && isAdmin && add('technician', 'Ajouter un technicien')}
           />} columns={[
             { label: 'Technicien', render: t => <div className="person-cell"><span className="technician-row-number">{t.listNumber}</span>{t.photo_url ? <img className="avatar light technician-list-photo" src={t.photo_url} alt="" /> : <span className="avatar light">{t.full_name.slice(0, 2).toUpperCase()}</span>}<div className="cell-stack"><strong>{t.full_name}</strong>{t.employee_number && <span className="technician-matricule">{t.employee_number}</span>}</div></div> },
-            { label: 'Spécialité', render: t => t.specialty || '—' },
+            { label: 'Spécialité', render: t => data.specialties.find(specialty => String(specialty.id) === String(t.specialty))?.name || t.specialty || '—' },
             ...(internal ? [{ label: 'Coordonnées', render: t => <div className="cell-stack"><span>{t.email || '—'}</span><span>{t.phone || '—'}</span></div> }] : []),
             { label: 'Projets en cours', render: t => {
               const assigned = data.projects.filter(p => p.status === 'ACTIVE' && p.technicians.includes(t.id));
@@ -533,22 +536,27 @@ function TechnicianReport({ technician, rows, projects, close }) {
   </Modal>;
 }
 
-function GlobalReport({ rows, projects, compact = false, close }) {
+function GlobalReport({ rows, projects, holidays = [], technicianName = 'Tous les techniciens', compact = false, close }) {
   const projectById = new Map(projects.map(project => [project.id, project]));
+  const holidayDates = new Set(holidays.map(holiday => holiday.date));
+  const localDateKey = value => { const current = new Date(value); return `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, '0')}-${String(current.getDate()).padStart(2, '0')}`; };
+  const isExtraDay = value => { const current = new Date(value); return current.getDay() === 5 || holidayDates.has(localDateKey(value)); };
   const reportRows = rows.map((entry, index) => {
     const project = projectById.get(entry.project);
     const quantity = Number(entry.hours || 0);
     const clientRate = Number(project?.hourly_rate || 0);
     const clientCost = quantity * clientRate;
     const benefit = clientCost - quantity * Number(project?.technician_hourly_rate || 0);
-    return { entry, project, index: index + 1, quantity, clientRate, clientCost, benefit };
+    return { entry, project, index: index + 1, quantity, clientRate, clientCost, benefit, extra: isExtraDay(entry.start) };
   });
   const hours = reportRows.reduce((total, row) => total + Number(row.entry.hours || 0), 0);
+  const extraHours = reportRows.reduce((total, row) => total + (row.extra ? row.quantity : 0), 0);
+  const normalHours = hours - extraHours;
   const totalClientCost = reportRows.reduce((sum, row) => sum + row.clientCost, 0);
   const totalBenefit = reportRows.reduce((sum, row) => sum + row.benefit, 0);
   return <Modal title={compact ? 'Résumé des pointages' : 'Fiche détaillée des pointages'} onClose={close} wide>
     <div className="technician-report">
-      <header className="technician-report-header"><img src={reportLogo} alt="Copetro Elite" /><div><span className="eyebrow green">{compact ? 'RÉSUMÉ DES POINTAGES' : 'RELEVÉ GLOBAL'}</span><h2>{compact ? 'Techniciens sélectionnés' : 'Tous les techniciens'}</h2><p>{date(new Date())} · {number(hours)} h au total</p></div></header>
+      <header className="technician-report-header"><img src={reportLogo} alt="Copetro Elite" /><div><span className="eyebrow green">{compact ? 'RÉSUMÉ DES POINTAGES' : 'RELEVÉ GLOBAL'}</span><h2>{technicianName}</h2><p>{date(new Date())} · {number(normalHours)} h normales · {number(extraHours)} h supplémentaires</p></div></header>
       <table className="technician-report-table"><thead><tr>{compact ? <><th>N°</th><th>Technicien</th><th>Projet</th><th>Quantité</th><th>Jour</th></> : <><th>N°</th><th>Technicien</th><th>Projet</th><th>P.U. client</th><th>Quantité</th><th>Jour</th><th>Coût client</th><th>Bénéfice</th></>}</tr></thead><tbody>{reportRows.map(({ entry, project, index, quantity, clientRate, clientCost, benefit }) => <tr key={entry.id}>{compact ? <><td>{index}</td><td>{entry.technician_name}</td><td>{project?.name || entry.project_name}</td><td>{number(quantity)} h</td><td>{date(entry.start)}</td></> : <><td>{index}</td><td>{entry.technician_name}</td><td>{project?.name || entry.project_name}</td><td>{clientRate ? money(clientRate, 'DZD') : '—'}</td><td>{number(quantity)} h</td><td>{date(entry.start)}</td><td>{money(clientCost, 'DZD')}</td><td>{money(benefit, 'DZD')}</td></>}</tr>)}</tbody>{!compact && <tfoot><tr><td colSpan="6">Total coût client</td><td>{money(totalClientCost, 'DZD')}</td><td>{money(totalBenefit, 'DZD')}</td></tr></tfoot>}</table>
     </div>
     <footer className="form-footer technician-report-actions"><button className="button secondary" onClick={close}>Fermer</button><button className="button" onClick={() => window.print()}><Download size={16} />Télécharger en PDF</button></footer>

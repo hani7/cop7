@@ -139,6 +139,13 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Le numéro de téléphone doit contenir exactement 10 chiffres.')
         return value
 
+    def validate_specialty(self, value):
+        if value and value.isdigit():
+            specialty = TechnicianSpecialty.objects.filter(pk=int(value)).first()
+            if specialty:
+                value = specialty.name
+        return value.upper()
+
     def get_full_name(self, obj):
         return obj.get_full_name() or obj.username
 
@@ -404,7 +411,13 @@ class TimeEntrySerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         entry = super().create(validated_data)
-        TimeEntryEvent.objects.create(entry=entry, actor=self.context['request'].user, status=entry.status)
+        actor = self.context['request'].user
+        if actor.effective_role == User.Role.ADMIN:
+            entry.status = 'APPROVED'
+            entry.reviewed_by = actor
+            entry.reviewed_at = timezone.now()
+            entry.save(update_fields=['status', 'reviewed_by', 'reviewed_at'])
+        TimeEntryEvent.objects.create(entry=entry, actor=actor, status=entry.status)
         return entry
 
     def update(self, instance, validated_data):
