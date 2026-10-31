@@ -223,13 +223,17 @@ export default function Editor({ modal, data, user, save, close, openModal }) {
     initial = { reason: '' }; submitLabel = 'Refuser le pointage';
   } else if (modal.type === 'invoice') {
     title = 'Créer une facture'; resource = 'invoices';
-    fields = [select('project', 'Projet à facturer', options(data.projects.filter(p => data.entries.some(e => e.project === p.id && e.status === 'APPROVED')))), text('date_from', 'Du', true, { type: 'date' }), text('date_to', 'Au', true, { type: 'date' })];
-    initial = { project: '', date_from: localDate(), date_to: localDate(), entry_ids: [] };
+    fields = values => {
+      const project = data.projects.find(item => String(item.id) === String(values.project));
+      const purchaseOrders = project?.purchase_orders?.length ? project.purchase_orders.map((order, index) => ({ value: order.number, label: order.number || `Bon de commande ${index + 1}` })) : project?.purchase_order ? [{ value: project.purchase_order, label: project.purchase_order }] : [];
+      return [select('project', 'Projet à facturer', options(data.projects.filter(p => data.entries.some(e => e.project === p.id && e.status === 'APPROVED')))), select('purchase_order', 'Bon de commande', purchaseOrders, false), text('date_from', 'Du', true, { type: 'date' }), text('date_to', 'Au', true, { type: 'date' })];
+    };
+    initial = { project: '', purchase_order: '', date_from: localDate(), date_to: localDate(), entry_ids: [] };
     submitLabel = 'Émettre la facture';
     extra = (values, update) => {
       const entries = data.entries.filter(e => String(e.project) === String(values.project) && e.status === 'APPROVED' && (!values.date_from || localDay(e.start) >= values.date_from) && (!values.date_to || localDay(e.start) <= values.date_to));
       const selectedProject = data.projects.find(p => String(p.id) === String(values.project));
-      const project = selectedProject ? { ...selectedProject, purchase_order: selectedProject.purchase_order || 'Aucun bon de commande renseigné.' } : selectedProject;
+      const project = selectedProject ? { ...selectedProject, purchase_order: '' } : selectedProject;
       const selected = entries.filter(e => values.entry_ids.includes(e.id));
       const holidayDates = new Set(data.holidays.map(holiday => holiday.date));
       const holidayEntries = new Set();

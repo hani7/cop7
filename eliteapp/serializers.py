@@ -525,6 +525,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
 
 class InvoiceCreateSerializer(serializers.Serializer):
     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
+    purchase_order = serializers.CharField(required=False, allow_blank=True, max_length=120)
     entry_ids = serializers.ListField(child=serializers.IntegerField(min_value=1), allow_empty=False)
     due_date = serializers.DateField(required=False)
     tax_percent = serializers.DecimalField(max_digits=5, decimal_places=2, min_value=0, max_value=100, default=0)

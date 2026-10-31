@@ -45,7 +45,7 @@ def transition_entry(entry_id, user, action, reason=''):
 
 
 @transaction.atomic
-def create_invoice(user, project, entry_ids, due_date, tax_percent, date_from=None, date_to=None):
+def create_invoice(user, project, entry_ids, due_date, tax_percent, date_from=None, date_to=None, purchase_order=''):
     require_role(user, User.Role.ADMIN)
     project = Project.objects.select_for_update().get(pk=project.pk)
     entries = list(TimeEntry.objects.select_for_update().filter(pk__in=entry_ids).order_by('pk'))
@@ -91,7 +91,7 @@ def create_invoice(user, project, entry_ids, due_date, tax_percent, date_from=No
         raise ValidationError('Vérifiez le tarif horaire : le total doit être positif et inférieur à 1 000 milliards.')
     invoice = Invoice.objects.create(
         project=project, project_name=project.name, client_name=project.client.name,
-        billing_address=project.client.billing_address, purchase_order=project.purchase_order,
+        billing_address=project.client.billing_address, purchase_order=purchase_order or project.purchase_order,
         currency=settings.APP_CURRENCY, tax_percent=tax_percent, subtotal=subtotal,
         tax_amount=tax, total=subtotal + tax, due_date=due_date, created_by=user,
     )

@@ -57,7 +57,7 @@
 .project-filter-bar .last-refresh,.project-filter-bar button[title="Actualiser les pointages"]{display:none}
 .specialty-filter-inline{display:flex;align-items:center;gap:10px;padding:12px 24px;border-bottom:1px solid var(--line);background:#f8fbfb;color:var(--muted);font-size:11px}
 .specialty-filter-inline select{width:auto;min-width:190px;padding:8px 10px}
-.panel{position:relative}.specialty-filter-inline{position:absolute;top:12px;left:520px;padding:0;border:0;background:transparent;z-index:2}.specialty-filter-inline label{display:none}
+.panel{position:relative}.specialty-filter-inline{position:absolute;top:12px;left:550px;padding:0;border:0;background:transparent;z-index:2}.specialty-filter-inline label{display:none}
 .trash-tabs{display:flex;gap:8px;padding:14px 24px;border-bottom:1px solid var(--line);background:#f8fbfb}
 .trash-tab{border:1px solid var(--line);border-radius:7px;background:white;color:var(--muted);padding:8px 13px;font-size:11px}
 .trash-tab.active{border-color:var(--green);background:#e0f7f2;color:var(--petrol);font-weight:650}
