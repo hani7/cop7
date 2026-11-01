@@ -22,6 +22,8 @@ class ReadOnlyAdmin(admin.ModelAdmin):
 
 class TrashAdmin(ReadOnlyAdmin):
     """Admin deletion archives records so they remain restorable."""
+    actions = ['move_selected_to_trash']
+
     def get_queryset(self, request):
         return super().get_queryset(request).filter(deleted_at__isnull=True)
 
@@ -31,12 +33,6 @@ class TrashAdmin(ReadOnlyAdmin):
     @admin.action(description='Déplacer les éléments sélectionnés vers la corbeille')
     def move_selected_to_trash(self, request, queryset):
         queryset.update(deleted_at=timezone.now())
-
-    def get_actions(self, request):
-        actions = super().get_actions(request)
-        actions.pop('delete_selected', None)
-        actions['move_selected_to_trash'] = (self.move_selected_to_trash, 'move_selected_to_trash', self.move_selected_to_trash.short_description)
-        return actions
 
     def delete_model(self, request, obj):
         obj.deleted_at = timezone.now()
