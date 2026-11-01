@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils import timezone
 
 from .models import Client, Invoice, InvoiceLine, Payment, Project, TimeEntry, TimeEntryEvent, User
 
@@ -19,12 +20,31 @@ class ReadOnlyAdmin(admin.ModelAdmin):
         return False
 
 
+class TrashAdmin(ReadOnlyAdmin):
+    """Admin deletion archives records so they remain restorable."""
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(deleted_at__isnull=True)
+
+    def has_delete_permission(self, request, obj=None):
+        return True
+
+    def delete_model(self, request, obj):
+        obj.deleted_at = timezone.now()
+        obj.save(update_fields=['deleted_at'])
+
+    def delete_queryset(self, request, queryset):
+        queryset.update(deleted_at=timezone.now())
+
+
 @admin.register(User)
-class UserAdmin(ReadOnlyAdmin):
+class UserAdmin(TrashAdmin):
     exclude = ['password', 'user_permissions', 'groups']
     list_display = ['username', 'first_name', 'last_name', 'role', 'client', 'is_active']
     list_filter = ['role', 'is_active']
     search_fields = ['username', 'first_name', 'last_name']
+
+    def has_delete_permission(self, request, obj=None):
+        return bool(obj and obj.role == User.Role.TECHNICIAN and not obj.is_superuser and not obj.is_staff)
 
 
 @admin.register(TimeEntry)
@@ -34,10 +54,16 @@ class TimeEntryAdmin(ReadOnlyAdmin):
 
 
 @admin.register(Project)
-class ProjectAdmin(ReadOnlyAdmin):
+class ProjectAdmin(TrashAdmin):
     list_display = ['name', 'client', 'site', 'manager_name', 'status']
     list_filter = ['status', 'client']
 
 
-for model in [Client, Invoice, InvoiceLine, Payment, TimeEntryEvent]:
+@admin.register(Client)
+class ClientAdmin(TrashAdmin):
+    list_display = ['name', 'contact_name', 'is_active']
+    search_fields = ['name', 'contact_name']
+
+
+for model in [Invoice, InvoiceLine, Payment, TimeEntryEvent]:
     admin.site.register(model, ReadOnlyAdmin)
