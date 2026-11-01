@@ -17,7 +17,7 @@ class ReadOnlyAdmin(admin.ModelAdmin):
         return False
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        return True
 
 
 class TrashAdmin(ReadOnlyAdmin):
@@ -27,6 +27,16 @@ class TrashAdmin(ReadOnlyAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return True
+
+    @admin.action(description='Déplacer les éléments sélectionnés vers la corbeille')
+    def move_selected_to_trash(self, request, queryset):
+        queryset.update(deleted_at=timezone.now())
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        actions.pop('delete_selected', None)
+        actions['move_selected_to_trash'] = (self.move_selected_to_trash, 'move_selected_to_trash', self.move_selected_to_trash.short_description)
+        return actions
 
     def delete_model(self, request, obj):
         obj.deleted_at = timezone.now()
@@ -44,7 +54,7 @@ class UserAdmin(TrashAdmin):
     search_fields = ['username', 'first_name', 'last_name']
 
     def has_delete_permission(self, request, obj=None):
-        return bool(obj and obj.role == User.Role.TECHNICIAN and not obj.is_superuser and not obj.is_staff)
+        return True
 
 
 @admin.register(TimeEntry)
